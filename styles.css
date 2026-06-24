@@ -11,6 +11,9 @@
     --primary-dark: #166088;
     --secondary-color: #4fc3f7;
     --accent-color: #ff6b6b;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --warning-color: #ff9800;
     --background-color: #f5f7fa;
     --card-color: #ffffff;
     --text-color: #333333;
@@ -35,12 +38,49 @@ header {
     align-items: center;
     margin-bottom: 30px;
     padding: 0 10px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 header h1 {
     font-size: 2rem;
     color: var(--primary-dark);
     font-weight: 600;
+}
+
+/* Statut de l'API */
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: var(--card-color);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    font-size: 0.9rem;
+}
+
+.api-status i {
+    font-size: 0.8rem;
+}
+
+.api-status.success i {
+    color: var(--success-color);
+}
+
+.api-status.error i {
+    color: var(--error-color);
+}
+
+.api-status.warning i {
+    color: var(--warning-color);
 }
 
 /* Bouton Ajouter */
@@ -70,18 +110,14 @@ header h1 {
     font-size: 1.1rem;
 }
 
-/* Widget Météo */
-.weather-widget {
+/* Conteneur Météo */
+.weather-container {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 30px;
     box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 400px;
 }
 
 .weather-header {
@@ -90,29 +126,125 @@ header h1 {
     gap: 10px;
     font-weight: 600;
     font-size: 1.1rem;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
-.weather-info {
+.weather-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+}
+
+.weather-tab {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.weather-tab:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.weather-tab.active {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.weather-content {
+    margin-top: 15px;
+}
+
+.weather-tab-content {
+    display: none;
+}
+
+.weather-tab-content.active {
+    display: block;
+}
+
+/* Graphique */
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+/* Grille des détails météo */
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.weather-detail-card {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+.weather-detail-card .time {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.weather-detail-card .temp {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.weather-detail-card .icon {
+    font-size: 1.5rem;
+    margin: 5px 0;
+}
+
+.weather-detail-card .rain {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Résumé météo */
+.weather-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.summary-item {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
 }
 
-.temperature {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
+.summary-item i {
+    font-size: 1.2rem;
+    opacity: 0.8;
 }
 
-.weather-description {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-top: 5px;
-    text-transform: capitalize;
+.summary-item span:first-of-type {
+    font-size: 1.3rem;
+    font-weight: 600;
 }
 
-.weather-icon {
-    font-size: 3rem;
+.summary-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-align: center;
 }
 
 /* Conteneur des applications */
@@ -342,17 +474,26 @@ header h1 {
 @media (max-width: 768px) {
     header {
         flex-direction: column;
-        gap: 15px;
+        align-items: flex-start;
     }
 
-    .weather-widget {
+    .header-left {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start;
+    }
+
+    .weather-container {
         max-width: 100%;
     }
 
-    .weather-info {
-        align-items: center;
+    .weather-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .weather-controls {
+        margin-left: 0;
+        margin-top: 10px;
     }
 
     .modal-content {
@@ -362,6 +503,10 @@ header h1 {
 
     .apps-container {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .weather-summary {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -386,6 +531,14 @@ header h1 {
 
     .app-name {
         font-size: 0.8rem;
+    }
+
+    .weather-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .chart-container {
+        height: 200px;
     }
 }
 
@@ -420,8 +573,8 @@ header h1 {
     background: var(--primary-dark);
 }
 
-/* Effet de chargement pour le widget météo */
-.weather-loading {
+/* Effet de chargement */
+.loading {
     animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -432,4 +585,14 @@ header h1 {
     50% {
         opacity: 0.5;
     }
+}
+
+/* Message d'erreur */
+.error-message {
+    color: var(--error-color);
+    background-color: rgba(244, 67, 54, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
 }

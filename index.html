@@ -6,26 +6,69 @@
     <title>Portail Appli - ThomRoot</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
-        <h1>Portail Appli</h1>
+        <div class="header-left">
+            <h1>Portail Appli</h1>
+            <div class="api-status" id="apiStatus">
+                <i class="fas fa-circle" id="apiStatusIcon"></i>
+                <span id="apiStatusText">Vérification API...</span>
+            </div>
+        </div>
         <button id="addSiteBtn" class="add-btn">
             <i class="fas fa-plus"></i> Ajouter un site
         </button>
     </header>
 
-    <div class="weather-widget" id="weatherWidget">
+    <div class="weather-container" id="weatherContainer">
         <div class="weather-header">
-            <i class="fas fa-cloud-sun"></i>
-            <span>Météo à Aulnay-sous-Bois</span>
+            <i class="fas fa-chart-line"></i>
+            <span>Météo à Aulnay-sous-Bois - Aujourd'hui</span>
+            <div class="weather-controls">
+                <button class="weather-tab active" data-type="chart">Graphique</button>
+                <button class="weather-tab" data-type="details">Détails</button>
+            </div>
         </div>
-        <div class="weather-info">
-            <div class="temperature" id="temperature">--°C</div>
-            <div class="weather-description" id="weatherDescription">Chargement...</div>
+        
+        <div class="weather-content">
+            <!-- Onglet Graphique -->
+            <div class="weather-tab-content active" id="weatherChartContent">
+                <div class="chart-container">
+                    <canvas id="weatherChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Onglet Détails -->
+            <div class="weather-tab-content" id="weatherDetailsContent">
+                <div class="weather-details-grid" id="weatherDetailsGrid">
+                    <!-- Les détails seront ajoutés dynamiquement -->
+                </div>
+            </div>
         </div>
-        <div class="weather-icon" id="weatherIcon">
-            <i class="fas fa-spinner fa-spin"></i>
+        
+        <div class="weather-summary" id="weatherSummary">
+            <div class="summary-item">
+                <i class="fas fa-thermometer-half"></i>
+                <span id="currentTemp">--°C</span>
+                <span class="summary-label">Température actuelle</span>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-tint"></i>
+                <span id="currentHumidity">--%</span>
+                <span class="summary-label">Humidité</span>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-wind"></i>
+                <span id="currentWind">-- km/h</span>
+                <span class="summary-label">Vent</span>
+            </div>
+            <div class="summary-item">
+                <i class="fas fa-cloud-rain"></i>
+                <span id="currentRain">-- mm</span>
+                <span class="summary-label">Précipitations</span>
+            </div>
         </div>
     </div>
 

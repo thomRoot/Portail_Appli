@@ -1,23 +1,32 @@
 // Configuration de la base de données
 const DB_NAME = 'PortailAppliDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
-// Clé API OpenWeatherMap (gratuite)
-const WEATHER_API_KEY = 'd4b576b8e9f64c1a8f0123456789abc0';
+// **IMPORTANT : Remplacez par votre propre clé API OpenWeatherMap**
+// Inscrivez-vous gratuitement sur https://openweathermap.org/api
+const WEATHER_API_KEY = 'votre_cle_api_ici';
 const CITY = 'Aulnay-sous-Bois';
 const COUNTRY_CODE = 'FR';
 
-// Variable pour la base de données
+// Coordonnées d'Aulnay-sous-Bois
+const LAT = 48.9412;
+const LON = 2.4833;
+
+// Variable pour la base de données et le graphique
 let db;
+let weatherChart;
+let currentWeatherData = null;
 
 // Initialisation de l'application
 window.addEventListener('DOMContentLoaded', () => {
     initDB();
-    loadWeather();
     setupEventListeners();
     loadSites();
     
-    // Rafraîchir la météo toutes les 10 minutes
+    // Vérifier la clé API au démarrage
+    checkApiKey();
+    
+    // Charger la météo toutes les 10 minutes
     setInterval(loadWeather, 10 * 60 * 1000);
 });
 
@@ -27,7 +36,7 @@ function initDB() {
     
     request.onerror = (event) => {
         console.error('Erreur lors de l\'ouverture de la base de données:', event.target.error);
-        alert('Impossible d\'accéder à la base de données. Veuillez réessayer.');
+        showApiStatus('error', 'Erreur base de données');
     };
     
     request.onsuccess = (event) => {
@@ -49,6 +58,69 @@ function initDB() {
         
         console.log('Base de données initialisée');
     };
+}
+
+// Vérification de la clé API
+function checkApiKey() {
+    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
+        showApiStatus('error', 'Clé API non configurée');
+        return false;
+    }
+    
+    // Tester la clé API avec un appel simple
+    const testUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
+    
+    fetch(testUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.cod === 200) {
+                showApiStatus('success', 'API active');
+                loadWeather();
+                return true;
+            } else {
+                throw new Error(`API Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur de vérification API:', error);
+            showApiStatus('error', 'Clé API invalide');
+            return false;
+        });
+}
+
+// Affichage du statut de l'API
+function showApiStatus(status, message) {
+    const statusElement = document.getElementById('apiStatus');
+    const iconElement = document.getElementById('apiStatusIcon');
+    const textElement = document.getElementById('apiStatusText');
+    
+    // Retirer les classes précédentes
+    statusElement.classList.remove('success', 'error', 'warning');
+    
+    // Ajouter la nouvelle classe
+    statusElement.classList.add(status);
+    
+    // Mettre à jour l'icône et le texte
+    switch(status) {
+        case 'success':
+            iconElement.className = 'fas fa-check-circle';
+            break;
+        case 'error':
+            iconElement.className = 'fas fa-exclamation-circle';
+            break;
+        case 'warning':
+            iconElement.className = 'fas fa-exclamation-triangle';
+            break;
+        default:
+            iconElement.className = 'fas fa-circle';
+    }
+    
+    textElement.textContent = message;
 }
 
 // Chargement des sites depuis la base de données
@@ -135,6 +207,25 @@ function setupEventListeners() {
         if (e.key === 'Escape') {
             closeAddSiteModal();
         }
+    });
+    
+    // Onglets météo
+    const tabs = document.querySelectorAll('.weather-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Retirer la classe active de tous les onglets
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.weather-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Ajouter la classe active à l'onglet cliqué
+            tab.classList.add('active');
+            
+            // Afficher le contenu correspondant
+            const type = tab.getAttribute('data-type');
+            document.getElementById(`weather${type.charAt(0).toUpperCase() + type.slice(1)}Content`).classList.add('active');
+        });
     });
 }
 
@@ -238,49 +329,262 @@ function addSiteToDB(site) {
 
 // Chargement de la météo
 function loadWeather() {
-    // Coordonnées d'Aulnay-sous-Bois (Noneville)
-    const lat = 48.9412;
-    const lon = 2.4833;
+    // Vérifier si la clé API est valide
+    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
+        showApiStatus('error', 'Clé API non configurée');
+        updateWeatherError();
+        return;
+    }
     
-    // Utilisation de l'API OpenWeatherMap
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
+    showApiStatus('warning', 'Chargement...');
     
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Réponse réseau non valide');
-            }
+    // Appel pour la météo actuelle
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
+    
+    // Appel pour les prévisions (5 jours / 3 heures)
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
+    
+    // Charger les deux en parallèle
+    Promise.all([
+        fetch(currentWeatherUrl).then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        }),
+        fetch(forecastUrl).then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
         })
-        .then(data => {
-            updateWeatherDisplay(data);
-        })
-        .catch(error => {
-            console.error('Erreur lors du chargement de la météo:', error);
-            // Afficher une météo par défaut en cas d'erreur
-            document.getElementById('temperature').textContent = '--°C';
-            document.getElementById('weatherDescription').textContent = 'Météo indisponible';
-            document.getElementById('weatherIcon').innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-        });
+    ])
+    .then(([currentData, forecastData]) => {
+        if (currentData.cod === 200 && forecastData.cod === '200') {
+            showApiStatus('success', 'API active');
+            currentWeatherData = { current: currentData, forecast: forecastData };
+            updateWeatherDisplay(currentData, forecastData);
+            updateWeatherSummary(currentData);
+            updateWeatherDetails(forecastData);
+            createWeatherChart(forecastData);
+        } else {
+            throw new Error(`API Error: ${currentData.message || forecastData.message}`);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors du chargement de la météo:', error);
+        showApiStatus('error', 'Erreur API');
+        updateWeatherError();
+    });
 }
 
 // Mise à jour de l'affichage de la météo
-function updateWeatherDisplay(data) {
-    const tempElement = document.getElementById('temperature');
-    const descElement = document.getElementById('weatherDescription');
-    const iconElement = document.getElementById('weatherIcon');
+function updateWeatherDisplay(currentData, forecastData) {
+    // Cette fonction est gardée pour compatibilité, mais on utilise maintenant les nouvelles fonctions
+}
+
+// Mise à jour du résumé météo
+function updateWeatherSummary(data) {
+    const tempElement = document.getElementById('currentTemp');
+    const humidityElement = document.getElementById('currentHumidity');
+    const windElement = document.getElementById('currentWind');
+    const rainElement = document.getElementById('currentRain');
     
     // Température
     const temperature = Math.round(data.main.temp);
     tempElement.textContent = `${temperature}°C`;
     
-    // Description
-    descElement.textContent = data.weather[0].description;
+    // Humidité
+    humidityElement.textContent = `${data.main.humidity}%`;
     
-    // Icône météo
-    const weatherId = data.weather[0].id;
-    const iconClass = getWeatherIconClass(weatherId, data.weather[0].main);
-    iconElement.innerHTML = `<i class="fas ${iconClass}"></i>`;
+    // Vent (convertir de m/s à km/h)
+    const windSpeed = Math.round(data.wind.speed * 3.6);
+    windElement.textContent = `${windSpeed} km/h`;
+    
+    // Précipitations (si disponibles)
+    if (data.rain && data.rain['1h']) {
+        rainElement.textContent = `${data.rain['1h']} mm`;
+    } else if (data.snow && data.snow['1h']) {
+        rainElement.textContent = `${data.snow['1h']} mm (neige)`;
+    } else {
+        rainElement.textContent = '0 mm';
+    }
+}
+
+// Mise à jour des détails météo (grille)
+function updateWeatherDetails(forecastData) {
+    const grid = document.getElementById('weatherDetailsGrid');
+    grid.innerHTML = '';
+    
+    // Filtrer les prévisions pour aujourd'hui
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    
+    const todayForecasts = forecastData.list.filter(item => {
+        const itemDate = new Date(item.dt * 1000);
+        return itemDate.toISOString().split('T')[0] === todayString;
+    });
+    
+    // Limiter à 8 prévisions pour éviter la surcharge
+    const forecastsToShow = todayForecasts.slice(0, 8);
+    
+    forecastsToShow.forEach(forecast => {
+        const card = document.createElement('div');
+        card.className = 'weather-detail-card';
+        
+        const date = new Date(forecast.dt * 1000);
+        const hours = date.getHours();
+        const temp = Math.round(forecast.main.temp);
+        const iconClass = getWeatherIconClass(forecast.weather[0].id, forecast.weather[0].main);
+        
+        // Calculer les précipitations (si disponibles)
+        let rainInfo = '';
+        if (forecast.rain && forecast.rain['3h']) {
+            rainInfo = `${forecast.rain['3h']}mm`;
+        } else if (forecast.snow && forecast.snow['3h']) {
+            rainInfo = `${forecast.snow['3h']}mm❄️`;
+        }
+        
+        card.innerHTML = `
+            <div class="time">${hours}h</div>
+            <div class="icon"><i class="fas ${iconClass}"></i></div>
+            <div class="temp">${temp}°C</div>
+            <div class="rain">${rainInfo || '0mm'}</div>
+        `;
+        
+        grid.appendChild(card);
+    });
+}
+
+// Création du graphique météo
+function createWeatherChart(forecastData) {
+    const ctx = document.getElementById('weatherChart');
+    
+    // Si le graphique existe déjà, le détruire
+    if (weatherChart) {
+        weatherChart.destroy();
+    }
+    
+    // Filtrer les prévisions pour aujourd'hui
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    
+    const todayForecasts = forecastData.list.filter(item => {
+        const itemDate = new Date(item.dt * 1000);
+        return itemDate.toISOString().split('T')[0] === todayString;
+    });
+    
+    // Préparer les données pour le graphique
+    const labels = todayForecasts.map(forecast => {
+        const date = new Date(forecast.dt * 1000);
+        return `${date.getHours()}h`;
+    });
+    
+    const temps = todayForecasts.map(forecast => Math.round(forecast.main.temp));
+    const rains = todayForecasts.map(forecast => {
+        if (forecast.rain && forecast.rain['3h']) {
+            return forecast.rain['3h'];
+        } else if (forecast.snow && forecast.snow['3h']) {
+            return forecast.snow['3h'];
+        }
+        return 0;
+    });
+    
+    // Créer le graphique
+    weatherChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Température (°C)',
+                    data: temps,
+                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Précipitations (mm)',
+                    data: rains,
+                    borderColor: 'rgba(74, 144, 226, 0.8)',
+                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Température (°C)',
+                        color: 'white'
+                    },
+                    ticks: {
+                        color: 'white'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Précipitations (mm)',
+                        color: 'rgba(74, 144, 226, 0.8)'
+                    },
+                    ticks: {
+                        color: 'rgba(74, 144, 226, 0.8)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Affichage d'erreur pour la météo
+function updateWeatherError() {
+    document.getElementById('currentTemp').textContent = '--°C';
+    document.getElementById('currentHumidity').textContent = '--%';
+    document.getElementById('currentWind').textContent = '-- km/h';
+    document.getElementById('currentRain').textContent = '-- mm';
+    
+    // Effacer le graphique
+    const ctx = document.getElementById('weatherChart');
+    if (ctx) {
+        ctx.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Météo indisponible - Vérifiez votre clé API</p>';
+    }
+    
+    // Effacer les détails
+    document.getElementById('weatherDetailsGrid').innerHTML = '';
 }
 
 // Obtention de la classe Font Awesome en fonction du code météo
@@ -343,3 +647,5 @@ function deleteSite(id) {
 window.addSiteToDB = addSiteToDB;
 window.loadSites = loadSites;
 window.deleteSite = deleteSite;
+window.loadWeather = loadWeather;
+window.checkApiKey = checkApiKey;
