@@ -412,17 +412,11 @@ function updateWeatherDetails(forecastData) {
     const grid = document.getElementById('weatherDetailsGrid');
     grid.innerHTML = '';
     
-    // Filtrer les prévisions pour aujourd'hui
-    const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
+    // Trier les prévisions par date
+    const sortedForecasts = [...forecastData.list].sort((a, b) => a.dt - b.dt);
     
-    const todayForecasts = forecastData.list.filter(item => {
-        const itemDate = new Date(item.dt * 1000);
-        return itemDate.toISOString().split('T')[0] === todayString;
-    });
-    
-    // Limiter à 8 prévisions pour éviter la surcharge
-    const forecastsToShow = todayForecasts.slice(0, 8);
+    // Prendre les 8 prochaines prévisions (24h glissantes)
+    const forecastsToShow = sortedForecasts.slice(0, 8);
     
     forecastsToShow.forEach(forecast => {
         const card = document.createElement('div');
@@ -430,6 +424,8 @@ function updateWeatherDetails(forecastData) {
         
         const date = new Date(forecast.dt * 1000);
         const hours = date.getHours();
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
         const temp = Math.round(forecast.main.temp);
         const iconClass = getWeatherIconClass(forecast.weather[0].id, forecast.weather[0].main);
         
@@ -441,8 +437,13 @@ function updateWeatherDetails(forecastData) {
             rainInfo = `${forecast.snow['3h']}mm❄️`;
         }
         
+        // Formater l'heure et la date
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+        const timeLabel = isToday ? `${hours}h` : `${day}/${month} ${hours}h`;
+        
         card.innerHTML = `
-            <div class="time">${hours}h</div>
+            <div class="time">${timeLabel}</div>
             <div class="icon"><i class="fas ${iconClass}"></i></div>
             <div class="temp">${temp}°C</div>
             <div class="rain">${rainInfo || '0mm'}</div>
@@ -461,23 +462,26 @@ function createWeatherChart(forecastData) {
         weatherChart.destroy();
     }
     
-    // Filtrer les prévisions pour aujourd'hui
-    const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
-    
-    const todayForecasts = forecastData.list.filter(item => {
-        const itemDate = new Date(item.dt * 1000);
-        return itemDate.toISOString().split('T')[0] === todayString;
-    });
+    // Trier les prévisions par date et prendre les 8 prochaines (24h glissantes)
+    const sortedForecasts = [...forecastData.list].sort((a, b) => a.dt - b.dt);
+    const forecastsToShow = sortedForecasts.slice(0, 8);
     
     // Préparer les données pour le graphique
-    const labels = todayForecasts.map(forecast => {
+    const labels = forecastsToShow.map(forecast => {
         const date = new Date(forecast.dt * 1000);
-        return `${date.getHours()}h`;
+        const hours = date.getHours();
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+        
+        // Afficher jour/mois pour les jours suivants, juste l'heure pour aujourd'hui
+        return isToday ? `${hours}h` : `${day}/${month} ${hours}h`;
     });
     
-    const temps = todayForecasts.map(forecast => Math.round(forecast.main.temp));
-    const rains = todayForecasts.map(forecast => {
+    const temps = forecastsToShow.map(forecast => Math.round(forecast.main.temp));
+    const rains = forecastsToShow.map(forecast => {
         if (forecast.rain && forecast.rain['3h']) {
             return forecast.rain['3h'];
         } else if (forecast.snow && forecast.snow['3h']) {
