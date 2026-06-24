@@ -415,8 +415,8 @@ function updateWeatherDetails(forecastData) {
     // Trier les prévisions par date
     const sortedForecasts = [...forecastData.list].sort((a, b) => a.dt - b.dt);
     
-    // Prendre les 8 prochaines prévisions (24h glissantes)
-    const forecastsToShow = sortedForecasts.slice(0, 8);
+    // Prendre les 16 prochaines prévisions (48h glissantes)
+    const forecastsToShow = sortedForecasts.slice(0, 16);
     
     forecastsToShow.forEach(forecast => {
         const card = document.createElement('div');
@@ -424,8 +424,6 @@ function updateWeatherDetails(forecastData) {
         
         const date = new Date(forecast.dt * 1000);
         const hours = date.getHours();
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
         const temp = Math.round(forecast.main.temp);
         const iconClass = getWeatherIconClass(forecast.weather[0].id, forecast.weather[0].main);
         
@@ -437,13 +435,9 @@ function updateWeatherDetails(forecastData) {
             rainInfo = `${forecast.snow['3h']}mm❄️`;
         }
         
-        // Formater l'heure et la date
-        const now = new Date();
-        const isToday = date.toDateString() === now.toDateString();
-        const timeLabel = isToday ? `${hours}h` : `${day}/${month} ${hours}h`;
-        
+        // Afficher uniquement l'heure (sans la date)
         card.innerHTML = `
-            <div class="time">${timeLabel}</div>
+            <div class="time">${hours}h</div>
             <div class="icon"><i class="fas ${iconClass}"></i></div>
             <div class="temp">${temp}°C</div>
             <div class="rain">${rainInfo || '0mm'}</div>
@@ -462,22 +456,16 @@ function createWeatherChart(forecastData) {
         weatherChart.destroy();
     }
     
-    // Trier les prévisions par date et prendre les 8 prochaines (24h glissantes)
+    // Trier les prévisions par date et prendre les 16 prochaines (48h glissantes)
     const sortedForecasts = [...forecastData.list].sort((a, b) => a.dt - b.dt);
-    const forecastsToShow = sortedForecasts.slice(0, 8);
+    const forecastsToShow = sortedForecasts.slice(0, 16);
     
     // Préparer les données pour le graphique
     const labels = forecastsToShow.map(forecast => {
         const date = new Date(forecast.dt * 1000);
         const hours = date.getHours();
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        
-        const now = new Date();
-        const isToday = date.toDateString() === now.toDateString();
-        
-        // Afficher jour/mois pour les jours suivants, juste l'heure pour aujourd'hui
-        return isToday ? `${hours}h` : `${day}/${month} ${hours}h`;
+        // Afficher uniquement l'heure (sans la date)
+        return `${hours}h`;
     });
     
     const temps = forecastsToShow.map(forecast => Math.round(forecast.main.temp));
