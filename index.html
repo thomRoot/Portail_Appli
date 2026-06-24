@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Appli - ThomRoot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Portail Appli</h1>
+        <button id="addSiteBtn" class="add-btn">
+            <i class="fas fa-plus"></i> Ajouter un site
+        </button>
+    </header>
+
+    <div class="weather-widget" id="weatherWidget">
+        <div class="weather-header">
+            <i class="fas fa-cloud-sun"></i>
+            <span>Météo à Aulnay-sous-Bois</span>
+        </div>
+        <div class="weather-info">
+            <div class="temperature" id="temperature">--°C</div>
+            <div class="weather-description" id="weatherDescription">Chargement...</div>
+        </div>
+        <div class="weather-icon" id="weatherIcon">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+
+    <main class="apps-container" id="appsContainer">
+        <!-- Les icônes des sites seront ajoutées dynamiquement ici -->
+    </main>
+
+    <!-- Popup pour ajouter un site -->
+    <div id="addSiteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ajouter un nouveau site</h2>
+            <form id="addSiteForm">
+                <div class="form-group">
+                    <label for="siteName">Nom du site :</label>
+                    <input type="text" id="siteName" name="siteName" required placeholder="Mon Site">
+                </div>
+                <div class="form-group">
+                    <label for="siteUrl">URL du site :</label>
+                    <input type="url" id="siteUrl" name="siteUrl" required placeholder="https://exemple.com">
+                </div>
+                <div class="form-group">
+                    <label for="siteIcon">Icône du site :</label>
+                    <input type="file" id="siteIcon" name="siteIcon" accept="image/*" required>
+                    <div class="image-preview" id="imagePreview">
+                        <p>Aucune image sélectionnée</p>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" id="cancelBtn">Annuler</button>
+                    <button type="submit" class="submit-btn">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
