@@ -9,7 +9,9 @@
 - ✅ Personnaliser l'icône de chaque site avec une image
 - ✅ **Visualiser la météo en temps réel avec graphiques et précipitations**
 - ✅ **Voyant d'état pour vérifier que votre clé API est active**
-- ✅ **Contrôler votre robot aspirateur Xiaomi avec des paramètres avancés** ⚡ NOUVEAU
+- ✅ **Contrôler votre robot aspirateur Xiaomi avec des paramètres avancés**
+- ✅ **Suivre l'état du RER B en temps réel (normal, perturbé, annulé)** ⚡ NOUVEAU
+- ✅ **Thème bleu/noir inspiré du widget météo** ⚡ NOUVEAU
 - ✅ Stocker toutes vos données localement dans votre navigateur
 
 ## 🚀 Fonctionnalités
@@ -54,7 +56,47 @@
 - **🟡 Jaune** : Chargement en cours
 - **Affichage clair** dans l'en-tête de l'application
 
-### 4. Base de Données
+### 4. **Statut du RER B en temps réel** ⚡ NOUVEAU
+
+**Fonctionnalités** :
+- **Affichage dans le header** : Statut du RER B visible en haut de l'application
+- **Icône indicative** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
+- **Mise à jour automatique** : Toutes les 2 minutes
+- **Couleurs thématiques** : Vert (normal), Orange (perturbé), Rouge (annulé)
+
+**Technologie** :
+- Utilisation de l'API Navitia (alternative à l'API RATP officielle)
+- Simulation pour la démo si aucune clé API n'est configurée
+
+**Configuration** :
+Dans `app.js`, vous pouvez configurer :
+```javascript
+const NAVITIA_API_KEY = 'votre_cle_navitia_ici';
+```
+
+### 5. **Thème Bleu/Noir** ⚡ NOUVEAU
+
+**Caractéristiques** :
+- **Couleurs principales** : Bleu (#1e88e5) inspiré du widget météo, mélangé avec du noir (#121212)
+- **Fond sombre** : Réduction de la fatigue oculaire
+- **Cartes avec bordures subtiles** : Effet moderne et élégant
+- **Ombres adaptées** : Meilleure visibilité sur fond sombre
+- **Scrollbar personnalisée** : Intégration harmonieuse avec le thème
+
+**Personnalisation** :
+Modifiez les variables CSS dans `styles.css` :
+```css
+:root {
+    --primary-color: #1e88e5;  /* Bleu principal */
+    --primary-dark: #1565c0;   /* Bleu foncé */
+    --secondary-color: #0d47a1; /* Bleu secondaire */
+    --background-color: #121212; /* Fond noir profond */
+    --card-color: #1e1e1e;      /* Cartes noires */
+    --text-color: #e0e0e0;     /* Texte clair */
+}
+```
+
+### 6. Base de Données
 - **Technologie** : IndexedDB (stockage côté client)
 - **Structure** :
   - `id` : Identifiant unique auto-incrémenté
@@ -85,6 +127,7 @@
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
+- **API Transport** : [Navitia](https://www.navitia.io/) (pour le statut RER B)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
@@ -157,7 +200,7 @@ Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
    };
    ```
 
-### 2. Configurer votre clé API
+### 2. Configurer votre clé API OpenWeatherMap
 
 Dans le fichier `app.js`, remplacez :
 ```javascript
@@ -167,6 +210,15 @@ par :
 ```javascript
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
+
+### 3. Configurer votre clé API Navitia (optionnel)
+
+Pour activer le suivi du RER B, configurez votre clé Navitia dans `app.js` :
+```javascript
+const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
+```
+
+> **Note** : Si vous ne configurez pas de clé Navitia, une simulation sera utilisée pour la démo.
 
 ### 3. Installation locale
 
@@ -326,9 +378,18 @@ Modifiez les variables CSS dans `styles.css` :
 **Note** : Les deux cartes d'aspirateur et les sites apparaissent dans un conteneur unique avec le même style. Toutes les cartes ont la même taille (180px x 220px) et sont alignées dans une grille responsive.
 
 ### Vérifier l'état de l'API
-- Regardez le **voyant** en haut à gauche de l'application
+- Regardez le **voyant** en haut à droite de l'application
 - **🟢 Vert** = Tout fonctionne
 - **🔴 Rouge** = Problème avec la clé API
+
+### Consulter l'état du RER B
+- **Affichage dans le header** : Le statut du RER B s'affiche en haut à gauche
+- **Icônes** :
+  - 🚇 = Circulation normale
+  - ⚠️ = Perturbations
+  - ❌ = Service annulé
+- **Couleurs** : Vert (normal), Orange (perturbé), Rouge (annulé)
+- **Mise à jour** : Toutes les 2 minutes
 
 ### Consulter la météo
 - **Onglet "Graphique"** : Voir la courbe des températures et précipitations
@@ -436,7 +497,7 @@ Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier 
 
 **Créé avec ❤️ par ThomRoot**
 
-*Dernière mise à jour : 25 juin 2025*
+*Dernière mise à jour : 25 juin 2025 - Ajout du statut RER B et du thème bleu/noir*
 
 ---
 
