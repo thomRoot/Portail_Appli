@@ -323,7 +323,7 @@ Modifiez les variables CSS dans `styles.css` :
    - **Ne pas** retourner au nettoyage après avoir nettoyé
 5. Une notification s'affichera pour confirmer le démarrage
 
-**Note** : Les deux cartes d'aspirateur apparaissent après le plugin météo et sont plus grandes que les autres icônes d'application.
+**Note** : Les deux cartes d'aspirateur et les sites apparaissent dans un conteneur unique avec le même style. Toutes les cartes ont la même taille (180px x 220px) et sont alignées dans une grille responsive.
 
 ### Vérifier l'état de l'API
 - Regardez le **voyant** en haut à gauche de l'application

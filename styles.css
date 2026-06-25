@@ -309,60 +309,18 @@ header h1 {
     padding: 0 10px;
 }
 
-/* Carte d'application */
-.app-card {
-    background-color: var(--card-color);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 120px;
-    height: 150px;
-}
-
-.app-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.app-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-    object-fit: cover;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: var(--transition);
-}
-
-.app-card:hover .app-icon {
-    transform: scale(1.05);
-}
-
-.app-name {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-color);
-    word-break: break-word;
-    text-align: center;
-}
-
-/* Cartes des aspirateurs - Plus grandes */
-.robot-cards-container {
-    display: flex;
-    justify-content: center;
+/* Conteneur des cartes */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 30px;
     margin: 30px auto;
-    flex-wrap: wrap;
     padding: 0 20px;
+    max-width: 1400px;
 }
 
-.robot-card {
+/* Carte d'application - Style uniformisé */
+.app-card {
     background-color: var(--card-color);
     border-radius: var(--border-radius);
     padding: 25px;
@@ -373,43 +331,75 @@ header h1 {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    width: 180px;
+    width: 100%;
     height: 220px;
-    cursor: default;
+    cursor: pointer;
+    animation: fadeIn 0.5s ease forwards;
 }
 
-.robot-card:hover {
+.app-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.robot-icon {
+/* Icône de l'application */
+.app-icon {
     width: 80px;
     height: 80px;
     border-radius: 15px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 2.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: var(--transition);
+    overflow: hidden;
 }
 
-.robot-card:hover .robot-icon {
+.app-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.app-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.app-card:hover .app-icon {
     transform: scale(1.1);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.robot-card .app-name {
+/* Pour les icônes des robots (avec fond dégradé) */
+#robotRdcCard .app-icon,
+#robotEtageCard .app-icon {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.app-name {
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 10px;
+    word-break: break-word;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.robot-start-btn {
+/* Actions de la carte */
+.app-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: auto;
+}
+
+/* Bouton d'action pour les cartes */
+.card-action-btn {
     background-color: var(--accent-color);
     color: white;
     border: none;
@@ -425,20 +415,49 @@ header h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.robot-start-btn:hover {
+.card-action-btn:hover {
     background-color: #ff4757;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
 }
 
-.robot-start-btn:disabled {
+.card-action-btn:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
     transform: none;
 }
 
-.robot-start-btn i {
+.card-action-btn i {
     font-size: 1rem;
+}
+
+/* Animation pour les cartes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Carte pour le message "Aucun site" */
+.no-sites-msg {
+    cursor: default;
+}
+
+.no-sites-msg .app-icon {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.no-sites-msg .app-icon i {
+    font-size: 2.5rem;
+}
+
+.no-sites-msg .app-actions {
+    pointer-events: none;
 }
 
 /* Modal */

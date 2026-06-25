@@ -142,24 +142,66 @@ function loadSites() {
 
 // Affichage des sites dans l'interface
 function displaySites(sites) {
-    const container = document.getElementById('appsContainer');
+    const container = document.getElementById('cardsContainer');
+    
+    // Conserver les cartes des robots
+    const robotCards = container.querySelectorAll('.app-card:not([data-site-id])');
+    const tempContainer = document.createElement('div');
+    
+    // Déplacer temporairement les cartes des robots
+    robotCards.forEach(card => {
+        tempContainer.appendChild(card.cloneNode(true));
+    });
+    
     container.innerHTML = '';
     
+    // Réajouter les cartes des robots
+    tempContainer.querySelectorAll('.app-card').forEach(card => {
+        container.appendChild(card);
+    });
+    
     if (sites.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-light);">Aucun site ajouté. Cliquez sur "Ajouter un site" pour commencer.</p>';
+        const noSitesMsg = document.createElement('div');
+        noSitesMsg.className = 'app-card no-sites-msg';
+        noSitesMsg.innerHTML = `
+            <div class="app-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="app-name">Aucun site ajouté</div>
+            <div class="app-actions">
+                <span style="font-size: 0.8rem; color: var(--text-light);">Cliquez sur "Ajouter un site"</span>
+            </div>
+        `;
+        container.appendChild(noSitesMsg);
         return;
     }
     
     sites.forEach(site => {
         const card = document.createElement('div');
         card.className = 'app-card';
+        card.setAttribute('data-site-id', site.id);
         card.style.animationDelay = `${sites.indexOf(site) * 0.1}s`;
         
         card.innerHTML = `
-            <img src="${site.icon}" alt="${site.name}" class="app-icon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjNjY2Ii8+PC9zdmc+'">
+            <div class="app-icon">
+                <img src="${site.icon}" alt="${site.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjNjY2Ii8+PC9zdmc+'">
+            </div>
             <div class="app-name">${site.name}</div>
+            <div class="app-actions">
+                <button class="card-action-btn" data-action="open">
+                    <i class="fas fa-external-link-alt"></i> Ouvrir
+                </button>
+            </div>
         `;
         
+        // Gestion du clic sur le bouton Ouvrir
+        const openBtn = card.querySelector('.card-action-btn');
+        openBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.open(site.url, '_blank');
+        });
+        
+        // Gestion du clic sur la carte (pour ouvrir aussi)
         card.addEventListener('click', () => {
             window.open(site.url, '_blank');
         });

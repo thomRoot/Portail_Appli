@@ -74,34 +74,33 @@
         </div>
     </div>
 
-    <!-- Cartes pour les aspirateurs -->
-    <div class="robot-cards-container">
-        <div class="app-card robot-card" id="robotRdcCard">
-            <div class="app-icon robot-icon">
+    <!-- Conteneur unique pour toutes les cartes (sites + robots) -->
+    <main class="cards-container" id="cardsContainer">
+        <!-- Cartes pour les aspirateurs -->
+        <div class="app-card" id="robotRdcCard">
+            <div class="app-icon">
                 <i class="fas fa-broom"></i>
             </div>
             <div class="app-name">Aspirateur RdC</div>
             <div class="app-actions">
-                <button class="robot-start-btn" data-robot="rdc">
+                <button class="card-action-btn" data-robot="rdc">
                     <i class="fas fa-play"></i> Lancer
                 </button>
             </div>
         </div>
-        <div class="app-card robot-card" id="robotEtageCard">
-            <div class="app-icon robot-icon">
+        <div class="app-card" id="robotEtageCard">
+            <div class="app-icon">
                 <i class="fas fa-broom"></i>
             </div>
             <div class="app-name">Aspirateur étage</div>
             <div class="app-actions">
-                <button class="robot-start-btn" data-robot="etage">
+                <button class="card-action-btn" data-robot="etage">
                     <i class="fas fa-play"></i> Lancer
                 </button>
             </div>
         </div>
-    </div>
-
-    <main class="apps-container" id="appsContainer">
-        <!-- Les icônes des sites seront ajoutées dynamiquement ici -->
+        
+        <!-- Les sites seront ajoutés dynamiquement ici -->
     </main>
 
 
