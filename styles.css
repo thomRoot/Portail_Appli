@@ -503,6 +503,15 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Cartes témoins Google */
+.google-card .app-icon {
+    background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+}
+
+.google-card .app-icon i {
+    color: white;
+}
+
 .app-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
