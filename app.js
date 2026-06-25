@@ -631,7 +631,7 @@ function deleteSite(id) {
     }
 }
 
-// Configuration pour le robot aspirateur Xiaomi
+// Configuration pour les robots aspirateurs Xiaomi
 const ROBOT_CONFIG = {
     // Adresse IP de votre robot sur le réseau local
     // Remplacez par l'adresse IP de votre robot Xiaomi
@@ -641,22 +641,28 @@ const ROBOT_CONFIG = {
     // Remplacez par votre token personnel
     token: 'votre_token_miio_ici',
     
-    // Nom de la carte à charger
-    mapName: 'Carte1',
-    
-    // Paramètres de nettoyage
-    cleaning: {
-        // Nettoyer 2 fois la surface
-        repeat: 2,
-        
-        // Mode turbo
-        mode: 'turbo',
-        
-        // Niveau de sortie d'eau (0-3)
-        waterLevel: 3,
-        
-        // Retour au nettoyage après avoir nettoyé 8m²
-        returnAfterArea: 8
+    // Configurations pour chaque robot
+    robots: {
+        rdc: {
+            mapName: 'Carte1',
+            cleaning: {
+                repeat: 2,        // Nettoyer 2 fois la surface
+                mode: 'turbo',    // Mode turbo
+                waterLevel: 3,    // Niveau de sortie d'eau (0-3)
+                returnAfterArea: 8, // Retour au nettoyage après 8m²
+                returnToClean: true  // Retourne au nettoyage après avoir nettoyé la zone
+            }
+        },
+        etage: {
+            mapName: 'Carte2',
+            cleaning: {
+                repeat: 1,        // Nettoyer 1 fois la surface
+                mode: 'turbo',    // Mode turbo
+                waterLevel: 3,    // Niveau de sortie d'eau (0-3)
+                returnAfterArea: null, // Pas de retour automatique
+                returnToClean: false  // Ne retourne pas au nettoyage
+            }
+        }
     }
 };
 
@@ -721,13 +727,18 @@ async function loadRobotMap(mapName) {
 }
 
 // Fonction pour démarrer le nettoyage avec les paramètres spécifiés
-async function startRobotCleaning() {
+async function startRobotCleaning(robotType = 'rdc') {
     try {
-        console.log('Démarrage du nettoyage avec les paramètres configurés...');
+        const config = ROBOT_CONFIG.robots[robotType];
+        if (!config) {
+            throw new Error(`Configuration non trouvée pour le robot: ${robotType}`);
+        }
+        
+        console.log(`Démarrage du nettoyage pour ${robotType} avec les paramètres configurés...`);
         
         // 1. Charger la carte spécifiée
-        await loadRobotMap(ROBOT_CONFIG.mapName);
-        console.log(`Carte "${ROBOT_CONFIG.mapName}" chargée`);
+        await loadRobotMap(config.mapName);
+        console.log(`Carte "${config.mapName}" chargée`);
         
         // 2. Configurer les paramètres de nettoyage
         // Pour les robots Xiaomi, on peut utiliser des commandes comme:
@@ -737,11 +748,11 @@ async function startRobotCleaning() {
             '--ip', ROBOT_CONFIG.ipAddress,
             '--token', ROBOT_CONFIG.token,
             'set_clean_mode',
-            '--mode', ROBOT_CONFIG.cleaning.mode,
-            '--water_level', ROBOT_CONFIG.cleaning.waterLevel
+            '--mode', config.cleaning.mode,
+            '--water_level', config.cleaning.waterLevel
         ]);
         
-        console.log(`Mode de nettoyage configuré: ${ROBOT_CONFIG.cleaning.mode}, niveau d'eau: ${ROBOT_CONFIG.cleaning.waterLevel}`);
+        console.log(`Mode de nettoyage configuré: ${config.cleaning.mode}, niveau d'eau: ${config.cleaning.waterLevel}`);
         
         // 3. Démarrer le nettoyage avec répétition
         // Commande pour démarrer le nettoyage
@@ -749,35 +760,39 @@ async function startRobotCleaning() {
             '--ip', ROBOT_CONFIG.ipAddress,
             '--token', ROBOT_CONFIG.token,
             'start_clean',
-            '--repeat', ROBOT_CONFIG.cleaning.repeat
+            '--repeat', config.cleaning.repeat
         ]);
         
-        console.log(`Nettoyage démarré avec ${ROBOT_CONFIG.cleaning.repeat} répétitions`);
+        console.log(`Nettoyage démarré avec ${config.cleaning.repeat} répétition(s)`);
         
-        // 4. Configurer le retour automatique après 8m²
-        // Cela dépend des capacités du robot
-        // Certains robots supportent des zones de nettoyage spécifiques
-        await executeMioCommand('raw', [
-            '--ip', ROBOT_CONFIG.ipAddress,
-            '--token', ROBOT_CONFIG.token,
-            'set_clean_area',
-            '--area', ROBOT_CONFIG.cleaning.returnAfterArea,
-            '--return_after', 'true'
-        ]);
-        
-        console.log(`Configuration: retour au nettoyage après ${ROBOT_CONFIG.cleaning.returnAfterArea}m²`);
+        // 4. Configurer le retour automatique si nécessaire
+        if (config.cleaning.returnAfterArea && config.cleaning.returnToClean) {
+            await executeMioCommand('raw', [
+                '--ip', ROBOT_CONFIG.ipAddress,
+                '--token', ROBOT_CONFIG.token,
+                'set_clean_area',
+                '--area', config.cleaning.returnAfterArea,
+                '--return_after', 'true'
+            ]);
+            
+            console.log(`Configuration: retour au nettoyage après ${config.cleaning.returnAfterArea}m²`);
+        } else {
+            console.log('Pas de retour automatique configuré');
+        }
         
         // Afficher un message de succès à l'utilisateur
-        showRobotNotification('✅ Nettoyage démarré avec succès!', 'success');
+        const robotName = robotType === 'rdc' ? 'Aspirateur RdC' : 'Aspirateur étage';
+        showRobotNotification(`✅ ${robotName}: Nettoyage démarré avec succès!`, 'success');
         
         return { 
             success: true, 
-            message: 'Nettoyage démarré avec les paramètres configurés' 
+            message: `Nettoyage démarré avec les paramètres configurés pour ${robotType}` 
         };
         
     } catch (error) {
-        console.error('Erreur lors du démarrage du nettoyage:', error);
-        showRobotNotification('❌ Erreur: ' + error.message, 'error');
+        console.error(`Erreur lors du démarrage du nettoyage pour ${robotType}:`, error);
+        const robotName = robotType === 'rdc' ? 'Aspirateur RdC' : 'Aspirateur étage';
+        showRobotNotification(`❌ ${robotName}: ${error.message}`, 'error');
         return { 
             success: false, 
             message: error.message 
@@ -868,13 +883,14 @@ function checkRobotConfig() {
     };
 }
 
-// Gestionnaire d'événement pour le bouton du robot
+// Gestionnaire d'événement pour les boutons des robots
 function setupRobotEventListeners() {
-    const robotBtn = document.getElementById('robotCleanBtn');
+    const robotButtons = document.querySelectorAll('.robot-start-btn');
     
-    if (robotBtn) {
-        robotBtn.addEventListener('click', async () => {
-            console.log('Bouton robot aspirateur cliqué');
+    robotButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const robotType = e.target.closest('.robot-start-btn').dataset.robot;
+            console.log(`Bouton robot ${robotType} cliqué`);
             
             // Vérifier la configuration
             const configCheck = checkRobotConfig();
@@ -888,28 +904,27 @@ function setupRobotEventListeners() {
             
             try {
                 // Désactiver le bouton pendant l'exécution
-                robotBtn.disabled = true;
-                robotBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Nettoyage en cours...';
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> En cours...';
                 
-                // Démarrer le nettoyage
-                const result = await startRobotCleaning();
+                // Démarrer le nettoyage pour ce robot
+                const result = await startRobotCleaning(robotType);
                 
                 if (result.success) {
-                    console.log('Nettoyage démarré avec succès');
+                    console.log(`Nettoyage démarré avec succès pour ${robotType}`);
                 }
                 
             } catch (error) {
-                console.error('Erreur lors du démarrage du nettoyage:', error);
-                showRobotNotification('❌ Erreur lors du démarrage du nettoyage', 'error');
+                console.error(`Erreur lors du démarrage du nettoyage pour ${robotType}:`, error);
             } finally {
                 // Réactiver le bouton
                 setTimeout(() => {
-                    robotBtn.disabled = false;
-                    robotBtn.innerHTML = '<i class="fas fa-robot"></i> Lancer Aspirateur';
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-play"></i> Lancer';
                 }, 2000);
             }
         });
-    }
+    });
 }
 
 // Export des fonctions pour le débogage

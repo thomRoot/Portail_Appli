@@ -63,15 +63,16 @@
   - `icon` : Image de l'icône (stockée en base64)
   - `createdAt` : Date de création
 
-### 5. Contrôle du Robot Aspirateur Xiaomi ⚡ NOUVEAU
+### 5. Contrôle des Robots Aspirateurs Xiaomi ⚡ NOUVEAU
 
 **Fonctionnalités** :
-- **Chargement de carte** : Chargez une carte spécifique (ex: "Carte1")
-- **Nettoyage multiple** : Nettoyage 2 fois la surface
-- **Mode Turbo** : Activation du mode turbo pour un nettoyage intensif
-- **Niveau d'eau** : Réglage du niveau de sortie d'eau (niveau 3)
-- **Retour automatique** : Retour au nettoyage après avoir nettoyé 8m²
+- **Deux robots configurables** : Aspirateur RdC et Aspirateur étage
+- **Chargement de carte** : Chaque robot charge sa propre carte (Carte1 pour RdC, Carte2 pour étage)
+- **Nettoyage personnalisé** :
+  - **Aspirateur RdC** : Nettoyage 2 fois la surface en mode turbo, niveau d'eau 3, retour automatique après 8m²
+  - **Aspirateur étage** : Nettoyage 1 fois la surface en mode turbo, niveau d'eau 3, sans retour automatique
 - **Notifications** : Notifications visuelles pour le statut des commandes
+- **Intégration comme app-card** : Les boutons sont intégrés comme des cartes d'application agrandies
 
 **Prérequis** :
 - Robot aspirateur Xiaomi connecté au réseau local
@@ -131,12 +132,27 @@ Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
    const ROBOT_CONFIG = {
        ipAddress: '192.168.1.100',  // Remplacez par l'IP de votre robot
        token: 'votre_token_miio_ici',  // Remplacez par votre token
-       mapName: 'Carte1',  // Nom de la carte à charger
-       cleaning: {
-           repeat: 2,        // Nettoyer 2 fois
-           mode: 'turbo',    // Mode turbo
-           waterLevel: 3,    // Niveau d'eau 3
-           returnAfterArea: 8  // Retour après 8m²
+       robots: {
+           rdc: {
+               mapName: 'Carte1',  // Carte pour le RdC
+               cleaning: {
+                   repeat: 2,        // Nettoyer 2 fois
+                   mode: 'turbo',    // Mode turbo
+                   waterLevel: 3,    // Niveau d'eau 3
+                   returnAfterArea: 8, // Retour après 8m²
+                   returnToClean: true  // Retourne au nettoyage
+               }
+           },
+           etage: {
+               mapName: 'Carte2',  // Carte pour l'étage
+               cleaning: {
+                   repeat: 1,        // Nettoyer 1 fois
+                   mode: 'turbo',    // Mode turbo
+                   waterLevel: 3,    // Niveau d'eau 3
+                   returnAfterArea: null, // Pas de retour automatique
+                   returnToClean: false  // Ne retourne pas
+               }
+           }
        }
    };
    ```
@@ -205,27 +221,44 @@ Portail_Appli/
 
 Modifiez les coordonnées dans `app.js` :
 
-### Personnaliser les paramètres du robot aspirateur
+### Personnaliser les paramètres des robots aspirateurs
 
-Modifiez la configuration dans `app.js` :
+Modifiez la configuration dans `app.js` pour chaque robot :
+
+**Pour l'Aspirateur RdC** :
 ```javascript
-const ROBOT_CONFIG = {
-    ipAddress: '192.168.1.100',  // Adresse IP de votre robot
-    token: 'votre_token_miio_ici',  // Token d'accès miio
+rdc: {
     mapName: 'Carte1',  // Nom de la carte à charger
     cleaning: {
         repeat: 2,        // Nombre de répétitions (1-3)
         mode: 'turbo',    // Mode: 'silent', 'standard', 'turbo', 'max'
         waterLevel: 3,    // Niveau d'eau: 0 (sec), 1 (faible), 2 (moyen), 3 (élevé)
-        returnAfterArea: 8  // Surface en m² avant retour automatique
+        returnAfterArea: 8, // Surface en m² avant retour automatique
+        returnToClean: true  // Retourne au nettoyage après la zone
     }
-};
+}
+```
+
+**Pour l'Aspirateur étage** :
+```javascript
+etage: {
+    mapName: 'Carte2',  // Nom de la carte à charger
+    cleaning: {
+        repeat: 1,        // Nombre de répétitions (1-3)
+        mode: 'turbo',    // Mode: 'silent', 'standard', 'turbo', 'max'
+        waterLevel: 3,    // Niveau d'eau: 0 (sec), 1 (faible), 2 (moyen), 3 (élevé)
+        returnAfterArea: null, // Pas de retour automatique
+        returnToClean: false  // Ne retourne pas au nettoyage
+    }
+}
 ```
 
 **Options disponibles** :
 - **Modes de nettoyage** : `silent`, `standard`, `turbo`, `max`
 - **Niveaux d'eau** : `0` (sec), `1` (faible), `2` (moyen), `3` (élevé)
 - **Noms de carte** : Dépend des cartes enregistrées dans votre application Mi Home
+- **returnAfterArea** : Surface en m² avant retour automatique (null pour désactiver)
+- **returnToClean** : `true` pour retourner au nettoyage, `false` pour ne pas retourner
 ```javascript
 const LAT = 48.9412;  // Latitude d'Aulnay-sous-Bois
 const LON = 2.4833;   // Longitude d'Aulnay-sous-Bois
@@ -266,16 +299,31 @@ Modifiez les variables CSS dans `styles.css` :
 ### Accéder à un site
 - Cliquez simplement sur la carte du site pour l'ouvrir dans un nouvel onglet
 
-### Lancer le nettoyage du robot aspirateur
+### Lancer le nettoyage des robots aspirateurs
+
+**Pour l'Aspirateur RdC** :
 1. Assurez-vous que votre robot est connecté au même réseau WiFi
 2. Configurez l'adresse IP et le token dans `app.js`
-3. Cliquez sur le bouton **"Lancer Aspirateur"** (icône 🤖)
+3. Cliquez sur le bouton **"Lancer"** dans la carte **"Aspirateur RdC"** (icône 🧹)
 4. Le robot va :
    - Charger la carte "Carte1"
    - Nettoyer 2 fois la surface en mode turbo
    - Utiliser le niveau d'eau 3
    - Retourner au nettoyage après avoir nettoyé 8m²
 5. Une notification s'affichera pour confirmer le démarrage
+
+**Pour l'Aspirateur étage** :
+1. Assurez-vous que votre robot est connecté au même réseau WiFi
+2. Configurez l'adresse IP et le token dans `app.js`
+3. Cliquez sur le bouton **"Lancer"** dans la carte **"Aspirateur étage"** (icône 🧹)
+4. Le robot va :
+   - Charger la carte "Carte2"
+   - Nettoyer 1 fois la surface en mode turbo
+   - Utiliser le niveau d'eau 3
+   - **Ne pas** retourner au nettoyage après avoir nettoyé
+5. Une notification s'affichera pour confirmer le démarrage
+
+**Note** : Les deux cartes d'aspirateur apparaissent après le plugin météo et sont plus grandes que les autres icônes d'application.
 
 ### Vérifier l'état de l'API
 - Regardez le **voyant** en haut à gauche de l'application
