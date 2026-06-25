@@ -639,13 +639,13 @@ function updateWeatherSummary(data, forecastData = null) {
         
         if (avgFutureTemp > currentTemp + 1) {
             trendElement.textContent = '↑ Hausse';
-            trendElement.style.color = '#4caf50';
+            trendElement.style.color = '#81c784'; // Vert atténué
         } else if (avgFutureTemp < currentTemp - 1) {
             trendElement.textContent = '↓ Baisse';
-            trendElement.style.color = '#f44336';
+            trendElement.style.color = '#e57373'; // Rouge atténué
         } else {
             trendElement.textContent = '→ Stable';
-            trendElement.style.color = '#ff9800';
+            trendElement.style.color = '#ffb74d'; // Orange atténué
         }
     } else {
         trendElement.textContent = '--';
