@@ -27,6 +27,39 @@
         </div>
     </header>
 
+    <!-- Modal pour les détails du RER B -->
+    <div id="rerBModal" class="modal rer-b-modal">
+        <div class="modal-content rer-b-modal-content">
+            <span class="close rer-b-close">&times;</span>
+            <h2><i class="fas fa-subway"></i> Détails RER B</h2>
+            <div class="rer-b-details">
+                <div class="rer-b-status-large" id="rerBStatusLarge">
+                    <i class="fas fa-spinner fa-spin" id="rerBIconLarge"></i>
+                    <span id="rerBStatusText">Chargement...</span>
+                </div>
+                <div class="rer-b-info-grid">
+                    <div class="rer-b-info-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="rer-b-info-label">Dernière mise à jour:</span>
+                        <span class="rer-b-info-value" id="rerBLastUpdate">--</span>
+                    </div>
+                    <div class="rer-b-info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="rer-b-info-label">Message:</span>
+                        <span class="rer-b-info-value" id="rerBMessage">Aucun message disponible</span>
+                    </div>
+                    <div class="rer-b-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="rer-b-info-label">Prochaine mise à jour:</span>
+                        <span class="rer-b-info-value" id="rerBNextUpdate">--</span>
+                    </div>
+                </div>
+                <div class="rer-b-tip">
+                    <p><i class="fas fa-lightbulb"></i> <strong>Conseil:</strong> Les données sont mises à jour toutes les 2 minutes. Pour des informations en temps réel, consultez l'application officielle RATP.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="weather-container" id="weatherContainer">
         <div class="weather-header">

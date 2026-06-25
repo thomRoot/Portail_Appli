@@ -25,12 +25,15 @@ let db;
 let weatherChart;
 let currentWeatherData = null;
 let rerBStatus = 'inconnu';
+let rerBLastUpdate = null;
+let rerBMessage = 'Aucun message disponible';
 
 // Initialisation de l'application
 window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
     setupRobotEventListeners();
+    setupRerBEventListeners();
     loadSites();
     
     // Vérifier la clé API au démarrage
@@ -193,8 +196,13 @@ function simulateRerBStatus() {
 }
 
 // Mise à jour de l'affichage de l'état du RER B
-function updateRerBStatus(status) {
+function updateRerBStatus(status, message = null) {
     rerBStatus = status;
+    rerBLastUpdate = new Date();
+    if (message) {
+        rerBMessage = message;
+    }
+    
     const statusElement = document.getElementById('rerBStatus');
     const iconElement = document.getElementById('rerBIcon');
     const textElement = document.getElementById('rerBText');
@@ -208,22 +216,110 @@ function updateRerBStatus(status) {
             statusElement.classList.add('normal');
             iconElement.className = 'fas fa-subway';
             textElement.textContent = 'RER B: Normal';
+            rerBMessage = 'Circulation normale sur la ligne RER B.';
             break;
         case 'perturbé':
             statusElement.classList.add('perturbed');
             iconElement.className = 'fas fa-exclamation-triangle';
             textElement.textContent = 'RER B: Perturbé';
+            rerBMessage = message || 'Perturbations signalées sur la ligne RER B. Vérifiez les annonces.';
             break;
         case 'annulé':
             statusElement.classList.add('cancelled');
             iconElement.className = 'fas fa-times-circle';
             textElement.textContent = 'RER B: Annulé';
+            rerBMessage = message || 'Service annulé sur la ligne RER B.';
             break;
         default:
             statusElement.classList.add('unknown');
             iconElement.className = 'fas fa-question-circle';
             textElement.textContent = 'RER B: Inconnu';
+            rerBMessage = 'Impossible de récupérer le statut du RER B.';
     }
+    
+    // Mettre à jour la modal si elle est ouverte
+    updateRerBModal();
+}
+
+// Mise à jour de la modal RER B
+function updateRerBModal() {
+    const statusLargeElement = document.getElementById('rerBStatusLarge');
+    const iconLargeElement = document.getElementById('rerBIconLarge');
+    const statusTextElement = document.getElementById('rerBStatusText');
+    const lastUpdateElement = document.getElementById('rerBLastUpdate');
+    const messageElement = document.getElementById('rerBMessage');
+    const nextUpdateElement = document.getElementById('rerBNextUpdate');
+    
+    // Retirer les classes précédentes
+    statusLargeElement.classList.remove('normal', 'perturbed', 'cancelled', 'unknown');
+    
+    // Mettre à jour en fonction du statut
+    switch(rerBStatus) {
+        case 'normal':
+            statusLargeElement.classList.add('normal');
+            iconLargeElement.className = 'fas fa-subway';
+            statusTextElement.textContent = 'Normal';
+            break;
+        case 'perturbé':
+            statusLargeElement.classList.add('perturbed');
+            iconLargeElement.className = 'fas fa-exclamation-triangle';
+            statusTextElement.textContent = 'Perturbé';
+            break;
+        case 'annulé':
+            statusLargeElement.classList.add('cancelled');
+            iconLargeElement.className = 'fas fa-times-circle';
+            statusTextElement.textContent = 'Annulé';
+            break;
+        default:
+            statusLargeElement.classList.add('unknown');
+            iconLargeElement.className = 'fas fa-question-circle';
+            statusTextElement.textContent = 'Inconnu';
+    }
+    
+    // Mettre à jour les informations
+    if (rerBLastUpdate) {
+        lastUpdateElement.textContent = rerBLastUpdate.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+    
+    messageElement.textContent = rerBMessage;
+    
+    // Calculer la prochaine mise à jour
+    if (rerBLastUpdate) {
+        const nextUpdate = new Date(rerBLastUpdate.getTime() + 2 * 60 * 1000);
+        nextUpdateElement.textContent = nextUpdate.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+}
+
+// Configuration des écouteurs pour le RER B
+function setupRerBEventListeners() {
+    const rerBStatusElement = document.getElementById('rerBStatus');
+    const rerBModal = document.getElementById('rerBModal');
+    const rerBCloseBtn = document.querySelector('.rer-b-close');
+    
+    // Ouvrir la modal au clic sur le statut RER B
+    rerBStatusElement.addEventListener('click', () => {
+        updateRerBModal();
+        rerBModal.style.display = 'block';
+    });
+    
+    // Fermer la modal au clic sur la croix
+    rerBCloseBtn.addEventListener('click', () => {
+        rerBModal.style.display = 'none';
+    });
+    
+    // Fermer la modal en cliquant en dehors
+    rerBModal.addEventListener('click', (e) => {
+        if (e.target === rerBModal) {
+            rerBModal.style.display = 'none';
+        }
+    });
 }
 
 // Chargement des sites depuis la base de données

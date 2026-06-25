@@ -15,7 +15,7 @@
     --error-color: #f44336;    /* Rouge */
     --warning-color: #ff9800;
     --background-color: #121212; /* Noir profond */
-    --card-color: #1e1e1e; /* Noir légèrement plus clair */
+    --card-color: #1a1a2e; /* Noir légèrement bleuté pour un dégradé naturel */
     --text-color: #e0e0e0; /* Texte clair */
     --text-light: #b0b0b0; /* Texte léger */
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -25,7 +25,7 @@
 
 /* Corps de la page */
 body {
-    background-color: var(--background-color);
+    background: linear-gradient(180deg, var(--background-color) 0%, #0a0a1a 50%, var(--primary-dark) 100%);
     color: var(--text-color);
     min-height: 100vh;
     padding: 20px;
@@ -68,6 +68,12 @@ header {
     border-radius: 8px;
     font-weight: 500;
     transition: var(--transition);
+    cursor: pointer;
+}
+
+.rer-b-status:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
 }
 
 .rer-b-status.normal {
@@ -96,6 +102,130 @@ header {
 
 .rer-b-status span {
     font-size: 0.95rem;
+}
+
+/* Modal RER B */
+.rer-b-modal {
+    z-index: 1001;
+}
+
+.rer-b-modal-content {
+    max-width: 500px;
+    background: linear-gradient(135deg, var(--card-color), var(--primary-dark));
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.3);
+}
+
+.rer-b-modal-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rer-b-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rer-b-status-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.rer-b-status-large.normal {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: var(--success-color);
+}
+
+.rer-b-status-large.perturbed {
+    background-color: rgba(255, 152, 0, 0.15);
+    color: var(--warning-color);
+}
+
+.rer-b-status-large.cancelled {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: var(--error-color);
+}
+
+.rer-b-status-large.unknown {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+}
+
+.rer-b-status-large i {
+    font-size: 3rem;
+}
+
+.rer-b-status-large span {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.rer-b-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.rer-b-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.rer-b-info-item i {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    width: 20px;
+    text-align: center;
+}
+
+.rer-b-info-label {
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.rer-b-info-value {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.rer-b-tip {
+    padding: 15px;
+    background-color: rgba(30, 136, 229, 0.1);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.rer-b-tip i {
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+/* Fermeture de la modal RER B */
+.rer-b-close {
+    color: var(--text-light);
+    font-size: 28px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rer-b-close:hover {
+    color: var(--error-color);
 }
 
 /* Statut de l'API - Icône seulement à droite */
