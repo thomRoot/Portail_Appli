@@ -188,7 +188,7 @@ function analyzeNavitiaData(data) {
 // Simulation de l'état du RER B (pour la démo)
 function simulateRerBStatus() {
     // Générer un état aléatoire pour la démo
-    const statuses = ['normal', 'normal', 'normal', 'perturbé', 'annulé'];
+    const statuses = ['normal', 'normal', 'normal', 'perturbé', 'interrompu'];
     const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
     
     // Mettre à jour l'affichage
@@ -208,7 +208,7 @@ function updateRerBStatus(status, message = null) {
     const textElement = document.getElementById('rerBText');
     
     // Retirer les classes précédentes
-    statusElement.classList.remove('normal', 'perturbed', 'cancelled', 'unknown');
+    statusElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown');
     
     // Mettre à jour en fonction du statut
     switch(status) {
@@ -224,11 +224,11 @@ function updateRerBStatus(status, message = null) {
             textElement.textContent = 'RER B: Perturbé';
             rerBMessage = message || 'Perturbations signalées sur la ligne RER B. Vérifiez les annonces.';
             break;
-        case 'annulé':
-            statusElement.classList.add('cancelled');
+        case 'interrompu':
+            statusElement.classList.add('interrupted');
             iconElement.className = 'fas fa-times-circle';
-            textElement.textContent = 'RER B: Annulé';
-            rerBMessage = message || 'Service annulé sur la ligne RER B.';
+            textElement.textContent = 'RER B: Interrompu';
+            rerBMessage = message || 'Trafic interrompu sur la ligne RER B.';
             break;
         default:
             statusElement.classList.add('unknown');
@@ -251,7 +251,7 @@ function updateRerBModal() {
     const nextUpdateElement = document.getElementById('rerBNextUpdate');
     
     // Retirer les classes précédentes
-    statusLargeElement.classList.remove('normal', 'perturbed', 'cancelled', 'unknown');
+    statusLargeElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown');
     
     // Mettre à jour en fonction du statut
     switch(rerBStatus) {
@@ -265,10 +265,10 @@ function updateRerBModal() {
             iconLargeElement.className = 'fas fa-exclamation-triangle';
             statusTextElement.textContent = 'Perturbé';
             break;
-        case 'annulé':
-            statusLargeElement.classList.add('cancelled');
+        case 'interrompu':
+            statusLargeElement.classList.add('interrupted');
             iconLargeElement.className = 'fas fa-times-circle';
-            statusTextElement.textContent = 'Annulé';
+            statusTextElement.textContent = 'Interrompu';
             break;
         default:
             statusLargeElement.classList.add('unknown');

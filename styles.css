@@ -92,7 +92,7 @@ header {
     color: var(--warning-color);
 }
 
-.rer-b-status.cancelled {
+.rer-b-status.interrupted {
     background-color: rgba(244, 67, 54, 0.2);
     color: var(--error-color);
 }
@@ -159,7 +159,7 @@ header {
     color: var(--warning-color);
 }
 
-.rer-b-status-large.cancelled {
+.rer-b-status-large.interrupted {
     background-color: rgba(244, 67, 54, 0.15);
     color: var(--error-color);
 }
