@@ -1,27 +1,28 @@
 // Configuration de la base de données
 const DB_NAME = 'PortailAppliDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 // **IMPORTANT : Remplacez par votre propre clé API OpenWeatherMap**
 // Inscrivez-vous gratuitement sur https://openweathermap.org/api
 const WEATHER_API_KEY = 'votre_cle_api_ici';
-const CITY = 'Aulnay-sous-Bois';
-const COUNTRY_CODE = 'FR';
 
-// Coordonnées d'Aulnay-sous-Bois
-const LAT = 48.9412;
-const LON = 2.4833;
+// Coordonnées par défaut (Aulnay-sous-Bois)
+let LAT = 48.9412;
+let LON = 2.4833;
+let CURRENT_LOCATION_NAME = 'Aulnay-sous-Bois';
 
 // Variable pour la base de données et le graphique
 let db;
 let weatherChart;
 let currentWeatherData = null;
+let locationSearchTimeout = null;
 
 // Initialisation de l'application
 window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
     loadSites();
+    loadSavedLocation(); // Charger la localisation sauvegardée
     
     // Vérifier la clé API au démarrage
     checkApiKey();
@@ -178,23 +179,40 @@ function setupEventListeners() {
     const addBtn = document.getElementById('addSiteBtn');
     addBtn.addEventListener('click', openAddSiteModal);
     
-    // Bouton Fermer du modal
-    const closeBtn = document.querySelector('.close');
-    closeBtn.addEventListener('click', closeAddSiteModal);
+    // Bouton Localisation
+    const locationBtn = document.getElementById('locationBtn');
+    locationBtn.addEventListener('click', openLocationModal);
     
-    // Bouton Annuler du formulaire
+    // Bouton Fermer des modals
+    const closeButtons = document.querySelectorAll('.close');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modal = btn.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    
+    // Bouton Annuler du formulaire site
     const cancelBtn = document.getElementById('cancelBtn');
     cancelBtn.addEventListener('click', closeAddSiteModal);
     
-    // Fermer le modal en cliquant en dehors
-    const modal = document.getElementById('addSiteModal');
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeAddSiteModal();
-        }
+    // Bouton Annuler du formulaire localisation
+    const cancelLocationBtn = document.getElementById('cancelLocationBtn');
+    cancelLocationBtn.addEventListener('click', closeLocationModal);
+    
+    // Fermer les modals en cliquant en dehors
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     });
     
-    // Soumission du formulaire
+    // Soumission du formulaire site
     const form = document.getElementById('addSiteForm');
     form.addEventListener('submit', handleFormSubmit);
     
@@ -205,26 +223,70 @@ function setupEventListeners() {
     // Fermer avec la touche Échap
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            closeAddSiteModal();
+            closeAllModals();
         }
     });
     
     // Onglets météo
-    const tabs = document.querySelectorAll('.weather-tab');
-    tabs.forEach(tab => {
+    const weatherTabs = document.querySelectorAll('.weather-tab');
+    weatherTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // Retirer la classe active de tous les onglets
-            tabs.forEach(t => t.classList.remove('active'));
+            weatherTabs.forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.weather-tab-content').forEach(content => {
                 content.classList.remove('active');
             });
             
-            // Ajouter la classe active à l'onglet cliqué
             tab.classList.add('active');
-            
-            // Afficher le contenu correspondant
             const type = tab.getAttribute('data-type');
             document.getElementById(`weather${type.charAt(0).toUpperCase() + type.slice(1)}Content`).classList.add('active');
+        });
+    });
+    
+    // Onglets de localisation
+    const locationTabs = document.querySelectorAll('.location-tab');
+    locationTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            locationTabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.location-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            tab.classList.add('active');
+            const method = tab.getAttribute('data-method');
+            document.getElementById(`${method}LocationContent`).classList.add('active');
+        });
+    });
+    
+    // Recherche de localisation
+    const locationSearch = document.getElementById('locationSearch');
+    locationSearch.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        if (query.length > 2) {
+            clearTimeout(locationSearchTimeout);
+            locationSearchTimeout = setTimeout(() => {
+                searchLocation(query);
+            }, 500);
+        } else {
+            document.getElementById('searchResults').innerHTML = '';
+        }
+    });
+    
+    // Bouton de géolocalisation
+    const getCurrentLocationBtn = document.getElementById('getCurrentLocationBtn');
+    getCurrentLocationBtn.addEventListener('click', getCurrentLocation);
+    
+    // Bouton Enregistrer la localisation
+    const saveLocationBtn = document.getElementById('saveLocationBtn');
+    saveLocationBtn.addEventListener('click', saveLocation);
+    
+    // Exemples GPS
+    const gpsExamples = document.querySelectorAll('.gps-example');
+    gpsExamples.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lat = parseFloat(btn.getAttribute('data-lat'));
+            const lon = parseFloat(btn.getAttribute('data-lon'));
+            document.getElementById('latInput').value = lat;
+            document.getElementById('lonInput').value = lon;
         });
     });
 }
@@ -242,10 +304,272 @@ function openAddSiteModal() {
     document.getElementById('siteName').focus();
 }
 
-// Fermeture du modal
+// Fermeture du modal d'ajout de site
 function closeAddSiteModal() {
     const modal = document.getElementById('addSiteModal');
     modal.style.display = 'none';
+}
+
+// Ouverture du modal de localisation
+function openLocationModal() {
+    const modal = document.getElementById('locationModal');
+    modal.style.display = 'block';
+    
+    // Réinitialiser
+    document.getElementById('locationSearch').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+    document.getElementById('latInput').value = LAT;
+    document.getElementById('lonInput').value = LON;
+    document.getElementById('currentLocationStatus').textContent = '';
+    
+    // Sélectionner le premier onglet
+    document.querySelector('.location-tab.active')?.click();
+}
+
+// Fermeture du modal de localisation
+function closeLocationModal() {
+    const modal = document.getElementById('locationModal');
+    modal.style.display = 'none';
+}
+
+// Fermer tous les modals
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+    });
+}
+
+// Recherche de localisation
+function searchLocation(query) {
+    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
+        showApiStatus('error', 'Clé API non configurée');
+        return;
+    }
+    
+    const searchUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${WEATHER_API_KEY}`;
+    
+    fetch(searchUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            displaySearchResults(data);
+        })
+        .catch(error => {
+            console.error('Erreur de recherche:', error);
+            document.getElementById('searchResults').innerHTML = '<div class="search-result-item"><small>Erreur de recherche</small></div>';
+        });
+}
+
+// Affichage des résultats de recherche
+function displaySearchResults(results) {
+    const resultsContainer = document.getElementById('searchResults');
+    
+    if (!results || results.length === 0) {
+        resultsContainer.innerHTML = '<div class="search-result-item"><small>Aucun résultat trouvé</small></div>';
+        return;
+    }
+    
+    resultsContainer.innerHTML = '';
+    
+    results.forEach(result => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.innerHTML = `
+            <strong>${result.name}</strong>
+            <small>${result.country} - Lat: ${result.lat.toFixed(4)}, Lon: ${result.lon.toFixed(4)}</small>
+        `;
+        
+        item.addEventListener('click', () => {
+            document.getElementById('latInput').value = result.lat;
+            document.getElementById('lonInput').value = result.lon;
+            CURRENT_LOCATION_NAME = `${result.name}, ${result.country}`;
+            
+            // Basculer vers l'onglet GPS
+            document.querySelector('[data-method="gps"]').click();
+        });
+        
+        resultsContainer.appendChild(item);
+    });
+}
+
+// Géolocalisation actuelle
+function getCurrentLocation() {
+    const statusElement = document.getElementById('currentLocationStatus');
+    statusElement.textContent = 'Recherche en cours...';
+    statusElement.className = '';
+    
+    if (!navigator.geolocation) {
+        statusElement.textContent = 'Géolocalisation non supportée par votre navigateur';
+        statusElement.className = 'error';
+        return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            LAT = position.coords.latitude;
+            LON = position.coords.longitude;
+            CURRENT_LOCATION_NAME = 'Ma position actuelle';
+            
+            document.getElementById('latInput').value = LAT.toFixed(4);
+            document.getElementById('lonInput').value = LON.toFixed(4);
+            
+            statusElement.textContent = 'Position trouvée !';
+            statusElement.className = 'success';
+            
+            // Basculer vers l'onglet GPS
+            document.querySelector('[data-method="gps"]').click();
+        },
+        (error) => {
+            let errorMessage = 'Erreur de géolocalisation';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Permission refusée. Veuillez autoriser la géolocalisation.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Position indisponible.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Délai dépassé. Essayez à nouveau.';
+                    break;
+            }
+            statusElement.textContent = errorMessage;
+            statusElement.className = 'error';
+        }
+    );
+}
+
+// Sauvegarde de la localisation
+function saveLocation() {
+    const method = document.querySelector('.location-tab.active')?.getAttribute('data-method');
+    
+    switch(method) {
+        case 'gps':
+            const lat = parseFloat(document.getElementById('latInput').value);
+            const lon = parseFloat(document.getElementById('lonInput').value);
+            
+            if (isNaN(lat) || isNaN(lon)) {
+                alert('Veuillez entrer des coordonnées GPS valides.');
+                return;
+            }
+            
+            LAT = lat;
+            LON = lon;
+            
+            // Essayer de trouver le nom de la localisation
+            reverseGeocode(lat, lon);
+            break;
+            
+        case 'search':
+            // Si une recherche a été sélectionnée, les coordonnées sont déjà dans les champs GPS
+            const searchLat = parseFloat(document.getElementById('latInput').value);
+            const searchLon = parseFloat(document.getElementById('lonInput').value);
+            
+            if (!isNaN(searchLat) && !isNaN(searchLon)) {
+                LAT = searchLat;
+                LON = searchLon;
+            }
+            break;
+            
+        case 'current':
+            // La position a déjà été récupérée
+            break;
+    }
+    
+    // Sauvegarder dans localStorage
+    saveLocationToStorage();
+    
+    // Mettre à jour l'interface
+    updateLocationDisplay();
+    
+    // Recharger la météo
+    loadWeather();
+    
+    // Fermer le modal
+    closeLocationModal();
+}
+
+// Géocodage inverse pour trouver le nom d'une localisation
+function reverseGeocode(lat, lon) {
+    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
+        CURRENT_LOCATION_NAME = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+        updateLocationDisplay();
+        return;
+    }
+    
+    const reverseUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${WEATHER_API_KEY}`;
+    
+    fetch(reverseUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.length > 0) {
+                CURRENT_LOCATION_NAME = `${data[0].name}, ${data[0].country}`;
+            } else {
+                CURRENT_LOCATION_NAME = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+            }
+            updateLocationDisplay();
+        })
+        .catch(error => {
+            console.error('Erreur de géocodage inverse:', error);
+            CURRENT_LOCATION_NAME = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+            updateLocationDisplay();
+        });
+}
+
+// Mise à jour de l'affichage de la localisation
+function updateLocationDisplay() {
+    const locationText = document.getElementById('currentLocationText');
+    const weatherLocationText = document.getElementById('weatherLocationText');
+    
+    // Tronquer le nom si trop long
+    const displayName = CURRENT_LOCATION_NAME.length > 20 ? 
+        CURRENT_LOCATION_NAME.substring(0, 17) + '...' : 
+        CURRENT_LOCATION_NAME;
+    
+    if (locationText) {
+        locationText.textContent = displayName;
+    }
+    
+    if (weatherLocationText) {
+        weatherLocationText.textContent = `Météo à ${CURRENT_LOCATION_NAME} - Prévisions 48h`;
+    }
+}
+
+// Sauvegarde de la localisation dans localStorage
+function saveLocationToStorage() {
+    try {
+        localStorage.setItem('portailAppli_location', JSON.stringify({
+            lat: LAT,
+            lon: LON,
+            name: CURRENT_LOCATION_NAME
+        }));
+    } catch (e) {
+        console.error('Erreur de sauvegarde de la localisation:', e);
+    }
+}
+
+// Chargement de la localisation sauvegardée
+function loadSavedLocation() {
+    try {
+        const saved = localStorage.getItem('portailAppli_location');
+        if (saved) {
+            const location = JSON.parse(saved);
+            LAT = location.lat || 48.9412;
+            LON = location.lon || 2.4833;
+            CURRENT_LOCATION_NAME = location.name || 'Aulnay-sous-Bois';
+            updateLocationDisplay();
+        }
+    } catch (e) {
+        console.error('Erreur de chargement de la localisation:', e);
+    }
 }
 
 // Aperçu de l'image sélectionnée
