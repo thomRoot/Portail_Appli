@@ -94,11 +94,10 @@ function checkApiKey() {
         });
 }
 
-// Affichage du statut de l'API
+// Affichage du statut de l'API (icône seulement)
 function showApiStatus(status, message) {
     const statusElement = document.getElementById('apiStatus');
     const iconElement = document.getElementById('apiStatusIcon');
-    const textElement = document.getElementById('apiStatusText');
     
     // Retirer les classes précédentes
     statusElement.classList.remove('success', 'error', 'warning');
@@ -106,7 +105,7 @@ function showApiStatus(status, message) {
     // Ajouter la nouvelle classe
     statusElement.classList.add(status);
     
-    // Mettre à jour l'icône et le texte
+    // Mettre à jour l'icône
     switch(status) {
         case 'success':
             iconElement.className = 'fas fa-check-circle';
@@ -115,13 +114,11 @@ function showApiStatus(status, message) {
             iconElement.className = 'fas fa-exclamation-circle';
             break;
         case 'warning':
-            iconElement.className = 'fas fa-exclamation-triangle';
+            iconElement.className = 'fas fa-spinner fa-spin';
             break;
         default:
             iconElement.className = 'fas fa-circle';
     }
-    
-    textElement.textContent = message;
 }
 
 // Chargement des sites depuis la base de données

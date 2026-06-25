@@ -7,17 +7,17 @@
 }
 
 :root {
-    --primary-color: #4a6fa5;
-    --primary-dark: #166088;
-    --secondary-color: #4fc3f7;
+    --primary-color: #0055a4;  /* Bleu Alpine */
+    --primary-dark: #003d7a;  /* Bleu Alpine foncé */
+    --secondary-color: #0077c8; /* Bleu Alpine secondaire */
     --accent-color: #ff6b6b;
-    --success-color: #4caf50;
-    --error-color: #f44336;
+    --success-color: #00aa44;  /* Vert Alpine */
+    --error-color: #d32f2f;    /* Rouge Alpine */
     --warning-color: #ff9800;
-    --background-color: #f5f7fa;
+    --background-color: #f8f9fa;
     --card-color: #ffffff;
-    --text-color: #333333;
-    --text-light: #666666;
+    --text-color: #1a1a1a;
+    --text-light: #4a4a4a;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --border-radius: 12px;
     --transition: all 0.3s ease;
@@ -34,12 +34,13 @@ body {
 /* En-tête */
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 30px;
     padding: 0 10px;
     flex-wrap: wrap;
     gap: 15px;
+    position: relative;
 }
 
 .header-left {
@@ -47,6 +48,8 @@ header {
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
+    justify-content: center;
+    flex: 1;
 }
 
 .header-right {
@@ -88,25 +91,31 @@ header {
 }
 
 header h1 {
-    font-size: 2rem;
-    color: var(--primary-dark);
-    font-weight: 600;
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    text-align: center;
+    margin: 0 auto;
 }
 
-/* Statut de l'API */
+/* Statut de l'API - Icône seulement à droite */
 .api-status {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background-color: var(--card-color);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    font-size: 0.9rem;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition);
 }
 
 .api-status i {
-    font-size: 0.8rem;
+    font-size: 1.2rem;
 }
 
 .api-status.success i {
