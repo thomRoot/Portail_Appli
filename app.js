@@ -601,7 +601,7 @@ function loadWeather() {
             showApiStatus('success', 'API active');
             currentWeatherData = { current: currentData, forecast: forecastData };
             updateWeatherDisplay(currentData, forecastData);
-            updateWeatherSummary(currentData);
+            updateWeatherSummary(currentData, forecastData);
             updateWeatherDetails(forecastData);
             createWeatherChart(forecastData);
         } else {
@@ -621,9 +621,9 @@ function updateWeatherDisplay(currentData, forecastData) {
 }
 
 // Mise à jour du résumé météo
-function updateWeatherSummary(data) {
+function updateWeatherSummary(data, forecastData = null) {
     const tempElement = document.getElementById('currentTemp');
-    const humidityElement = document.getElementById('currentHumidity');
+    const trendElement = document.getElementById('tempTrend');
     const windElement = document.getElementById('currentWind');
     const rainElement = document.getElementById('currentRain');
     
@@ -631,8 +631,26 @@ function updateWeatherSummary(data) {
     const temperature = Math.round(data.main.temp);
     tempElement.textContent = `${temperature}°C`;
     
-    // Humidité
-    humidityElement.textContent = `${data.main.humidity}%`;
+    // Tendance des températures
+    if (forecastData && forecastData.list && forecastData.list.length > 0) {
+        const currentTemp = data.main.temp;
+        const futureTemps = forecastData.list.map(f => f.main.temp);
+        const avgFutureTemp = futureTemps.reduce((sum, temp) => sum + temp, 0) / futureTemps.length;
+        
+        if (avgFutureTemp > currentTemp + 1) {
+            trendElement.textContent = '↑ Hausse';
+            trendElement.style.color = '#4caf50';
+        } else if (avgFutureTemp < currentTemp - 1) {
+            trendElement.textContent = '↓ Baisse';
+            trendElement.style.color = '#f44336';
+        } else {
+            trendElement.textContent = '→ Stable';
+            trendElement.style.color = '#ff9800';
+        }
+    } else {
+        trendElement.textContent = '--';
+        trendElement.style.color = '';
+    }
     
     // Vent (convertir de m/s à km/h)
     const windSpeed = Math.round(data.wind.speed * 3.6);
@@ -806,7 +824,8 @@ function createWeatherChart(forecastData) {
 // Affichage d'erreur pour la météo
 function updateWeatherError() {
     document.getElementById('currentTemp').textContent = '--°C';
-    document.getElementById('currentHumidity').textContent = '--%';
+    document.getElementById('tempTrend').textContent = '--';
+    document.getElementById('tempTrend').style.color = '';
     document.getElementById('currentWind').textContent = '-- km/h';
     document.getElementById('currentRain').textContent = '-- mm';
     
