@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Appli - ThomRoot</title>
+    <title>Maison</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,14 +11,9 @@
 <body>
     <header>
         <div class="header-left">
-            <h1>Portail Appli</h1>
+            <h1>Maison</h1>
         </div>
         <div class="header-right">
-            <button id="locationBtn" class="location-btn">
-                <i class="fas fa-map-marker-alt"></i>
-                <span id="currentLocationText">Aulnay-sous-Bois</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
             <button id="addSiteBtn" class="add-btn">
                 <i class="fas fa-plus"></i> Ajouter un site
             </button>
@@ -32,7 +27,7 @@
     <div class="weather-container" id="weatherContainer">
         <div class="weather-header">
             <i class="fas fa-chart-line"></i>
-            <span id="weatherLocationText">Météo à Aulnay-sous-Bois - Prévisions 48h</span>
+            <span id="weatherLocationText">Météo à Noneville - Prévisions 48h</span>
             <div class="weather-controls">
                 <button class="weather-tab active" data-type="chart">Graphique</button>
                 <button class="weather-tab" data-type="details">Détails 48h</button>
@@ -83,64 +78,7 @@
         <!-- Les icônes des sites seront ajoutées dynamiquement ici -->
     </main>
 
-    <!-- Popup pour changer de localisation -->
-    <div id="locationModal" class="modal">
-        <div class="modal-content location-modal">
-            <span class="close">&times;</span>
-            <h2>Changer de localisation</h2>
-            
-            <div class="location-tabs">
-                <button class="location-tab active" data-method="search">Rechercher un lieu</button>
-                <button class="location-tab" data-method="gps">Coordonnées GPS</button>
-                <button class="location-tab" data-method="current">Localisation actuelle</button>
-            </div>
-            
-            <div class="location-content">
-                <!-- Onglet Rechercher un lieu -->
-                <div class="location-tab-content active" id="searchLocationContent">
-                    <div class="form-group">
-                        <label for="locationSearch">Rechercher une ville ou un quartier :</label>
-                        <input type="text" id="locationSearch" placeholder="Ex: Paris, Aulnay-sous-Bois, Noneville...">
-                        <div class="search-results" id="searchResults"></div>
-                    </div>
-                </div>
-                
-                <!-- Onglet Coordonnées GPS -->
-                <div class="location-tab-content" id="gpsLocationContent">
-                    <div class="form-group">
-                        <label for="latInput">Latitude :</label>
-                        <input type="number" id="latInput" step="0.0001" placeholder="Ex: 48.9412" value="48.9412">
-                    </div>
-                    <div class="form-group">
-                        <label for="lonInput">Longitude :</label>
-                        <input type="number" id="lonInput" step="0.0001" placeholder="Ex: 2.4833" value="2.4833">
-                    </div>
-                    <div class="gps-examples">
-                        <p>Exemples :</p>
-                        <button class="gps-example" data-lat="48.8566" data-lon="2.3522">Paris</button>
-                        <button class="gps-example" data-lat="48.9412" data-lon="2.4833">Aulnay-sous-Bois</button>
-                        <button class="gps-example" data-lat="43.6119" data-lon="3.8772">Montpellier</button>
-                    </div>
-                </div>
-                
-                <!-- Onglet Localisation actuelle -->
-                <div class="location-tab-content" id="currentLocationContent">
-                    <div class="current-location-info">
-                        <p>Utiliser votre position GPS actuelle pour obtenir la météo locale.</p>
-                        <button id="getCurrentLocationBtn" class="get-location-btn">
-                            <i class="fas fa-location-arrow"></i> Obtenir ma position
-                        </button>
-                        <div id="currentLocationStatus"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="button" class="cancel-btn" id="cancelLocationBtn">Annuler</button>
-                <button type="button" class="submit-btn" id="saveLocationBtn">Enregistrer</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Popup pour ajouter un site -->
     <div id="addSiteModal" class="modal">
