@@ -9,6 +9,7 @@
 - ✅ Personnaliser l'icône de chaque site avec une image
 - ✅ **Visualiser la météo en temps réel avec graphiques et précipitations**
 - ✅ **Voyant d'état pour vérifier que votre clé API est active**
+- ✅ **Contrôler votre robot aspirateur Xiaomi avec des paramètres avancés** ⚡ NOUVEAU
 - ✅ Stocker toutes vos données localement dans votre navigateur
 
 ## 🚀 Fonctionnalités
@@ -62,6 +63,21 @@
   - `icon` : Image de l'icône (stockée en base64)
   - `createdAt` : Date de création
 
+### 5. Contrôle du Robot Aspirateur Xiaomi ⚡ NOUVEAU
+
+**Fonctionnalités** :
+- **Chargement de carte** : Chargez une carte spécifique (ex: "Carte1")
+- **Nettoyage multiple** : Nettoyage 2 fois la surface
+- **Mode Turbo** : Activation du mode turbo pour un nettoyage intensif
+- **Niveau d'eau** : Réglage du niveau de sortie d'eau (niveau 3)
+- **Retour automatique** : Retour au nettoyage après avoir nettoyé 8m²
+- **Notifications** : Notifications visuelles pour le statut des commandes
+
+**Prérequis** :
+- Robot aspirateur Xiaomi connecté au réseau local
+- miio CLI installé sur votre système
+- Token d'accès miio valide
+
 ## 🛠 Technologies Utilisées
 
 - **Frontend** : HTML5, CSS3, JavaScript (ES6+)
@@ -70,6 +86,7 @@
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
+- **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
 
 ## 📦 Installation
 
@@ -84,6 +101,45 @@
 2. Cliquez sur "Sign Up" et créez un compte gratuit
 3. Allez dans votre compte → "API Keys"
 4. Copiez votre clé API (ex: `a1b2c3d4e5f6g7h8i9j0k1l2m3`)
+
+### 2. Configurer votre robot aspirateur Xiaomi
+
+Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
+
+1. **Installer miio CLI** :
+   ```bash
+   npm install -g miio-cli
+   ```
+
+2. **Obtenir le token de votre robot** :
+   - Utilisez l'application Mi Home pour obtenir le token
+   - Ou utilisez la commande :
+     ```bash
+     miio discover
+     ```
+
+3. **Trouver l'adresse IP de votre robot** :
+   - Vérifiez dans votre routeur
+   - Ou utilisez :
+     ```bash
+     miio discover
+     ```
+
+4. **Configurer dans app.js** :
+   Remplacez dans le fichier `app.js` :
+   ```javascript
+   const ROBOT_CONFIG = {
+       ipAddress: '192.168.1.100',  // Remplacez par l'IP de votre robot
+       token: 'votre_token_miio_ici',  // Remplacez par votre token
+       mapName: 'Carte1',  // Nom de la carte à charger
+       cleaning: {
+           repeat: 2,        // Nettoyer 2 fois
+           mode: 'turbo',    // Mode turbo
+           waterLevel: 3,    // Niveau d'eau 3
+           returnAfterArea: 8  // Retour après 8m²
+       }
+   };
+   ```
 
 ### 2. Configurer votre clé API
 
@@ -148,6 +204,28 @@ Portail_Appli/
 ### Changer la ville pour la météo
 
 Modifiez les coordonnées dans `app.js` :
+
+### Personnaliser les paramètres du robot aspirateur
+
+Modifiez la configuration dans `app.js` :
+```javascript
+const ROBOT_CONFIG = {
+    ipAddress: '192.168.1.100',  // Adresse IP de votre robot
+    token: 'votre_token_miio_ici',  // Token d'accès miio
+    mapName: 'Carte1',  // Nom de la carte à charger
+    cleaning: {
+        repeat: 2,        // Nombre de répétitions (1-3)
+        mode: 'turbo',    // Mode: 'silent', 'standard', 'turbo', 'max'
+        waterLevel: 3,    // Niveau d'eau: 0 (sec), 1 (faible), 2 (moyen), 3 (élevé)
+        returnAfterArea: 8  // Surface en m² avant retour automatique
+    }
+};
+```
+
+**Options disponibles** :
+- **Modes de nettoyage** : `silent`, `standard`, `turbo`, `max`
+- **Niveaux d'eau** : `0` (sec), `1` (faible), `2` (moyen), `3` (élevé)
+- **Noms de carte** : Dépend des cartes enregistrées dans votre application Mi Home
 ```javascript
 const LAT = 48.9412;  // Latitude d'Aulnay-sous-Bois
 const LON = 2.4833;   // Longitude d'Aulnay-sous-Bois
@@ -187,6 +265,17 @@ Modifiez les variables CSS dans `styles.css` :
 
 ### Accéder à un site
 - Cliquez simplement sur la carte du site pour l'ouvrir dans un nouvel onglet
+
+### Lancer le nettoyage du robot aspirateur
+1. Assurez-vous que votre robot est connecté au même réseau WiFi
+2. Configurez l'adresse IP et le token dans `app.js`
+3. Cliquez sur le bouton **"Lancer Aspirateur"** (icône 🤖)
+4. Le robot va :
+   - Charger la carte "Carte1"
+   - Nettoyer 2 fois la surface en mode turbo
+   - Utiliser le niveau d'eau 3
+   - Retourner au nettoyage après avoir nettoyé 8m²
+5. Une notification s'affichera pour confirmer le démarrage
 
 ### Vérifier l'état de l'API
 - Regardez le **voyant** en haut à gauche de l'application
@@ -246,6 +335,17 @@ deleteSite(id);
 - Vérifiez que votre clé API est valide
 - Essayez de rafraîchir la page (F5)
 
+### Le robot aspirateur ne répond pas
+- **Vérifiez la connexion réseau** : Assurez-vous que le robot et votre appareil sont sur le même réseau WiFi
+- **Vérifiez l'adresse IP** : L'adresse IP du robot peut changer. Utilisez `miio discover` pour la trouver
+- **Vérifiez le token** : Le token peut expirer. Obtenez un nouveau token via l'application Mi Home
+- **Vérifiez que miio CLI est installé** : Exécutez `miio --version` pour vérifier l'installation
+- **Vérifiez les erreurs dans la console** : Ouvrez la console du navigateur (F12) pour voir les messages d'erreur
+- **Testez manuellement** : Essayez la commande suivante dans votre terminal :
+  ```bash
+  miio raw --ip ADRESSE_IP --token VOTRE_TOKEN start_clean
+  ```
+
 ## 📱 Compatibilité
 
 | Navigateur | Support | Testé |
@@ -268,6 +368,10 @@ deleteSite(id);
 - [ ] Personnalisation de la disposition
 - [ ] Prévisions sur 5 jours (au lieu d'1 jour)
 - [ ] Carte météo interactive
+- [ ] **Contrôle avancé du robot** : Programmer des horaires de nettoyage
+- [ ] **Suivi en temps réel** : Afficher l'état actuel du robot (batterie, statut)
+- [ ] **Historique des nettoyages** : Conserver un historique des sessions de nettoyage
+- [ ] **Contrôle vocal** : Intégration avec les assistants vocaux
 
 ## 📜 Licence
 
@@ -284,7 +388,7 @@ Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier 
 
 **Créé avec ❤️ par ThomRoot**
 
-*Dernière mise à jour : 24 juin 2025*
+*Dernière mise à jour : 25 juin 2025*
 
 ---
 

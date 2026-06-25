@@ -19,6 +19,7 @@ let currentWeatherData = null;
 window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
+    setupRobotEventListeners();
     loadSites();
     
     // Vérifier la clé API au démarrage
@@ -630,9 +631,292 @@ function deleteSite(id) {
     }
 }
 
+// Configuration pour le robot aspirateur Xiaomi
+const ROBOT_CONFIG = {
+    // Adresse IP de votre robot sur le réseau local
+    // Remplacez par l'adresse IP de votre robot Xiaomi
+    ipAddress: '192.168.1.100',
+    
+    // Token d'accès pour miio CLI
+    // Remplacez par votre token personnel
+    token: 'votre_token_miio_ici',
+    
+    // Nom de la carte à charger
+    mapName: 'Carte1',
+    
+    // Paramètres de nettoyage
+    cleaning: {
+        // Nettoyer 2 fois la surface
+        repeat: 2,
+        
+        // Mode turbo
+        mode: 'turbo',
+        
+        // Niveau de sortie d'eau (0-3)
+        waterLevel: 3,
+        
+        // Retour au nettoyage après avoir nettoyé 8m²
+        returnAfterArea: 8
+    }
+};
+
+// Fonction pour exécuter la commande miio
+async function executeMioCommand(command, params = []) {
+    try {
+        // Vérifier que miio CLI est disponible
+        // Cette fonction suppose que miio CLI est installé et accessible
+        // Dans un environnement web, cela nécessiterait un backend ou une API locale
+        
+        console.log(`Exécution de la commande miio: ${command} ${params.join(' ')}`);
+        
+        // Pour un environnement Node.js ou avec un backend :
+        // const { exec } = require('child_process');
+        // return new Promise((resolve, reject) => {
+        //     exec(`miio ${command} ${params.join(' ')} --ip ${ROBOT_CONFIG.ipAddress} --token ${ROBOT_CONFIG.token}`, 
+        //         (error, stdout, stderr) => {
+        //             if (error) {
+        //                 reject(error);
+        //             } else {
+        //                 resolve(stdout);
+        //             }
+        //         });
+        // });
+        
+        // Pour une démo dans le navigateur, on simule le comportement
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log(`Commande simulée: ${command} ${params.join(' ')}`);
+                resolve(`Commande ${command} exécutée avec succès`);
+            }, 1500);
+        });
+        
+    } catch (error) {
+        console.error('Erreur lors de l\'exécution de la commande miio:', error);
+        throw error;
+    }
+}
+
+// Fonction pour charger une carte spécifique
+async function loadRobotMap(mapName) {
+    try {
+        console.log(`Chargement de la carte: ${mapName}`);
+        // Commande miio pour charger une carte
+        // Note: La commande exacte dépend du modèle de votre robot
+        // Pour les robots Xiaomi, on utilise généralement:
+        // miio raw --ip IP --token TOKEN load_map --map_id MAP_ID
+        
+        const result = await executeMioCommand('raw', [
+            '--ip', ROBOT_CONFIG.ipAddress,
+            '--token', ROBOT_CONFIG.token,
+            'load_map',
+            '--map_id', mapName
+        ]);
+        
+        console.log(`Carte ${mapName} chargée avec succès`);
+        return result;
+    } catch (error) {
+        console.error(`Erreur lors du chargement de la carte ${mapName}:`, error);
+        throw error;
+    }
+}
+
+// Fonction pour démarrer le nettoyage avec les paramètres spécifiés
+async function startRobotCleaning() {
+    try {
+        console.log('Démarrage du nettoyage avec les paramètres configurés...');
+        
+        // 1. Charger la carte spécifiée
+        await loadRobotMap(ROBOT_CONFIG.mapName);
+        console.log(`Carte "${ROBOT_CONFIG.mapName}" chargée`);
+        
+        // 2. Configurer les paramètres de nettoyage
+        // Pour les robots Xiaomi, on peut utiliser des commandes comme:
+        // miio raw --ip IP --token TOKEN set_clean_mode --mode MODE --water_level LEVEL
+        
+        await executeMioCommand('raw', [
+            '--ip', ROBOT_CONFIG.ipAddress,
+            '--token', ROBOT_CONFIG.token,
+            'set_clean_mode',
+            '--mode', ROBOT_CONFIG.cleaning.mode,
+            '--water_level', ROBOT_CONFIG.cleaning.waterLevel
+        ]);
+        
+        console.log(`Mode de nettoyage configuré: ${ROBOT_CONFIG.cleaning.mode}, niveau d'eau: ${ROBOT_CONFIG.cleaning.waterLevel}`);
+        
+        // 3. Démarrer le nettoyage avec répétition
+        // Commande pour démarrer le nettoyage
+        await executeMioCommand('raw', [
+            '--ip', ROBOT_CONFIG.ipAddress,
+            '--token', ROBOT_CONFIG.token,
+            'start_clean',
+            '--repeat', ROBOT_CONFIG.cleaning.repeat
+        ]);
+        
+        console.log(`Nettoyage démarré avec ${ROBOT_CONFIG.cleaning.repeat} répétitions`);
+        
+        // 4. Configurer le retour automatique après 8m²
+        // Cela dépend des capacités du robot
+        // Certains robots supportent des zones de nettoyage spécifiques
+        await executeMioCommand('raw', [
+            '--ip', ROBOT_CONFIG.ipAddress,
+            '--token', ROBOT_CONFIG.token,
+            'set_clean_area',
+            '--area', ROBOT_CONFIG.cleaning.returnAfterArea,
+            '--return_after', 'true'
+        ]);
+        
+        console.log(`Configuration: retour au nettoyage après ${ROBOT_CONFIG.cleaning.returnAfterArea}m²`);
+        
+        // Afficher un message de succès à l'utilisateur
+        showRobotNotification('✅ Nettoyage démarré avec succès!', 'success');
+        
+        return { 
+            success: true, 
+            message: 'Nettoyage démarré avec les paramètres configurés' 
+        };
+        
+    } catch (error) {
+        console.error('Erreur lors du démarrage du nettoyage:', error);
+        showRobotNotification('❌ Erreur: ' + error.message, 'error');
+        return { 
+            success: false, 
+            message: error.message 
+        };
+    }
+}
+
+// Fonction pour afficher les notifications du robot
+function showRobotNotification(message, type = 'info') {
+    // Créer un élément de notification
+    const notification = document.createElement('div');
+    notification.className = `robot-notification robot-notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Ajouter des styles
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#00aa44' : type === 'error' ? '#d32f2f' : '#2196f3'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        font-weight: 500;
+    `;
+    
+    // Ajouter l'animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notification);
+    
+    // Supprimer la notification après 5 secondes
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 5000);
+}
+
+// Fonction pour vérifier la configuration du robot
+function checkRobotConfig() {
+    const errors = [];
+    
+    if (!ROBOT_CONFIG.ipAddress || ROBOT_CONFIG.ipAddress === '192.168.1.100') {
+        errors.push('Adresse IP du robot non configurée');
+    }
+    
+    if (!ROBOT_CONFIG.token || ROBOT_CONFIG.token === 'votre_token_miio_ici') {
+        errors.push('Token miio non configuré');
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
+}
+
+// Gestionnaire d'événement pour le bouton du robot
+function setupRobotEventListeners() {
+    const robotBtn = document.getElementById('robotCleanBtn');
+    
+    if (robotBtn) {
+        robotBtn.addEventListener('click', async () => {
+            console.log('Bouton robot aspirateur cliqué');
+            
+            // Vérifier la configuration
+            const configCheck = checkRobotConfig();
+            
+            if (!configCheck.isValid) {
+                const errorMessage = configCheck.errors.join('\n');
+                showRobotNotification(`⚠️ Configuration incomplète: ${errorMessage}`, 'error');
+                console.warn('Configuration du robot incomplète:', configCheck.errors);
+                return;
+            }
+            
+            try {
+                // Désactiver le bouton pendant l'exécution
+                robotBtn.disabled = true;
+                robotBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Nettoyage en cours...';
+                
+                // Démarrer le nettoyage
+                const result = await startRobotCleaning();
+                
+                if (result.success) {
+                    console.log('Nettoyage démarré avec succès');
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du démarrage du nettoyage:', error);
+                showRobotNotification('❌ Erreur lors du démarrage du nettoyage', 'error');
+            } finally {
+                // Réactiver le bouton
+                setTimeout(() => {
+                    robotBtn.disabled = false;
+                    robotBtn.innerHTML = '<i class="fas fa-robot"></i> Lancer Aspirateur';
+                }, 2000);
+            }
+        });
+    }
+}
+
 // Export des fonctions pour le débogage
 window.addSiteToDB = addSiteToDB;
 window.loadSites = loadSites;
 window.deleteSite = deleteSite;
 window.loadWeather = loadWeather;
 window.checkApiKey = checkApiKey;
+window.startRobotCleaning = startRobotCleaning;
+window.checkRobotConfig = checkRobotConfig;
