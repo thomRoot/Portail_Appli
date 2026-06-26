@@ -76,6 +76,31 @@ Aucune clé API nécessaire ! Le code utilise directement l'API publique :
 const IDFM_API_URL = 'https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=etat-du-trafic-par-ligne&q=RER+B&rows=1';
 ```
 
+### 5. **Horaires et itinéraires RER B** ⚡ NOUVEAU
+
+**Fonctionnalités** :
+- **Bouton "Prochain RER B"** : Accès rapide aux horaires et itinéraires
+- **Affichage des 5 prochains passages** à la station **Aulnay-sous-Bois** (votre adresse : 6 rue d'Ebreuil)
+- **Calcul d'itinéraire** : Aulnay-sous-Bois → **SNARP CANA (Créteil)**
+- **Affichage des retards** : Les retards sont marqués en orange
+- **Onglets** : Basculer entre "Horaires" et "Itinéraire"
+
+**Technologie** :
+- **Dataset `horaires-theoriques-et-temps-reel`** : Récupère les horaires en temps réel
+- **Dataset `calcul-d-itineraire`** : Calcule l'itinéraire entre deux points
+- **Coordonnées utilisées** :
+  - **Départ** : `48.9456, 2.4955` (Aulnay-sous-Bois)
+  - **Arrivée** : `48.7922, 2.4514` (SNARP CANA, Créteil)
+
+**Exemple d'URLs** :
+```javascript
+// Horaires
+const IDFM_SCHEDULES_URL = (station) => `https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=horaires-theoriques-et-temps-reel&q=RER+B+${station}&rows=5`;
+
+// Itinéraire
+const IDFM_ITINERARY_URL = (fromLat, fromLon, toLat, toLon) => `https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=calcul-d-itineraire&from=${fromLat},${fromLon}&to=${toLat},${toLon}&rows=3`;
+```
+
 ### 5. **Thème Bleu/Noir** ⚡ NOUVEAU
 
 **Caractéristiques** :
