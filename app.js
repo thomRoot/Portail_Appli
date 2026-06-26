@@ -756,11 +756,11 @@ function createWeatherChart(forecastData) {
                 {
                     label: 'Précipitations (mm)',
                     data: rains,
-                    borderColor: 'rgba(30, 136, 229, 0.8)',
-                    backgroundColor: 'rgba(30, 136, 229, 0.2)',
-                    borderWidth: 2,
+                    borderColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: 'rgba(30, 136, 229, 0.3)',
+                    borderWidth: 3,
                     tension: 0.4,
-                    fill: false,
+                    fill: true,
                     yAxisID: 'y1'
                 }
             ]
@@ -807,10 +807,10 @@ function createWeatherChart(forecastData) {
                     title: {
                         display: true,
                         text: 'Précipitations (mm)',
-                        color: 'rgba(30, 136, 229, 0.8)'
+                        color: 'rgba(255, 255, 255, 0.9)'
                     },
                     ticks: {
-                        color: 'rgba(30, 136, 229, 0.8)'
+                        color: 'rgba(255, 255, 255, 0.9)'
                     },
                     grid: {
                         drawOnChartArea: false
