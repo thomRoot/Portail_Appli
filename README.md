@@ -63,15 +63,17 @@
 - **Icône indicative** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
 - **Mise à jour automatique** : Toutes les 2 minutes
 - **Couleurs thématiques** : Vert (normal), Orange (perturbé), Rouge (annulé)
+- **Message de perturbation** : Affichage du message officiel (ex: "Retards de 10 minutes")
 
 **Technologie** :
-- Utilisation de l'API Navitia (alternative à l'API RATP officielle)
-- Simulation pour la démo si aucune clé API n'est configurée
+- Utilisation de l'**API Île-de-France Mobilités (PRIM)** : [https://prim.iledefrance-mobilites.fr/](https://prim.iledefrance-mobilites.fr/)
+- **Gratuite et sans clé API** : Accès public aux données officielles
+- **Dataset utilisé** : `etat-du-trafic-par-ligne` pour le statut en temps réel
 
 **Configuration** :
-Dans `app.js`, vous pouvez configurer :
+Aucune clé API nécessaire ! Le code utilise directement l'API publique :
 ```javascript
-const NAVITIA_API_KEY = 'votre_cle_navitia_ici';
+const IDFM_API_URL = 'https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=etat-du-trafic-par-ligne&q=RER+B&rows=1';
 ```
 
 ### 5. **Thème Bleu/Noir** ⚡ NOUVEAU
@@ -127,7 +129,7 @@ Modifiez les variables CSS dans `styles.css` :
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
-- **API Transport** : [Navitia](https://www.navitia.io/) (pour le statut RER B)
+- **API Transport** : [Île-de-France Mobilités PRIM](https://prim.iledefrance-mobilites.fr/) (pour le statut RER B, **gratuite et sans clé API**)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
@@ -211,14 +213,12 @@ par :
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
 
-### 3. Configurer votre clé API Navitia (optionnel)
+### 3. Statut du RER B (aucune configuration nécessaire)
 
-Pour activer le suivi du RER B, configurez votre clé Navitia dans `app.js` :
-```javascript
-const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
-```
+Le statut du RER B est **automatiquement récupéré** depuis l'API **Île-de-France Mobilités (PRIM)**.
+**Aucune clé API n'est nécessaire** : l'API est publique et gratuite.
 
-> **Note** : Si vous ne configurez pas de clé Navitia, une simulation sera utilisée pour la démo.
+> **Note** : Si l'API est temporairement indisponible, un message d'erreur sera affiché.
 
 ### 3. Installation locale
 

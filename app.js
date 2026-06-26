@@ -10,15 +10,8 @@ const WEATHER_API_KEY = 'votre_cle_api_ici';
 const LAT = 48.93091298084958;
 const LON = 2.4856556085876904;
 
-// Configuration pour l'API RATP (utilisation de l'API publique)
-// Note: L'API RATP officielle nécessite une clé, mais on peut utiliser une alternative publique
-// ou un proxy CORS pour accéder aux données.
-const RATP_API_URL = 'https://api.rATP.fr/v1/lines/RERB/status';
-// Alternative: Utilisation d'un proxy CORS pour contourner les restrictions
-const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/https://api.rATP.fr/v1/lines/RERB/status';
-// Solution de repli: Utilisation d'une API publique de transport (ex: Navitia)
-const NAVITIA_API_URL = 'https://api.navitia.io/v1/coverage/fr-idf/lines/line:RAT:RER:B';
-const NAVITIA_API_KEY = 'votre_cle_navitia_ici'; // À remplacer par votre clé Navitia
+// Configuration pour l'API Île-de-France Mobilités (PRIM) - Gratuite et sans clé API
+const IDFM_API_URL = 'https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=etat-du-trafic-par-ligne&q=RER+B&rows=1';
 
 // Variable pour la base de données et le graphique
 let db;
@@ -139,60 +132,32 @@ function showApiStatus(status, message) {
 
 // Chargement de l'état du RER B
 function loadRerBStatus() {
-    // Utilisation d'une API publique pour les perturbations RATP
-    // Comme l'API officielle nécessite une clé, on utilise une alternative
-    // ou une simulation pour la démo
-    
-    // Option 1: Utilisation de l'API Navitia (nécessite une clé)
-    if (NAVITIA_API_KEY && NAVITIA_API_KEY !== 'votre_cle_navitia_ici') {
-        fetch(`${NAVITIA_API_URL}?apiKey=${NAVITIA_API_KEY}`)
-            .then(response => response.json())
-            .then(data => {
-                // Analyser les données pour déterminer l'état
-                const status = analyzeNavitiaData(data);
-                updateRerBStatus(status);
-            })
-            .catch(error => {
-                console.error('Erreur avec Navitia API:', error);
-                // Utiliser la simulation en cas d'erreur
-                simulateRerBStatus();
-            });
-    } else {
-        // Option 2: Simulation pour la démo
-        simulateRerBStatus();
-    }
+    // Utilisation de l'API Île-de-France Mobilités (PRIM) - Gratuite et sans clé API
+    fetch(IDFM_API_URL)
+        .then(response => {
+            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            const status = analyzeIDFMData(data);
+            const message = data.records?.[0]?.fields.message || null;
+            updateRerBStatus(status, message);
+        })
+        .catch(error => {
+            console.error('Erreur avec l\'API IDFM:', error);
+            updateRerBStatus('inconnu', 'Impossible de récupérer le statut du RER B');
+        });
 }
 
-// Analyse des données Navitia pour déterminer l'état
-function analyzeNavitiaData(data) {
-    // Vérifier si des perturbations sont signalées
-    if (data && data.disruptions && data.disruptions.length > 0) {
-        const activeDisruptions = data.disruptions.filter(d => d.status === 'active');
-        if (activeDisruptions.length > 0) {
-            return 'perturbé';
-        }
+// Analyse des données IDFM pour déterminer l'état
+function analyzeIDFMData(data) {
+    if (data?.records?.length > 0) {
+        const statut = data.records[0].fields.statut.toLowerCase();
+        if (statut.includes('normal')) return 'normal';
+        if (statut.includes('perturbé') || statut.includes('perturbation')) return 'perturbé';
+        if (statut.includes('interrompu') || statut.includes('interruption')) return 'interrompu';
     }
-    
-    // Vérifier l'état général de la ligne
-    if (data && data.line && data.line.pt_display_informations) {
-        const info = data.line.pt_display_informations;
-        if (info.message && (info.message.includes('perturbation') || info.message.includes('interruption'))) {
-            return 'perturbé';
-        }
-    }
-    
-    // Par défaut, considérer comme normal
-    return 'normal';
-}
-
-// Simulation de l'état du RER B (pour la démo)
-function simulateRerBStatus() {
-    // Générer un état aléatoire pour la démo
-    const statuses = ['normal', 'normal', 'normal', 'perturbé', 'interrompu'];
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-    
-    // Mettre à jour l'affichage
-    updateRerBStatus(randomStatus);
+    return 'inconnu';
 }
 
 // Mise à jour de l'affichage de l'état du RER B
