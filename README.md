@@ -34,7 +34,7 @@
 
 #### 📊 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
-- **Courbe des précipitations** (pluie et neige) en mm
+- **Courbe des précipitations** (pluie et neige) en mm **avec couleur orange vif (rgba(255, 215, 0)) pour une meilleure lisibilité**
 - **Deux axes Y** : Température à gauche, précipitations à droite
 - **Design interactif** avec Chart.js
 
