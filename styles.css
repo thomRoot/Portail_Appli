@@ -1,31 +1,48 @@
+/* ============================================
+   STYLE 1.3b : MINIMALIST NOIR
+   Inspiration : Design épuré type "Apple Dark Mode"
+   Couleurs : Noir pur + Gris foncé + Bleu gris
+   Effets : Pas de dégradés, ombres discrètes, bordures fines
+   ============================================ */
+
 /* Reset et variables */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 :root {
-    --primary-color: #1e88e5;  /* Bleu inspiré du widget météo */
-    --primary-dark: #1565c0;  /* Bleu foncé */
-    --secondary-color: #0d47a1; /* Bleu secondaire */
-    --accent-color: #ff6b6b;
-    --success-color: #4caf50;  /* Vert */
-    --error-color: #f44336;    /* Rouge */
-    --warning-color: #ff9800;
-    --background-color: #121212; /* Noir profond */
-    --card-color: #1a1a2e; /* Noir légèrement bleuté pour un dégradé naturel */
-    --text-color: #e0e0e0; /* Texte clair */
-    --text-light: #b0b0b0; /* Texte léger */
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --border-radius: 12px;
-    --transition: all 0.3s ease;
+    /* Couleurs principales */
+    --primary-color: #4a90e2;          /* Bleu gris */
+    --primary-dark: #357abd;          /* Bleu gris foncé */
+    --secondary-color: #3a3a3a;       /* Gris secondaire */
+    --accent-color: #48c774;          /* Vert menthe */
+    --success-color: #48c774;         /* Vert succès */
+    --error-color: #ff4757;           /* Rouge erreur */
+    --warning-color: #ffa502;         /* Orange avertissement */
+    
+    /* Couleurs de fond et texte */
+    --background-color: #000000;      /* Noir pur */
+    --card-color: #121212;            /* Gris très foncé */
+    --text-color: #cccccc;           /* Gris clair */
+    --text-light: #888888;           /* Texte léger */
+    
+    /* Effets */
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --border-radius: 14px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Bordures */
+    --border-subtle: 1px solid #333333;
+    --border-light: 1px solid #444444;
 }
 
 /* Corps de la page */
 body {
-    background: linear-gradient(180deg, var(--background-color) 0%, #0a0a1a 50%, var(--primary-dark) 100%);
+    background: var(--background-color);
     color: var(--text-color);
     min-height: 100vh;
     padding: 20px;
@@ -44,6 +61,7 @@ header {
     background-color: var(--card-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
     min-height: 120px;
 }
 
@@ -60,7 +78,7 @@ header {
     gap: 15px;
 }
 
-/* Statut du RER B */
+/* Statut du RER B - Style Minimalist */
 .rer-b-status {
     display: flex;
     flex-direction: column;
@@ -75,30 +93,37 @@ header {
     transition: var(--transition);
     cursor: pointer;
     text-align: center;
+    background-color: var(--card-color);
+    border: var(--border-subtle);
 }
 
 .rer-b-status:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+    background-color: #1a1a1a;
+    transform: scale(1.02);
+    box-shadow: var(--shadow-hover);
 }
 
 .rer-b-status.normal {
-    background-color: rgba(76, 175, 80, 0.2);
+    background-color: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
     color: var(--success-color);
 }
 
 .rer-b-status.perturbed {
-    background-color: rgba(255, 152, 0, 0.2);
+    background-color: rgba(255, 152, 0, 0.1);
+    border-color: rgba(255, 152, 0, 0.3);
     color: var(--warning-color);
 }
 
 .rer-b-status.interrupted {
-    background-color: rgba(244, 67, 54, 0.2);
+    background-color: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.3);
     color: var(--error-color);
 }
 
 .rer-b-status.unknown {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--card-color);
+    border-color: #333333;
     color: var(--text-light);
 }
 
@@ -118,9 +143,9 @@ header {
 
 .rer-b-modal-content {
     max-width: 500px;
-    background: linear-gradient(135deg, var(--card-color), var(--primary-dark));
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.3);
+    background-color: var(--card-color);
+    border: var(--border-subtle);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .rer-b-modal-content h2 {
@@ -144,28 +169,33 @@ header {
     gap: 15px;
     padding: 20px;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--card-color);
     text-align: center;
     transition: var(--transition);
+    border: var(--border-subtle);
 }
 
 .rer-b-status-large.normal {
-    background-color: rgba(76, 175, 80, 0.15);
+    background-color: rgba(76, 175, 80, 0.08);
+    border-color: rgba(76, 175, 80, 0.2);
     color: var(--success-color);
 }
 
 .rer-b-status-large.perturbed {
-    background-color: rgba(255, 152, 0, 0.15);
+    background-color: rgba(255, 152, 0, 0.08);
+    border-color: rgba(255, 152, 0, 0.2);
     color: var(--warning-color);
 }
 
 .rer-b-status-large.interrupted {
-    background-color: rgba(244, 67, 54, 0.15);
+    background-color: rgba(244, 67, 54, 0.08);
+    border-color: rgba(244, 67, 54, 0.2);
     color: var(--error-color);
 }
 
 .rer-b-status-large.unknown {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--card-color);
+    border-color: #333333;
     color: var(--text-light);
 }
 
@@ -189,8 +219,9 @@ header {
     align-items: flex-start;
     gap: 12px;
     padding: 15px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--card-color);
     border-radius: 8px;
+    border: var(--border-subtle);
 }
 
 .rer-b-info-item i {
@@ -216,6 +247,7 @@ header {
 /* Fermeture de la modal RER B */
 .rer-b-close {
     color: var(--text-light);
+    float: right;
     font-size: 28px;
     cursor: pointer;
     transition: var(--transition);
@@ -225,7 +257,7 @@ header {
     color: var(--error-color);
 }
 
-/* Statut de l'API - Icône seulement à droite */
+/* Statut de l'API */
 .api-status {
     display: flex;
     align-items: center;
@@ -237,6 +269,11 @@ header {
     transition: var(--transition);
     background-color: var(--card-color);
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
+}
+
+.api-status:hover {
+    background-color: #1a1a1a;
 }
 
 .api-status i {
@@ -279,53 +316,23 @@ header {
 
 .add-btn:hover {
     background-color: var(--primary-dark);
-    transform: scale(1.05);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+    box-shadow: var(--shadow-hover);
 }
 
 .add-btn i {
     font-size: 1.5rem;
 }
 
-/* Bouton Robot Aspirateur */
-.robot-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-    box-shadow: var(--shadow);
-}
-
-.robot-btn:hover {
-    background-color: #ff4757;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(255, 107, 107, 0.3);
-}
-
-.robot-btn i {
-    font-size: 1.1rem;
-}
-
-.robot-btn:active {
-    transform: scale(0.98);
-}
-
 /* Conteneur Météo */
 .weather-container {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
+    background-color: var(--card-color);
+    color: var(--text-color);
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 30px;
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
 }
 
 .weather-header {
@@ -345,9 +352,9 @@ header {
 }
 
 .weather-tab {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
+    background-color: #1a1a1a;
+    border: var(--border-subtle);
+    color: var(--text-light);
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
@@ -356,12 +363,14 @@ header {
 }
 
 .weather-tab:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: #222222;
+    color: var(--text-color);
 }
 
 .weather-tab.active {
-    background-color: white;
-    color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 .weather-content {
@@ -391,17 +400,18 @@ header {
 }
 
 .weather-detail-card {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: var(--card-color);
     border-radius: 8px;
     padding: 10px 6px;
     text-align: center;
-    backdrop-filter: blur(5px);
     transition: var(--transition);
+    border: var(--border-subtle);
 }
 
 .weather-detail-card:hover {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: #1a1a1a;
     transform: translateY(-2px);
+    border-color: #444444;
 }
 
 .weather-detail-card .time {
@@ -434,7 +444,7 @@ header {
     gap: 15px;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid #333333;
 }
 
 .summary-item {
@@ -443,8 +453,9 @@ header {
     align-items: center;
     gap: 5px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--card-color);
     border-radius: 8px;
+    border: var(--border-subtle);
 }
 
 .summary-item i {
@@ -463,14 +474,6 @@ header {
     text-align: center;
 }
 
-/* Conteneur des applications */
-.apps-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
-    padding: 0 10px;
-}
-
 /* Conteneur des cartes */
 .cards-container {
     display: grid;
@@ -479,12 +482,13 @@ header {
     margin: 30px auto;
     padding: 20px;
     max-width: 1400px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background-color: var(--card-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
 }
 
-/* Carte d'application - Style uniformisé */
+/* Carte d'application */
 .app-card {
     background-color: var(--card-color);
     border-radius: var(--border-radius);
@@ -500,7 +504,13 @@ header {
     height: 220px;
     cursor: pointer;
     animation: fadeIn 0.5s ease forwards;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: var(--border-subtle);
+}
+
+.app-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: #444444;
 }
 
 /* Cartes témoins Google */
@@ -512,12 +522,6 @@ header {
     color: white;
 }
 
-.app-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    border-color: var(--primary-color);
-}
-
 /* Icône de l'application */
 .app-icon {
     width: 80px;
@@ -526,7 +530,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: var(--transition);
     overflow: hidden;
 }
@@ -543,14 +547,14 @@ header {
 }
 
 .app-card:hover .app-icon {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Pour les icônes des robots (avec fond dégradé) */
+/* Pour les icônes des robots */
 #robotRdcCard .app-icon,
 #robotEtageCard .app-icon {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--primary-color);
 }
 
 .app-name {
@@ -588,17 +592,17 @@ header {
     align-items: center;
     gap: 8px;
     transition: var(--transition);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .card-action-btn:hover {
-    background-color: #ff4757;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    background-color: #3da86d;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(72, 199, 116, 0.3);
 }
 
 .card-action-btn:disabled {
-    background-color: #cccccc;
+    background-color: #555555;
     cursor: not-allowed;
     transform: none;
 }
@@ -625,7 +629,7 @@ header {
 }
 
 .no-sites-msg .app-icon {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--primary-color);
 }
 
 .no-sites-msg .app-icon i {
@@ -645,7 +649,7 @@ header {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     animation: fadeIn 0.3s ease;
 }
 
@@ -663,10 +667,8 @@ header {
     max-width: 500px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     animation: slideIn 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: var(--border-subtle);
 }
-
-
 
 @keyframes slideIn {
     from {
@@ -693,7 +695,7 @@ header {
 }
 
 .modal-content h2 {
-    color: var(--primary-dark);
+    color: var(--primary-color);
     margin-bottom: 20px;
     font-size: 1.5rem;
 }
@@ -714,18 +716,20 @@ header {
 .form-group input[type="url"] {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #444444;
     border-radius: 8px;
     font-size: 1rem;
     transition: var(--transition);
     box-sizing: border-box;
+    background-color: var(--card-color);
+    color: var(--text-color);
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="url"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .form-group input[type="file"] {
@@ -735,30 +739,32 @@ header {
 .form-group label[for="siteIcon"] {
     cursor: pointer;
     padding: 12px;
-    background-color: #f8f9fa;
-    border: 2px dashed #ccc;
+    background-color: var(--card-color);
+    border: 1px dashed #444444;
     border-radius: 8px;
     text-align: center;
     transition: var(--transition);
+    color: var(--text-light);
 }
 
 .form-group label[for="siteIcon"]:hover {
     border-color: var(--primary-color);
-    background-color: #e9ecef;
+    background-color: #1a1a1a;
+    color: var(--text-color);
 }
 
 .image-preview {
     margin-top: 15px;
     text-align: center;
     padding: 15px;
-    border: 2px dashed #e0e0e0;
+    border: 1px dashed #444444;
     border-radius: 8px;
     min-height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f8f9fa;
+    background-color: var(--card-color);
 }
 
 .image-preview img {
@@ -782,9 +788,9 @@ header {
 }
 
 .cancel-btn {
-    background-color: #f0f0f0;
+    background-color: var(--card-color);
     color: var(--text-color);
-    border: none;
+    border: 1px solid #444444;
     padding: 12px 24px;
     border-radius: 8px;
     cursor: pointer;
@@ -794,7 +800,8 @@ header {
 }
 
 .cancel-btn:hover {
-    background-color: #e0e0e0;
+    background-color: #1a1a1a;
+    border-color: #555555;
 }
 
 .submit-btn {
@@ -844,10 +851,6 @@ header {
         margin: 10% auto;
     }
 
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
     .weather-summary {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -860,20 +863,6 @@ header {
 
     header h1 {
         font-size: 1.5rem;
-    }
-
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 15px;
-    }
-
-    .app-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .app-name {
-        font-size: 0.8rem;
     }
 
     .weather-summary {
@@ -899,21 +888,21 @@ header {
 
 /* Scrollbar personnalisée */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1e1e1e;
+    background: #000000;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: #444444;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
+    background: #555555;
 }
 
 /* Effet de chargement */
@@ -933,9 +922,10 @@ header {
 /* Message d'erreur */
 .error-message {
     color: var(--error-color);
-    background-color: rgba(244, 67, 54, 0.1);
+    background-color: rgba(255, 71, 87, 0.1);
     padding: 10px;
     border-radius: 8px;
     margin: 10px 0;
     text-align: center;
+    border: 1px solid rgba(255, 71, 87, 0.3);
 }

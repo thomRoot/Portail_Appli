@@ -1,25 +1,31 @@
 # Portail Appli - ThomRoot
+**Style 1.3b : MINIMALIST NOIR**
 
-## 📋 Description
+## 🎨 Description du Style
 
-**Portail Appli** est une application web complète qui fait office de portail pour tous vos sites web. Elle vous permet de :
+Ce style **"Minimalist Noir"** offre une interface **épurée et élégante**, inspirée du mode sombre d'Apple. Parfait pour ceux qui préfèrent un design **propre, sans distractions**, avec des lignes nettes et des couleurs discrètes.
 
-- ✅ Afficher vos sites sous forme d'icônes d'applications cliquables
-- ✅ Ajouter de nouveaux sites via une popup intuitive
-- ✅ Personnaliser l'icône de chaque site avec une image
-- ✅ **Visualiser la météo en temps réel avec graphiques et précipitations**
-- ✅ **Voyant d'état pour vérifier que votre clé API est active**
-- ✅ **Contrôler votre robot aspirateur Xiaomi avec des paramètres avancés**
-- ✅ **Suivre l'état du RER B en temps réel (normal, perturbé, annulé)** ⚡ NOUVEAU
-- ✅ **Thème bleu/noir inspiré du widget météo** ⚡ NOUVEAU
-- ✅ Stocker toutes vos données localement dans votre navigateur
+### 🎯 Caractéristiques principales :
+- **Couleurs** : Noir pur (#000000) + Gris très foncé (#121212) + Bleu gris (#4a90e2)
+- **Effets** : Pas de dégradés, ombres discrètes, bordures fines et subtiles
+- **Ambiance** : Professionnelle, épurée, intemporelle
+- **Inspiration** : Mode sombre d'Apple, interfaces minimalistes (ex: Notion Dark Mode)
 
-## 🚀 Fonctionnalités
+### 🖌️ Philosophie du design :
+- **Moins c'est plus** : Pas d'effets superflus, seulement l'essentiel
+- **Lisibilité maximale** : Contraste parfait entre texte et fond
+- **Équilibre** : Espacement généreux, alignements précis
+- **Neutralité** : Couleurs qui ne fatiguent pas les yeux
+
+---
+
+## 📋 Fonctionnalités
 
 ### 1. Interface Utilisateur
 - **Grille d'applications** : Affichage responsive de vos sites sous forme de cartes avec icônes
-- **Design moderne** : Interface épurée avec animations et ombres
+- **Design épuré** : Interface propre avec des lignes nettes et des ombres discrètes
 - **Responsive** : Adapté aux mobiles, tablettes et ordinateurs
+- **Animations subtiles** : Transitions douces et discrètes
 
 ### 2. Gestion des Sites
 - **Ajout de sites** : Bouton "+" dans l'en-tête pour ouvrir la popup d'ajout
@@ -30,7 +36,7 @@
 - **Aperçu instantané** : Visualisation de l'image avant validation
 - **Stockage local** : Toutes les données sont sauvegardées dans IndexedDB
 
-### 3. Widget Météo Avancé ⚡ NOUVEAU
+### 3. Widget Météo Avancé
 
 #### 📊 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
@@ -38,15 +44,14 @@
 - **Deux axes Y** : Température à gauche, précipitations à droite
 - **Design interactif** avec Chart.js
 
-#### 📋 **Détails horaires**
+#### 🕒 **Détails horaires**
 - Affichage des prévisions **heure par heure** pour la journée
 - **Icônes météo** pour chaque période
 - **Températures** et **précipitations** pour chaque tranche de 3h
-- **8 prévisions** affichées pour éviter la surcharge
 
 #### 📌 **Résumé météo**
 - Température actuelle
-- Humidité (%)
+- Tendance température (hausse/baisse/stable)
 - Vitesse du vent (km/h)
 - Précipitations actuelles (mm)
 
@@ -54,58 +59,21 @@
 - **🟢 Vert** : Clé API valide et fonctionnelle
 - **🔴 Rouge** : Clé API non configurée ou invalide
 - **🟡 Jaune** : Chargement en cours
-- **Affichage clair** dans l'en-tête de l'application
 
-### 4. **Statut du RER B en temps réel** ⚡ NOUVEAU
+### 4. **Statut du RER B en temps réel**
 
 **Fonctionnalités** :
 - **Affichage dans le header** : Statut du RER B visible en haut de l'application
-- **Icône indicative** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
+- **Icônes indicatives** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
 - **Mise à jour automatique** : Toutes les 2 minutes
 - **Couleurs thématiques** : Vert (normal), Orange (perturbé), Rouge (annulé)
+- **Modal détaillée** : Cliquez sur l'icône pour plus d'informations
 
 **Technologie** :
 - Utilisation de l'API Navitia (alternative à l'API RATP officielle)
 - Simulation pour la démo si aucune clé API n'est configurée
 
-**Configuration** :
-Dans `app.js`, vous pouvez configurer :
-```javascript
-const NAVITIA_API_KEY = 'votre_cle_navitia_ici';
-```
-
-### 5. **Thème Bleu/Noir** ⚡ NOUVEAU
-
-**Caractéristiques** :
-- **Couleurs principales** : Bleu (#1e88e5) inspiré du widget météo, mélangé avec du noir (#121212)
-- **Fond sombre** : Réduction de la fatigue oculaire
-- **Cartes avec bordures subtiles** : Effet moderne et élégant
-- **Ombres adaptées** : Meilleure visibilité sur fond sombre
-- **Scrollbar personnalisée** : Intégration harmonieuse avec le thème
-
-**Personnalisation** :
-Modifiez les variables CSS dans `styles.css` :
-```css
-:root {
-    --primary-color: #1e88e5;  /* Bleu principal */
-    --primary-dark: #1565c0;   /* Bleu foncé */
-    --secondary-color: #0d47a1; /* Bleu secondaire */
-    --background-color: #121212; /* Fond noir profond */
-    --card-color: #1e1e1e;      /* Cartes noires */
-    --text-color: #e0e0e0;     /* Texte clair */
-}
-```
-
-### 6. Base de Données
-- **Technologie** : IndexedDB (stockage côté client)
-- **Structure** :
-  - `id` : Identifiant unique auto-incrémenté
-  - `name` : Nom du site
-  - `url` : URL du site (unique)
-  - `icon` : Image de l'icône (stockée en base64)
-  - `createdAt` : Date de création
-
-### 5. Contrôle des Robots Aspirateurs Xiaomi ⚡ NOUVEAU
+### 5. **Contrôle des Robots Aspirateurs Xiaomi**
 
 **Fonctionnalités** :
 - **Deux robots configurables** : Aspirateur RdC et Aspirateur étage
@@ -114,12 +82,14 @@ Modifiez les variables CSS dans `styles.css` :
   - **Aspirateur RdC** : Nettoyage 2 fois la surface en mode turbo, niveau d'eau 3, retour automatique après 8m²
   - **Aspirateur étage** : Nettoyage 1 fois la surface en mode turbo, niveau d'eau 3, sans retour automatique
 - **Notifications** : Notifications visuelles pour le statut des commandes
-- **Intégration comme app-card** : Les boutons sont intégrés comme des cartes d'application agrandies
+- **Intégration comme app-card** : Les boutons sont intégrés comme des cartes d'application
 
 **Prérequis** :
 - Robot aspirateur Xiaomi connecté au réseau local
 - miio CLI installé sur votre système
 - Token d'accès miio valide
+
+---
 
 ## 🛠 Technologies Utilisées
 
@@ -132,7 +102,9 @@ Modifiez les variables CSS dans `styles.css` :
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
 
-## 📦 Installation
+---
+
+## 📥 Installation
 
 ### Prérequis
 - Un navigateur web moderne (Chrome, Firefox, Edge, Safari)
@@ -200,7 +172,7 @@ Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
    };
    ```
 
-### 2. Configurer votre clé API OpenWeatherMap
+### 3. Configurer votre clé API OpenWeatherMap
 
 Dans le fichier `app.js`, remplacez :
 ```javascript
@@ -211,7 +183,7 @@ par :
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
 
-### 3. Configurer votre clé API Navitia (optionnel)
+### 4. Configurer votre clé API Navitia (optionnel)
 
 Pour activer le suivi du RER B, configurez votre clé Navitia dans `app.js` :
 ```javascript
@@ -220,15 +192,16 @@ const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
 
 > **Note** : Si vous ne configurez pas de clé Navitia, une simulation sera utilisée pour la démo.
 
-### 3. Installation locale
+### 5. Installation locale
 
 1. **Cloner le dépôt** :
    ```bash
    git clone https://github.com/thomRoot/Portail_Appli.git
    cd Portail_Appli
+   git checkout 1.3b  # Pour utiliser ce style
    ```
 
-2. **Configurer la clé API** (voir étape 2)
+2. **Configurer la clé API** (voir étape 3)
 
 3. **Ouvrir l'application** :
    - Double-cliquez sur le fichier `index.html`
@@ -240,38 +213,50 @@ const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
      ```
 
 4. **Vérifier que ça fonctionne** :
-   - Le voyant en haut à gauche doit devenir **vert** avec "API active"
+   - Le voyant en haut à droite doit devenir **vert** avec "API active"
    - Le graphique météo doit s'afficher
 
-## 🌐 Déploiement
+---
+
+## 🚀 Déploiement
 
 ### Sur GitHub Pages
 
-1. Poussez votre code sur GitHub
+1. Poussez votre code sur GitHub (branche `1.3b`)
 2. Allez dans les paramètres du dépôt
 3. Activez GitHub Pages dans la section "Pages"
-4. Sélectionnez la branche `main` et le dossier `/ (root)`
+4. Sélectionnez la branche `1.3b` et le dossier `/ (root)`
 5. Votre site sera disponible à l'URL : `https://thomroot.github.io/Portail_Appli/`
 
 ### Sur un serveur web
 
 Copiez simplement les fichiers sur votre serveur web. Aucune configuration serveur n'est nécessaire.
 
-## 📊 Structure du Projet
+---
+
+## 📁 Structure du Projet
 
 ```
 Portail_Appli/
 ├── index.html          # Page principale
-├── styles.css          # Styles CSS
+├── styles.css          # Styles CSS (Style Minimalist Noir)
 ├── app.js              # Logique JavaScript
 └── README.md           # Documentation
 ```
 
-## 🎨 Personnalisation
+---
+
+## ✨ Personnalisation
 
 ### Changer la ville pour la météo
 
 Modifiez les coordonnées dans `app.js` :
+```javascript
+const LAT = 48.9412;  // Latitude d'Aulnay-sous-Bois
+const LON = 2.4833;   // Longitude d'Aulnay-sous-Bois
+```
+
+Vous pouvez trouver les coordonnées d'une ville sur [LatLong.net](https://www.latlong.net/)
 
 ### Personnaliser les paramètres des robots aspirateurs
 
@@ -291,32 +276,10 @@ rdc: {
 }
 ```
 
-**Pour l'Aspirateur étage** :
-```javascript
-etage: {
-    mapName: 'Carte2',  // Nom de la carte à charger
-    cleaning: {
-        repeat: 1,        // Nombre de répétitions (1-3)
-        mode: 'turbo',    // Mode: 'silent', 'standard', 'turbo', 'max'
-        waterLevel: 3,    // Niveau d'eau: 0 (sec), 1 (faible), 2 (moyen), 3 (élevé)
-        returnAfterArea: null, // Pas de retour automatique
-        returnToClean: false  // Ne retourne pas au nettoyage
-    }
-}
-```
-
 **Options disponibles** :
 - **Modes de nettoyage** : `silent`, `standard`, `turbo`, `max`
 - **Niveaux d'eau** : `0` (sec), `1` (faible), `2` (moyen), `3` (élevé)
 - **Noms de carte** : Dépend des cartes enregistrées dans votre application Mi Home
-- **returnAfterArea** : Surface en m² avant retour automatique (null pour désactiver)
-- **returnToClean** : `true` pour retourner au nettoyage, `false` pour ne pas retourner
-```javascript
-const LAT = 48.9412;  // Latitude d'Aulnay-sous-Bois
-const LON = 2.4833;   // Longitude d'Aulnay-sous-Bois
-```
-
-Vous pouvez trouver les coordonnées d'une ville sur [LatLong.net](https://www.latlong.net/)
 
 ### Changer l'API Key OpenWeatherMap
 
@@ -325,27 +288,39 @@ Remplacez dans `app.js` :
 const WEATHER_API_KEY = 'votre_nouvelle_clé_api';
 ```
 
-### Personnaliser les couleurs
+### Personnaliser les couleurs (Style Minimalist Noir)
 
 Modifiez les variables CSS dans `styles.css` :
 ```css
 :root {
-    --primary-color: #4a6fa5;
-    --primary-dark: #166088;
-    --secondary-color: #4fc3f7;
-    /* ... */
+    /* Couleurs principales */
+    --primary-color: #4a90e2;          /* Bleu gris */
+    --primary-dark: #357abd;          /* Bleu gris foncé */
+    --accent-color: #48c774;          /* Vert menthe */
+    
+    /* Couleurs de fond et texte */
+    --background-color: #000000;      /* Noir pur */
+    --card-color: #121212;            /* Gris très foncé */
+    --text-color: #cccccc;           /* Gris clair */
+    --text-light: #888888;           /* Texte léger */
+    
+    /* Effets */
+    --border-radius: 14px;            /* Bordures légèrement arrondies */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 ```
 
-## 💡 Utilisation
+---
+
+## 🎯 Utilisation
 
 ### Ajouter un site
-1. Cliquez sur le bouton "➕ Ajouter un site" en haut à droite
+1. Cliquez sur le bouton **"➕ Ajouter un site"** en haut à droite
 2. Remplissez le formulaire :
    - **Nom du site** : Le nom qui s'affichera sous l'icône
    - **URL du site** : L'adresse web (ex: https://google.com)
    - **Icône** : Une image qui représentera votre site
-3. Cliquez sur "Ajouter"
+3. Cliquez sur **"Ajouter"**
 4. Votre site apparaîtra dans le portail
 
 ### Accéder à un site
@@ -375,8 +350,6 @@ Modifiez les variables CSS dans `styles.css` :
    - **Ne pas** retourner au nettoyage après avoir nettoyé
 5. Une notification s'affichera pour confirmer le démarrage
 
-**Note** : Les deux cartes d'aspirateur et les sites apparaissent dans un conteneur unique avec le même style. Toutes les cartes ont la même taille (180px x 220px) et sont alignées dans une grille responsive.
-
 ### Vérifier l'état de l'API
 - Regardez le **voyant** en haut à droite de l'application
 - **🟢 Vert** = Tout fonctionne
@@ -394,68 +367,36 @@ Modifiez les variables CSS dans `styles.css` :
 ### Consulter la météo
 - **Onglet "Graphique"** : Voir la courbe des températures et précipitations
 - **Onglet "Détails"** : Voir les prévisions heure par heure
-- **Résumé** : Température, humidité, vent et précipitations actuelles
+- **Résumé** : Température, vent et précipitations actuelles
 
-### Supprimer un site (Fonctionnalité bonus)
-Ouvrez la console du navigateur (F12) et utilisez :
-```javascript
-deleteSite(id);
-```
-(Remplacez `id` par l'identifiant du site)
+---
 
-## 🔧 Dépannage
+## 🐛 Dépannage
 
 ### La météo ne s'affiche pas / "Météo indisponible"
 
 **Causes possibles** :
-
-1. **Clé API non configurée**
-   - Vérifiez que vous avez remplacé `votre_cle_api_ici` dans `app.js`
-   - Le voyant doit être **rouge** avec "Clé API non configurée"
-
-2. **Clé API invalide**
-   - Vérifiez que votre clé est correcte (sans espace, sans caractère spécial)
-   - Le voyant doit être **rouge** avec "Clé API invalide"
-
-3. **Problème de CORS**
-   - Si vous testez localement avec `file://`, essayez avec un serveur local :
-     ```bash
-     python -m http.server 8000
-     ```
-
-4. **Limite de l'API atteinte**
-   - La version gratuite permet 60 appels/minute
-   - Attendez quelques minutes si vous avez fait trop de tests
-
-5. **Problème de connexion internet**
-   - Vérifiez que vous êtes connecté
+1. **Clé API non configurée** → Vérifiez que vous avez remplacé `votre_cle_api_ici` dans `app.js`
+2. **Clé API invalide** → Vérifiez que votre clé est correcte
+3. **Problème de CORS** → Essayez avec un serveur local : `python -m http.server 8000`
+4. **Limite de l'API atteinte** → Attendez quelques minutes
+5. **Problème de connexion internet** → Vérifiez votre connexion
 
 ### Les sites ne se sauvegardent pas
 - Vérifiez que votre navigateur supporte IndexedDB
 - Assurez-vous que vous n'êtes pas en mode navigation privée
 - Vérifiez les erreurs dans la console (F12)
 
-### L'image ne s'affiche pas
-- Vérifiez que le fichier est bien une image (JPG, PNG, etc.)
-- Assurez-vous que le fichier n'est pas trop volumineux (>5Mo)
-
-### Le graphique ne s'affiche pas
-- Vérifiez que vous avez une connexion internet
-- Vérifiez que votre clé API est valide
-- Essayez de rafraîchir la page (F5)
-
 ### Le robot aspirateur ne répond pas
-- **Vérifiez la connexion réseau** : Assurez-vous que le robot et votre appareil sont sur le même réseau WiFi
-- **Vérifiez l'adresse IP** : L'adresse IP du robot peut changer. Utilisez `miio discover` pour la trouver
-- **Vérifiez le token** : Le token peut expirer. Obtenez un nouveau token via l'application Mi Home
-- **Vérifiez que miio CLI est installé** : Exécutez `miio --version` pour vérifier l'installation
-- **Vérifiez les erreurs dans la console** : Ouvrez la console du navigateur (F12) pour voir les messages d'erreur
-- **Testez manuellement** : Essayez la commande suivante dans votre terminal :
-  ```bash
-  miio raw --ip ADRESSE_IP --token VOTRE_TOKEN start_clean
-  ```
+- **Vérifiez la connexion réseau** : Robot et appareil sur le même WiFi
+- **Vérifiez l'adresse IP** : Utilisez `miio discover` pour la trouver
+- **Vérifiez le token** : Obtenez un nouveau token via l'application Mi Home
+- **Vérifiez que miio CLI est installé** : Exécutez `miio --version`
+- **Testez manuellement** : `miio raw --ip ADRESSE_IP --token VOTRE_TOKEN start_clean`
 
-## 📱 Compatibilité
+---
+
+## 📊 Compatibilité
 
 | Navigateur | Support | Testé |
 |------------|---------|-------|
@@ -465,7 +406,9 @@ deleteSite(id);
 | Safari | ✅ Oui | ❌ Non |
 | Opera | ✅ Oui | ❌ Non |
 
-## 🎯 Améliorations Futures
+---
+
+## 🚀 Améliorations Futures
 
 - [ ] Suppression de sites via l'interface
 - [ ] Édition des sites existants
@@ -473,31 +416,25 @@ deleteSite(id);
 - [ ] Recherche de sites
 - [ ] Import/Export des données
 - [ ] Synchronisation entre appareils
-- [ ] Thèmes sombres/clairs
-- [ ] Personnalisation de la disposition
-- [ ] Prévisions sur 5 jours (au lieu d'1 jour)
+- [ ] Thèmes personnalisables
+- [ ] Prévision sur 5 jours
 - [ ] Carte météo interactive
-- [ ] **Contrôle avancé du robot** : Programmer des horaires de nettoyage
-- [ ] **Suivi en temps réel** : Afficher l'état actuel du robot (batterie, statut)
-- [ ] **Historique des nettoyages** : Conserver un historique des sessions de nettoyage
-- [ ] **Contrôle vocal** : Intégration avec les assistants vocaux
+- [ ] Contrôle avancé du robot (programmation)
+- [ ] Suivi en temps réel du robot
+- [ ] Historique des nettoyages
+
+---
 
 ## 📜 Licence
 
 Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier et le distribuer.
 
-## 🙏 Remerciements
-
-- [Font Awesome](https://fontawesome.com/) pour les icônes
-- [OpenWeatherMap](https://openweathermap.org/) pour l'API météo
-- [Chart.js](https://www.chartjs.org/) pour les graphiques
-- Tous les contributeurs et utilisateurs
-
 ---
 
 **Créé avec ❤️ par ThomRoot**
 
-*Dernière mise à jour : 25 juin 2025 - Ajout du statut RER B et du thème bleu/noir*
+*Style : 1.3b - Minimalist Noir*
+*Dernière mise à jour : 30 juin 2025*
 
 ---
 
