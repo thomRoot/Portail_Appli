@@ -629,13 +629,19 @@ function updateWeatherSummary(data, forecastData = null) {
     
     // Mise à jour des éléments du header
     const headerTempElement = document.getElementById('headerCurrentTemp');
-    const headerWindElement = document.getElementById('headerCurrentWind');
-    const headerRainElement = document.getElementById('headerCurrentRain');
+    const headerWeatherIconElement = document.getElementById('headerWeatherIcon');
     
     // Température
     const temperature = Math.round(data.main.temp);
     tempElement.textContent = `${temperature}°C`;
     if (headerTempElement) headerTempElement.textContent = `${temperature}°C`;
+    
+    // Mise à jour de l'icône météo dans le header
+    if (headerWeatherIconElement) {
+        const weatherId = data.weather[0].id;
+        const iconClass = getWeatherIconClass(weatherId, data.weather[0].main);
+        headerWeatherIconElement.className = `fas ${iconClass}`;
+    }
     
     // Tendance des températures
     if (forecastData && forecastData.list && forecastData.list.length > 0) {
@@ -661,18 +667,14 @@ function updateWeatherSummary(data, forecastData = null) {
     // Vent (convertir de m/s à km/h)
     const windSpeed = Math.round(data.wind.speed * 3.6);
     windElement.textContent = `${windSpeed} km/h`;
-    if (headerWindElement) headerWindElement.textContent = `${windSpeed} km/h`;
     
     // Précipitations (si disponibles)
     if (data.rain && data.rain['1h']) {
         rainElement.textContent = `${data.rain['1h']} mm`;
-        if (headerRainElement) headerRainElement.textContent = `${data.rain['1h']} mm`;
     } else if (data.snow && data.snow['1h']) {
         rainElement.textContent = `${data.snow['1h']} mm (neige)`;
-        if (headerRainElement) headerRainElement.textContent = `${data.snow['1h']} mm`;
     } else {
         rainElement.textContent = '0 mm';
-        if (headerRainElement) headerRainElement.textContent = '0 mm';
     }
 }
 
@@ -814,6 +816,8 @@ function createWeatherChart(forecastData) {
                     type: 'linear',
                     display: true,
                     position: 'right',
+                    min: -5,
+                    max: 50,
                     title: {
                         display: true,
                         text: 'Précipitations (mm)',
@@ -841,11 +845,9 @@ function updateWeatherError() {
     
     // Mise à jour des éléments du header
     const headerTempElement = document.getElementById('headerCurrentTemp');
-    const headerWindElement = document.getElementById('headerCurrentWind');
-    const headerRainElement = document.getElementById('headerCurrentRain');
+    const headerWeatherIconElement = document.getElementById('headerWeatherIcon');
     if (headerTempElement) headerTempElement.textContent = '--°C';
-    if (headerWindElement) headerWindElement.textContent = '-- km/h';
-    if (headerRainElement) headerRainElement.textContent = '-- mm';
+    if (headerWeatherIconElement) headerWeatherIconElement.className = 'fas fa-cloud-sun';
     
     // Effacer le graphique
     const ctx = document.getElementById('weatherChart');
