@@ -133,15 +133,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- Bouton pour les horaires et itinéraires RER B -->
-        <div class="app-card" id="rerbSchedulesBtn">
-            <div class="app-icon">
-                <i class="fas fa-train"></i>
-            </div>
-            <div class="app-name">Prochain RER B</div>
-            <div class="app-description">Aulnay → Créteil</div>
-        </div>
         
         <!-- Les sites seront ajoutés dynamiquement ici -->
         
@@ -195,26 +186,7 @@
         </div>
     </main>
 
-    <!-- Modal pour les horaires et itinéraires RER B -->
-    <div id="rerbSchedulesModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Prochains RER B et Itinéraire</h2>
 
-            <div class="tabs">
-                <button class="tab-button active" onclick="openTab('schedules')">Horaires</button>
-                <button class="tab-button" onclick="openTab('itinerary')">Itinéraire</button>
-            </div>
-
-            <div id="schedules" class="tab-content" style="display: block;">
-                <div id="schedulesContent"></div>
-            </div>
-
-            <div id="itinerary" class="tab-content">
-                <div id="itineraryContent"></div>
-            </div>
-        </div>
-    </div>
 
     <!-- Popup pour ajouter un site -->
     <div id="addSiteModal" class="modal">
