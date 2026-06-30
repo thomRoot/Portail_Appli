@@ -816,7 +816,7 @@ function createWeatherChart(forecastData) {
                     type: 'linear',
                     display: true,
                     position: 'right',
-                    min: -5,
+                    min: 0,
                     max: 50,
                     title: {
                         display: true,

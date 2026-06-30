@@ -172,30 +172,38 @@ header {
 /* Weather Details Card dans le header */
 .weather-header-mini {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: rgba(79, 70, 229, 0.08);
+    justify-content: center;
+    gap: 5px;
+    width: 80px;
+    height: 80px;
+    padding: 10px;
     border-radius: var(--border-radius);
-    border: var(--border-subtle);
+    font-weight: 500;
     transition: var(--transition);
+    cursor: default;
+    text-align: center;
+    background: rgba(79, 70, 229, 0.1);
+    border: var(--border-subtle);
 }
 
 .weather-header-mini:hover {
-    background: rgba(79, 70, 229, 0.15);
-    border: var(--border-glow);
+    background: rgba(79, 70, 229, 0.2);
+    transform: scale(1.05) translateY(-3px);
     box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
 }
 
 .weather-header-mini i {
-    font-size: 1.2rem;
+    font-size: 1.8rem;
     color: var(--accent-color);
 }
 
 .weather-header-mini span {
-    font-weight: 500;
+    font-size: 0.75rem;
+    line-height: 1.2;
     color: var(--text-color);
-    font-size: 0.95rem;
 }
 
 /* Modal RER B */
