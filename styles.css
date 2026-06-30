@@ -1,34 +1,78 @@
+/* ============================================
+   STYLE V1.3d : DARK MATRIX
+   Inspiration : Univers Matrix avec des accents verts
+   Couleurs : Noir profond + Vert néon + Gris
+   Effets : Effet "code Matrix", bordures vertes lumineuses, dégradés verts
+   ============================================ */
+
 /* Reset et variables */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Consolas', 'Courier New', monospace;
 }
 
 :root {
-    --primary-color: #1e88e5;  /* Bleu inspiré du widget météo */
-    --primary-dark: #1565c0;  /* Bleu foncé */
-    --secondary-color: #0d47a1; /* Bleu secondaire */
-    --accent-color: #ff6b6b;
-    --success-color: #4caf50;  /* Vert */
-    --error-color: #f44336;    /* Rouge */
-    --warning-color: #ff9800;
-    --background-color: #121212; /* Noir profond */
-    --card-color: #1a1a2e; /* Noir légèrement bleuté pour un dégradé naturel */
-    --text-color: #e0e0e0; /* Texte clair */
-    --text-light: #b0b0b0; /* Texte léger */
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --border-radius: 12px;
+    /* Couleurs principales */
+    --primary-color: #00ff88;          /* Vert clair Matrix */
+    --primary-dark: #00cc6a;          /* Vert foncé */
+    --secondary-color: #00ff41;       /* Vert néon */
+    --accent-color: #00a3ff;          /* Bleu accent */
+    --success-color: #00ff88;         /* Vert succès */
+    --error-color: #ff3366;           /* Rouge erreur */
+    --warning-color: #ffcc00;         /* Jaune avertissement */
+    
+    /* Couleurs de fond et texte */
+    --background-color: #000000;      /* Noir profond */
+    --card-color: #111111;            /* Noir charbon */
+    --text-color: #ffffff;           /* Blanc */
+    --text-light: #a0a0a0;           /* Gris clair */
+    
+    /* Effets */
+    --shadow: 0 4px 6px rgba(0, 255, 136, 0.1);
+    --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+    --border-radius: 10px;
     --transition: all 0.3s ease;
+    
+    /* Bordures */
+    --border-glow: 1px solid rgba(0, 255, 136, 0.5);
+    --border-subtle: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 /* Corps de la page */
 body {
-    background: linear-gradient(180deg, var(--background-color) 0%, #0a0a1a 50%, var(--primary-dark) 100%);
+    background: var(--background-color);
     color: var(--text-color);
     min-height: 100vh;
     padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Effet "code Matrix" en arrière-plan */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, 
+            rgba(0, 255, 136, 0.03) 0%, 
+            transparent 50%, 
+            rgba(0, 255, 136, 0.03) 100%
+        );
+    background-size: 100% 2px;
+    pointer-events: none;
+    z-index: -1;
+    animation: matrixRain 10s linear infinite;
+}
+
+@keyframes matrixRain {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
 }
 
 /* En-tête */
@@ -44,6 +88,7 @@ header {
     background-color: var(--card-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    border: var(--border-glow);
     min-height: 120px;
 }
 
@@ -60,7 +105,7 @@ header {
     gap: 15px;
 }
 
-/* Statut du RER B */
+/* Statut du RER B - Style Matrix */
 .rer-b-status {
     display: flex;
     flex-direction: column;
@@ -75,30 +120,38 @@ header {
     transition: var(--transition);
     cursor: pointer;
     text-align: center;
+    background-color: rgba(0, 255, 136, 0.05);
+    border: var(--border-subtle);
 }
 
 .rer-b-status:hover {
-    opacity: 0.9;
+    background-color: rgba(0, 255, 136, 0.15);
     transform: scale(1.05);
+    box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
 }
 
 .rer-b-status.normal {
-    background-color: rgba(76, 175, 80, 0.2);
+    background-color: rgba(0, 255, 136, 0.1);
+    border-color: rgba(0, 255, 136, 0.4);
     color: var(--success-color);
 }
 
 .rer-b-status.perturbed {
-    background-color: rgba(255, 152, 0, 0.2);
+    background-color: rgba(255, 204, 0, 0.1);
+    border-color: rgba(255, 204, 0, 0.4);
     color: var(--warning-color);
 }
 
 .rer-b-status.interrupted {
-    background-color: rgba(244, 67, 54, 0.2);
+    background-color: rgba(255, 51, 102, 0.1);
+    border-color: rgba(255, 51, 102, 0.4);
     color: var(--error-color);
 }
 
 .rer-b-status.unknown {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 255, 136, 0.05);
+    border-color: rgba(0, 255, 136, 0.1);
     color: var(--text-light);
 }
 
@@ -109,6 +162,7 @@ header {
 .rer-b-status span {
     font-size: 0.75rem;
     line-height: 1.2;
+    font-family: 'Consolas', monospace;
 }
 
 /* Modal RER B */
@@ -118,9 +172,9 @@ header {
 
 .rer-b-modal-content {
     max-width: 500px;
-    background: linear-gradient(135deg, var(--card-color), var(--primary-dark));
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.3);
+    background-color: var(--card-color);
+    border: var(--border-glow);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
 }
 
 .rer-b-modal-content h2 {
@@ -129,6 +183,7 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-family: 'Consolas', monospace;
 }
 
 .rer-b-details {
@@ -144,28 +199,33 @@ header {
     gap: 15px;
     padding: 20px;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 255, 136, 0.05);
     text-align: center;
     transition: var(--transition);
+    border: var(--border-subtle);
 }
 
 .rer-b-status-large.normal {
-    background-color: rgba(76, 175, 80, 0.15);
+    background-color: rgba(0, 255, 136, 0.1);
+    border-color: rgba(0, 255, 136, 0.3);
     color: var(--success-color);
 }
 
 .rer-b-status-large.perturbed {
-    background-color: rgba(255, 152, 0, 0.15);
+    background-color: rgba(255, 204, 0, 0.1);
+    border-color: rgba(255, 204, 0, 0.3);
     color: var(--warning-color);
 }
 
 .rer-b-status-large.interrupted {
-    background-color: rgba(244, 67, 54, 0.15);
+    background-color: rgba(255, 51, 102, 0.1);
+    border-color: rgba(255, 51, 102, 0.3);
     color: var(--error-color);
 }
 
 .rer-b-status-large.unknown {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 255, 136, 0.05);
+    border-color: rgba(0, 255, 136, 0.1);
     color: var(--text-light);
 }
 
@@ -176,6 +236,7 @@ header {
 .rer-b-status-large span {
     font-size: 1.5rem;
     font-weight: 600;
+    font-family: 'Consolas', monospace;
 }
 
 .rer-b-info-grid {
@@ -189,8 +250,9 @@ header {
     align-items: flex-start;
     gap: 12px;
     padding: 15px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 255, 136, 0.03);
     border-radius: 8px;
+    border: 1px solid rgba(0, 255, 136, 0.1);
 }
 
 .rer-b-info-item i {
@@ -204,6 +266,7 @@ header {
     font-weight: 500;
     color: var(--text-light);
     min-width: 150px;
+    font-family: 'Consolas', monospace;
 }
 
 .rer-b-info-value {
@@ -211,6 +274,7 @@ header {
     font-weight: 500;
     flex: 1;
     line-height: 1.5;
+    font-family: 'Consolas', monospace;
 }
 
 /* Fermeture de la modal RER B */
@@ -219,13 +283,14 @@ header {
     font-size: 28px;
     cursor: pointer;
     transition: var(--transition);
+    font-family: 'Consolas', monospace;
 }
 
 .rer-b-close:hover {
     color: var(--error-color);
 }
 
-/* Statut de l'API - Icône seulement à droite */
+/* Statut de l'API */
 .api-status {
     display: flex;
     align-items: center;
@@ -237,6 +302,12 @@ header {
     transition: var(--transition);
     background-color: var(--card-color);
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
+}
+
+.api-status:hover {
+    box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
 }
 
 .api-status i {
@@ -257,8 +328,8 @@ header {
 
 /* Bouton Ajouter */
 .add-btn {
-    background-color: var(--primary-color);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #000;
     border: none;
     width: 80px;
     height: 80px;
@@ -275,57 +346,28 @@ header {
     transition: var(--transition);
     box-shadow: var(--shadow);
     text-align: center;
+    font-family: 'Consolas', monospace;
 }
 
 .add-btn:hover {
-    background-color: var(--primary-dark);
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
     transform: scale(1.05);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-glow);
 }
 
 .add-btn i {
     font-size: 1.5rem;
 }
 
-/* Bouton Robot Aspirateur */
-.robot-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-    box-shadow: var(--shadow);
-}
-
-.robot-btn:hover {
-    background-color: #ff4757;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(255, 107, 107, 0.3);
-}
-
-.robot-btn i {
-    font-size: 1.1rem;
-}
-
-.robot-btn:active {
-    transform: scale(0.98);
-}
-
 /* Conteneur Météo */
 .weather-container {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
+    background-color: var(--card-color);
+    color: var(--text-color);
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 30px;
     box-shadow: var(--shadow);
+    border: var(--border-glow);
 }
 
 .weather-header {
@@ -336,6 +378,7 @@ header {
     font-size: 1.1rem;
     margin-bottom: 15px;
     flex-wrap: wrap;
+    font-family: 'Consolas', monospace;
 }
 
 .weather-controls {
@@ -345,23 +388,26 @@ header {
 }
 
 .weather-tab {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
+    background-color: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: var(--text-light);
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
     transition: var(--transition);
+    font-family: 'Consolas', monospace;
 }
 
 .weather-tab:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 255, 136, 0.2);
+    color: var(--primary-color);
 }
 
 .weather-tab.active {
-    background-color: white;
-    color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: #000;
+    border-color: var(--primary-color);
 }
 
 .weather-content {
@@ -391,17 +437,18 @@ header {
 }
 
 .weather-detail-card {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 255, 136, 0.05);
     border-radius: 8px;
     padding: 10px 6px;
     text-align: center;
-    backdrop-filter: blur(5px);
     transition: var(--transition);
+    border: 1px solid rgba(0, 255, 136, 0.1);
 }
 
 .weather-detail-card:hover {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(0, 255, 136, 0.15);
     transform: translateY(-2px);
+    border-color: rgba(0, 255, 136, 0.3);
 }
 
 .weather-detail-card .time {
@@ -409,11 +456,13 @@ header {
     opacity: 0.9;
     margin-bottom: 4px;
     font-weight: 500;
+    font-family: 'Consolas', monospace;
 }
 
 .weather-detail-card .temp {
     font-size: 1.1rem;
     font-weight: 600;
+    font-family: 'Consolas', monospace;
 }
 
 .weather-detail-card .icon {
@@ -425,6 +474,7 @@ header {
     font-size: 0.75rem;
     opacity: 0.9;
     margin-top: 2px;
+    font-family: 'Consolas', monospace;
 }
 
 /* Résumé météo */
@@ -434,7 +484,7 @@ header {
     gap: 15px;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 .summary-item {
@@ -443,8 +493,9 @@ header {
     align-items: center;
     gap: 5px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 255, 136, 0.05);
     border-radius: 8px;
+    border: 1px solid rgba(0, 255, 136, 0.1);
 }
 
 .summary-item i {
@@ -455,20 +506,14 @@ header {
 .summary-item span:first-of-type {
     font-size: 1.3rem;
     font-weight: 600;
+    font-family: 'Consolas', monospace;
 }
 
 .summary-label {
     font-size: 0.8rem;
     opacity: 0.8;
     text-align: center;
-}
-
-/* Conteneur des applications */
-.apps-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
-    padding: 0 10px;
+    font-family: 'Consolas', monospace;
 }
 
 /* Conteneur des cartes */
@@ -479,14 +524,15 @@ header {
     margin: 30px auto;
     padding: 20px;
     max-width: 1400px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background-color: var(--card-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    border: var(--border-glow);
 }
 
-/* Carte d'application - Style uniformisé */
+/* Carte d'application */
 .app-card {
-    background-color: var(--card-color);
+    background-color: rgba(0, 255, 136, 0.03);
     border-radius: var(--border-radius);
     padding: 25px;
     text-align: center;
@@ -500,7 +546,14 @@ header {
     height: 220px;
     cursor: pointer;
     animation: fadeIn 0.5s ease forwards;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: var(--border-subtle);
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
+    background-color: rgba(0, 255, 136, 0.08);
 }
 
 /* Cartes témoins Google */
@@ -512,12 +565,6 @@ header {
     color: white;
 }
 
-.app-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    border-color: var(--primary-color);
-}
-
 /* Icône de l'application */
 .app-icon {
     width: 80px;
@@ -526,7 +573,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 255, 136, 0.2);
     transition: var(--transition);
     overflow: hidden;
 }
@@ -539,15 +586,15 @@ header {
 
 .app-icon i {
     font-size: 2.5rem;
-    color: white;
+    color: var(--primary-color);
 }
 
 .app-card:hover .app-icon {
     transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 255, 136, 0.4);
 }
 
-/* Pour les icônes des robots (avec fond dégradé) */
+/* Pour les icônes des robots */
 #robotRdcCard .app-icon,
 #robotEtageCard .app-icon {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -563,6 +610,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Consolas', monospace;
 }
 
 /* Actions de la carte */
@@ -576,7 +624,7 @@ header {
 
 /* Bouton d'action pour les cartes */
 .card-action-btn {
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), #0066cc);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -588,17 +636,18 @@ header {
     align-items: center;
     gap: 8px;
     transition: var(--transition);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 163, 255, 0.3);
+    font-family: 'Consolas', monospace;
 }
 
 .card-action-btn:hover {
-    background-color: #ff4757;
+    background: linear-gradient(135deg, #0066cc, var(--accent-color));
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 163, 255, 0.5);
 }
 
 .card-action-btn:disabled {
-    background-color: #cccccc;
+    background: linear-gradient(135deg, #333, #555);
     cursor: not-allowed;
     transform: none;
 }
@@ -645,7 +694,7 @@ header {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.9);
     animation: fadeIn 0.3s ease;
 }
 
@@ -661,12 +710,10 @@ header {
     border-radius: var(--border-radius);
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
     animation: slideIn 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: var(--border-glow);
 }
-
-
 
 @keyframes slideIn {
     from {
@@ -686,16 +733,18 @@ header {
     font-weight: bold;
     cursor: pointer;
     transition: var(--transition);
+    font-family: 'Consolas', monospace;
 }
 
 .close:hover {
-    color: var(--accent-color);
+    color: var(--error-color);
 }
 
 .modal-content h2 {
-    color: var(--primary-dark);
+    color: var(--primary-color);
     margin-bottom: 20px;
     font-size: 1.5rem;
+    font-family: 'Consolas', monospace;
 }
 
 /* Formulaire */
@@ -708,24 +757,28 @@ header {
     margin-bottom: 8px;
     font-weight: 500;
     color: var(--text-color);
+    font-family: 'Consolas', monospace;
 }
 
 .form-group input[type="text"],
 .form-group input[type="url"] {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid rgba(0, 255, 136, 0.3);
     border-radius: 8px;
     font-size: 1rem;
     transition: var(--transition);
     box-sizing: border-box;
+    background-color: rgba(0, 255, 136, 0.05);
+    color: var(--text-color);
+    font-family: 'Consolas', monospace;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="url"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
 }
 
 .form-group input[type="file"] {
@@ -735,30 +788,33 @@ header {
 .form-group label[for="siteIcon"] {
     cursor: pointer;
     padding: 12px;
-    background-color: #f8f9fa;
-    border: 2px dashed #ccc;
+    background-color: rgba(0, 255, 136, 0.05);
+    border: 1px dashed rgba(0, 255, 136, 0.3);
     border-radius: 8px;
     text-align: center;
     transition: var(--transition);
+    color: var(--text-light);
+    font-family: 'Consolas', monospace;
 }
 
 .form-group label[for="siteIcon"]:hover {
     border-color: var(--primary-color);
-    background-color: #e9ecef;
+    background-color: rgba(0, 255, 136, 0.1);
+    color: var(--text-color);
 }
 
 .image-preview {
     margin-top: 15px;
     text-align: center;
     padding: 15px;
-    border: 2px dashed #e0e0e0;
+    border: 1px dashed rgba(0, 255, 136, 0.3);
     border-radius: 8px;
     min-height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f8f9fa;
+    background-color: rgba(0, 255, 136, 0.03);
 }
 
 .image-preview img {
@@ -771,6 +827,7 @@ header {
 .image-preview p {
     color: var(--text-light);
     font-size: 0.9rem;
+    font-family: 'Consolas', monospace;
 }
 
 /* Actions du formulaire */
@@ -782,24 +839,26 @@ header {
 }
 
 .cancel-btn {
-    background-color: #f0f0f0;
+    background-color: rgba(0, 255, 136, 0.05);
     color: var(--text-color);
-    border: none;
+    border: 1px solid rgba(0, 255, 136, 0.3);
     padding: 12px 24px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
     transition: var(--transition);
+    font-family: 'Consolas', monospace;
 }
 
 .cancel-btn:hover {
-    background-color: #e0e0e0;
+    background-color: rgba(0, 255, 136, 0.1);
+    border-color: rgba(0, 255, 136, 0.5);
 }
 
 .submit-btn {
-    background-color: var(--primary-color);
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #000;
     border: none;
     padding: 12px 24px;
     border-radius: 8px;
@@ -807,10 +866,11 @@ header {
     font-size: 1rem;
     font-weight: 500;
     transition: var(--transition);
+    font-family: 'Consolas', monospace;
 }
 
 .submit-btn:hover {
-    background-color: var(--primary-dark);
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
 }
 
 /* Responsive */
@@ -844,10 +904,6 @@ header {
         margin: 10% auto;
     }
 
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
     .weather-summary {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -860,20 +916,6 @@ header {
 
     header h1 {
         font-size: 1.5rem;
-    }
-
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 15px;
-    }
-
-    .app-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .app-name {
-        font-size: 0.8rem;
     }
 
     .weather-summary {
@@ -899,11 +941,11 @@ header {
 
 /* Scrollbar personnalisée */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1e1e1e;
+    background: #000000;
     border-radius: 10px;
 }
 
@@ -933,9 +975,11 @@ header {
 /* Message d'erreur */
 .error-message {
     color: var(--error-color);
-    background-color: rgba(244, 67, 54, 0.1);
+    background-color: rgba(255, 51, 102, 0.1);
     padding: 10px;
     border-radius: 8px;
     margin: 10px 0;
     text-align: center;
+    border: 1px solid rgba(255, 51, 102, 0.3);
+    font-family: 'Consolas', monospace;
 }
