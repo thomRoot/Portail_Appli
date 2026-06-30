@@ -34,7 +34,7 @@
 
 #### 📊 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
-- **Courbe des précipitations** (pluie et neige) en mm **avec couleur orange vif (rgba(255, 215, 0)) pour une meilleure lisibilité**
+- **Courbe des précipitations** (pluie et neige) en mm
 - **Deux axes Y** : Température à gauche, précipitations à droite
 - **Design interactif** avec Chart.js
 
@@ -63,42 +63,15 @@
 - **Icône indicative** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
 - **Mise à jour automatique** : Toutes les 2 minutes
 - **Couleurs thématiques** : Vert (normal), Orange (perturbé), Rouge (annulé)
-- **Message de perturbation** : Affichage du message officiel (ex: "Retards de 10 minutes")
 
 **Technologie** :
-- Utilisation de l'**API Île-de-France Mobilités (PRIM)** : [https://prim.iledefrance-mobilites.fr/](https://prim.iledefrance-mobilites.fr/)
-- **Gratuite et sans clé API** : Accès public aux données officielles
-- **Dataset utilisé** : `etat-du-trafic-par-ligne` pour le statut en temps réel
+- Utilisation de l'API Navitia (alternative à l'API RATP officielle)
+- Simulation pour la démo si aucune clé API n'est configurée
 
 **Configuration** :
-Aucune clé API nécessaire ! Le code utilise directement l'API publique :
+Dans `app.js`, vous pouvez configurer :
 ```javascript
-const IDFM_API_URL = 'https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=etat-du-trafic-par-ligne&q=RER+B&rows=1';
-```
-
-### 5. **Horaires et itinéraires RER B** ⚡ NOUVEAU
-
-**Fonctionnalités** :
-- **Bouton "Prochain RER B"** : Accès rapide aux horaires et itinéraires
-- **Affichage des 5 prochains passages** à la station **Aulnay-sous-Bois** (votre adresse : 6 rue d'Ebreuil)
-- **Calcul d'itinéraire** : Aulnay-sous-Bois → **SNARP CANA (Créteil)**
-- **Affichage des retards** : Les retards sont marqués en orange
-- **Onglets** : Basculer entre "Horaires" et "Itinéraire"
-
-**Technologie** :
-- **Dataset `horaires-theoriques-et-temps-reel`** : Récupère les horaires en temps réel
-- **Dataset `calcul-d-itineraire`** : Calcule l'itinéraire entre deux points
-- **Coordonnées utilisées** :
-  - **Départ** : `48.9456, 2.4955` (Aulnay-sous-Bois)
-  - **Arrivée** : `48.7922, 2.4514` (SNARP CANA, Créteil)
-
-**Exemple d'URLs** :
-```javascript
-// Horaires
-const IDFM_SCHEDULES_URL = (station) => `https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=horaires-theoriques-et-temps-reel&q=RER+B+${station}&rows=5`;
-
-// Itinéraire
-const IDFM_ITINERARY_URL = (fromLat, fromLon, toLat, toLon) => `https://prim.iledefrance-mobilites.fr/api/records/1.0/search/?dataset=calcul-d-itineraire&from=${fromLat},${fromLon}&to=${toLat},${toLon}&rows=3`;
+const NAVITIA_API_KEY = 'votre_cle_navitia_ici';
 ```
 
 ### 5. **Thème Bleu/Noir** ⚡ NOUVEAU
@@ -154,7 +127,7 @@ Modifiez les variables CSS dans `styles.css` :
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
-- **API Transport** : [Île-de-France Mobilités PRIM](https://prim.iledefrance-mobilites.fr/) (pour le statut RER B, **gratuite et sans clé API**)
+- **API Transport** : [Navitia](https://www.navitia.io/) (pour le statut RER B)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
@@ -238,12 +211,14 @@ par :
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
 
-### 3. Statut du RER B (aucune configuration nécessaire)
+### 3. Configurer votre clé API Navitia (optionnel)
 
-Le statut du RER B est **automatiquement récupéré** depuis l'API **Île-de-France Mobilités (PRIM)**.
-**Aucune clé API n'est nécessaire** : l'API est publique et gratuite.
+Pour activer le suivi du RER B, configurez votre clé Navitia dans `app.js` :
+```javascript
+const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
+```
 
-> **Note** : Si l'API est temporairement indisponible, un message d'erreur sera affiché.
+> **Note** : Si vous ne configurez pas de clé Navitia, une simulation sera utilisée pour la démo.
 
 ### 3. Installation locale
 
