@@ -168,6 +168,44 @@ header {
     line-height: 1.2;
 }
 
+
+/* Weather Details Card dans le header */
+.weather-header-mini {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: var(--border-radius);
+    border: var(--border-subtle);
+    transition: var(--transition);
+}
+
+.weather-header-mini:hover {
+    background: rgba(79, 70, 229, 0.15);
+    border: var(--border-glow);
+    box-shadow: var(--shadow-glow);
+}
+
+.weather-mini-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.weather-mini-item i {
+    font-size: 1rem;
+    color: var(--accent-color);
+}
+
+.weather-mini-item span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
 /* Modal RER B */
 .rer-b-modal {
     z-index: 1001;

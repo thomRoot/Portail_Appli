@@ -627,9 +627,15 @@ function updateWeatherSummary(data, forecastData = null) {
     const windElement = document.getElementById('currentWind');
     const rainElement = document.getElementById('currentRain');
     
+    // Mise à jour des éléments du header
+    const headerTempElement = document.getElementById('headerCurrentTemp');
+    const headerWindElement = document.getElementById('headerCurrentWind');
+    const headerRainElement = document.getElementById('headerCurrentRain');
+    
     // Température
     const temperature = Math.round(data.main.temp);
     tempElement.textContent = `${temperature}°C`;
+    if (headerTempElement) headerTempElement.textContent = `${temperature}°C`;
     
     // Tendance des températures
     if (forecastData && forecastData.list && forecastData.list.length > 0) {
@@ -655,14 +661,18 @@ function updateWeatherSummary(data, forecastData = null) {
     // Vent (convertir de m/s à km/h)
     const windSpeed = Math.round(data.wind.speed * 3.6);
     windElement.textContent = `${windSpeed} km/h`;
+    if (headerWindElement) headerWindElement.textContent = `${windSpeed} km/h`;
     
     // Précipitations (si disponibles)
     if (data.rain && data.rain['1h']) {
         rainElement.textContent = `${data.rain['1h']} mm`;
+        if (headerRainElement) headerRainElement.textContent = `${data.rain['1h']} mm`;
     } else if (data.snow && data.snow['1h']) {
         rainElement.textContent = `${data.snow['1h']} mm (neige)`;
+        if (headerRainElement) headerRainElement.textContent = `${data.snow['1h']} mm`;
     } else {
         rainElement.textContent = '0 mm';
+        if (headerRainElement) headerRainElement.textContent = '0 mm';
     }
 }
 
@@ -828,6 +838,14 @@ function updateWeatherError() {
     document.getElementById('tempTrend').style.color = '';
     document.getElementById('currentWind').textContent = '-- km/h';
     document.getElementById('currentRain').textContent = '-- mm';
+    
+    // Mise à jour des éléments du header
+    const headerTempElement = document.getElementById('headerCurrentTemp');
+    const headerWindElement = document.getElementById('headerCurrentWind');
+    const headerRainElement = document.getElementById('headerCurrentRain');
+    if (headerTempElement) headerTempElement.textContent = '--°C';
+    if (headerWindElement) headerWindElement.textContent = '-- km/h';
+    if (headerRainElement) headerRainElement.textContent = '-- mm';
     
     // Effacer le graphique
     const ctx = document.getElementById('weatherChart');
