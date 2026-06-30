@@ -1,3 +1,10 @@
+/* ============================================
+   STYLE V1.3e : MIDNIGHT BLUE
+   Inspiration : Nuit étoilée avec des bleus profonds
+   Couleurs : Bleu nuit + Bleu électrique + Violet
+   Effets : Dégradés bleutés, ombres violettes, lueurs bleues
+   ============================================ */
+
 /* Reset et variables */
 * {
     margin: 0;
@@ -7,28 +14,69 @@
 }
 
 :root {
-    --primary-color: #1e88e5;  /* Bleu inspiré du widget météo */
-    --primary-dark: #1565c0;  /* Bleu foncé */
-    --secondary-color: #0d47a1; /* Bleu secondaire */
-    --accent-color: #ff6b6b;
-    --success-color: #4caf50;  /* Vert */
-    --error-color: #f44336;    /* Rouge */
-    --warning-color: #ff9800;
-    --background-color: #121212; /* Noir profond */
-    --card-color: #1a1a2e; /* Noir légèrement bleuté pour un dégradé naturel */
-    --text-color: #e0e0e0; /* Texte clair */
-    --text-light: #b0b0b0; /* Texte léger */
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --border-radius: 12px;
-    --transition: all 0.3s ease;
+    /* Couleurs principales */
+    --primary-color: #4f46e5;          /* Bleu électrique */
+    --primary-dark: #4338ca;          /* Bleu foncé */
+    --secondary-color: #8b5cf6;       /* Violet */
+    --accent-color: #06b6d4;          /* Cyan */
+    --success-color: #10b981;         /* Vert émeraude */
+    --error-color: #ef4444;           /* Rouge profond */
+    --warning-color: #f59e0b;         /* Orange */
+    
+    /* Couleurs de fond et texte */
+    --background-color: #0a0a1a;      /* Bleu nuit très foncé */
+    --background-gradient: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f172a 100%);
+    --card-color: #16213e;            /* Bleu nuit */
+    --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    --text-color: #e0e0ff;           /* Blanc bleuté */
+    --text-light: #a3b8d1;           /* Texte léger bleuté */
+    
+    /* Effets */
+    --shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+    --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.3);
+    --shadow-deep: 0 8px 16px rgba(139, 92, 246, 0.3);
+    --border-radius: 14px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Bordures */
+    --border-glow: 1px solid rgba(79, 70, 229, 0.4);
+    --border-subtle: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 /* Corps de la page */
 body {
-    background: linear-gradient(180deg, var(--background-color) 0%, #0a0a1a 50%, var(--primary-dark) 100%);
+    background: var(--background-gradient);
     color: var(--text-color);
     min-height: 100vh;
     padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Effet d'étoiles en arrière-plan */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 25px 30px, rgba(255,255,255,0.15), transparent),
+        radial-gradient(1px 1px at 75px 80px, rgba(255,255,255,0.1), transparent),
+        radial-gradient(1px 1px at 150px 50px, rgba(255,255,255,0.12), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(255,255,255,0.08), transparent),
+        radial-gradient(1px 1px at 250px 180px, rgba(255,255,255,0.15), transparent);
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    pointer-events: none;
+    z-index: -1;
+    animation: twinkle 30s linear infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
 /* En-tête */
@@ -41,9 +89,10 @@ header {
     flex-wrap: wrap;
     gap: 20px;
     position: relative;
-    background-color: var(--card-color);
+    background: var(--card-gradient);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--shadow-glow);
+    border: var(--border-glow);
     min-height: 120px;
 }
 
@@ -60,7 +109,7 @@ header {
     gap: 15px;
 }
 
-/* Statut du RER B */
+/* Statut du RER B - Style Midnight Blue */
 .rer-b-status {
     display: flex;
     flex-direction: column;
@@ -75,30 +124,38 @@ header {
     transition: var(--transition);
     cursor: pointer;
     text-align: center;
+    background: rgba(79, 70, 229, 0.1);
+    border: var(--border-subtle);
 }
 
 .rer-b-status:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+    background: rgba(79, 70, 229, 0.2);
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
 }
 
 .rer-b-status.normal {
-    background-color: rgba(76, 175, 80, 0.2);
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
     color: var(--success-color);
 }
 
 .rer-b-status.perturbed {
-    background-color: rgba(255, 152, 0, 0.2);
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
     color: var(--warning-color);
 }
 
 .rer-b-status.interrupted {
-    background-color: rgba(244, 67, 54, 0.2);
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
     color: var(--error-color);
 }
 
 .rer-b-status.unknown {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(79, 70, 229, 0.05);
+    border-color: rgba(79, 70, 229, 0.1);
     color: var(--text-light);
 }
 
@@ -118,9 +175,9 @@ header {
 
 .rer-b-modal-content {
     max-width: 500px;
-    background: linear-gradient(135deg, var(--card-color), var(--primary-dark));
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.3);
+    background: var(--card-gradient);
+    border: var(--border-glow);
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
 }
 
 .rer-b-modal-content h2 {
@@ -144,28 +201,33 @@ header {
     gap: 15px;
     padding: 20px;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(79, 70, 229, 0.08);
     text-align: center;
     transition: var(--transition);
+    border: var(--border-subtle);
 }
 
 .rer-b-status-large.normal {
-    background-color: rgba(76, 175, 80, 0.15);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
     color: var(--success-color);
 }
 
 .rer-b-status-large.perturbed {
-    background-color: rgba(255, 152, 0, 0.15);
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
     color: var(--warning-color);
 }
 
 .rer-b-status-large.interrupted {
-    background-color: rgba(244, 67, 54, 0.15);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
     color: var(--error-color);
 }
 
 .rer-b-status-large.unknown {
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(79, 70, 229, 0.05);
+    border-color: rgba(79, 70, 229, 0.1);
     color: var(--text-light);
 }
 
@@ -189,8 +251,9 @@ header {
     align-items: flex-start;
     gap: 12px;
     padding: 15px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(79, 70, 229, 0.05);
     border-radius: 8px;
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .rer-b-info-item i {
@@ -225,7 +288,7 @@ header {
     color: var(--error-color);
 }
 
-/* Statut de l'API - Icône seulement à droite */
+/* Statut de l'API */
 .api-status {
     display: flex;
     align-items: center;
@@ -235,8 +298,15 @@ header {
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: var(--transition);
-    background-color: var(--card-color);
+    background: var(--card-color);
     box-shadow: var(--shadow);
+    border: var(--border-subtle);
+}
+
+.api-status:hover {
+    box-shadow: var(--shadow-glow);
+    border: var(--border-glow);
+    transform: scale(1.05);
 }
 
 .api-status i {
@@ -257,7 +327,7 @@ header {
 
 /* Bouton Ajouter */
 .add-btn {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border: none;
     width: 80px;
@@ -273,59 +343,29 @@ header {
     justify-content: center;
     gap: 5px;
     transition: var(--transition);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--shadow-glow);
     text-align: center;
 }
 
 .add-btn:hover {
-    background-color: var(--primary-dark);
-    transform: scale(1.05);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-dark));
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: var(--shadow-deep);
 }
 
 .add-btn i {
     font-size: 1.5rem;
 }
 
-/* Bouton Robot Aspirateur */
-.robot-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-    box-shadow: var(--shadow);
-}
-
-.robot-btn:hover {
-    background-color: #ff4757;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(255, 107, 107, 0.3);
-}
-
-.robot-btn i {
-    font-size: 1.1rem;
-}
-
-.robot-btn:active {
-    transform: scale(0.98);
-}
-
 /* Conteneur Météo */
 .weather-container {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: white;
+    background: var(--card-gradient);
+    color: var(--text-color);
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 30px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--shadow-glow);
+    border: var(--border-glow);
 }
 
 .weather-header {
@@ -345,9 +385,9 @@ header {
 }
 
 .weather-tab {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
+    background: rgba(79, 70, 229, 0.2);
+    border: 1px solid rgba(79, 70, 229, 0.3);
+    color: var(--text-light);
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
@@ -356,12 +396,15 @@ header {
 }
 
 .weather-tab:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background: rgba(79, 70, 229, 0.4);
+    color: white;
+    border-color: rgba(79, 70, 229, 0.5);
 }
 
 .weather-tab.active {
-    background-color: white;
-    color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 .weather-content {
@@ -391,17 +434,19 @@ header {
 }
 
 .weather-detail-card {
-    background-color: rgba(255, 255, 255, 0.15);
+    background: rgba(79, 70, 229, 0.05);
     border-radius: 8px;
     padding: 10px 6px;
     text-align: center;
-    backdrop-filter: blur(5px);
     transition: var(--transition);
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .weather-detail-card:hover {
-    background-color: rgba(255, 255, 255, 0.25);
+    background: rgba(79, 70, 229, 0.15);
     transform: translateY(-2px);
+    border-color: rgba(79, 70, 229, 0.3);
+    box-shadow: var(--shadow-glow);
 }
 
 .weather-detail-card .time {
@@ -434,7 +479,7 @@ header {
     gap: 15px;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid rgba(79, 70, 229, 0.2);
 }
 
 .summary-item {
@@ -443,8 +488,9 @@ header {
     align-items: center;
     gap: 5px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(79, 70, 229, 0.05);
     border-radius: 8px;
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 .summary-item i {
@@ -463,14 +509,6 @@ header {
     text-align: center;
 }
 
-/* Conteneur des applications */
-.apps-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
-    padding: 0 10px;
-}
-
 /* Conteneur des cartes */
 .cards-container {
     display: grid;
@@ -479,14 +517,15 @@ header {
     margin: 30px auto;
     padding: 20px;
     max-width: 1400px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background: var(--card-gradient);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--shadow-glow);
+    border: var(--border-glow);
 }
 
-/* Carte d'application - Style uniformisé */
+/* Carte d'application */
 .app-card {
-    background-color: var(--card-color);
+    background: rgba(30, 41, 59, 0.8);
     border-radius: var(--border-radius);
     padding: 25px;
     text-align: center;
@@ -500,7 +539,14 @@ header {
     height: 220px;
     cursor: pointer;
     animation: fadeIn 0.5s ease forwards;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: var(--border-subtle);
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-deep);
+    border: var(--border-glow);
+    background: rgba(30, 41, 59, 1);
 }
 
 /* Cartes témoins Google */
@@ -512,12 +558,6 @@ header {
     color: white;
 }
 
-.app-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    border-color: var(--primary-color);
-}
-
 /* Icône de l'application */
 .app-icon {
     width: 80px;
@@ -526,7 +566,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
     transition: var(--transition);
     overflow: hidden;
 }
@@ -544,10 +584,10 @@ header {
 
 .app-card:hover .app-icon {
     transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(79, 70, 229, 0.5);
 }
 
-/* Pour les icônes des robots (avec fond dégradé) */
+/* Pour les icônes des robots */
 #robotRdcCard .app-icon,
 #robotEtageCard .app-icon {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -576,7 +616,7 @@ header {
 
 /* Bouton d'action pour les cartes */
 .card-action-btn {
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), #0891b2);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -588,17 +628,17 @@ header {
     align-items: center;
     gap: 8px;
     transition: var(--transition);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
 }
 
 .card-action-btn:hover {
-    background-color: #ff4757;
+    background: linear-gradient(135deg, #0891b2, var(--accent-color));
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 4px 8px rgba(6, 182, 212, 0.5);
 }
 
 .card-action-btn:disabled {
-    background-color: #cccccc;
+    background: linear-gradient(135deg, #333, #555);
     cursor: not-allowed;
     transform: none;
 }
@@ -645,7 +685,7 @@ header {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(10, 10, 26, 0.9);
     animation: fadeIn 0.3s ease;
 }
 
@@ -655,18 +695,16 @@ header {
 }
 
 .modal-content {
-    background-color: var(--card-color);
+    background: var(--card-gradient);
     margin: 5% auto;
     padding: 30px;
     border-radius: var(--border-radius);
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
     animation: slideIn 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: var(--border-glow);
 }
-
-
 
 @keyframes slideIn {
     from {
@@ -689,11 +727,11 @@ header {
 }
 
 .close:hover {
-    color: var(--accent-color);
+    color: var(--error-color);
 }
 
 .modal-content h2 {
-    color: var(--primary-dark);
+    color: var(--primary-color);
     margin-bottom: 20px;
     font-size: 1.5rem;
 }
@@ -714,18 +752,20 @@ header {
 .form-group input[type="url"] {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid rgba(79, 70, 229, 0.3);
     border-radius: 8px;
     font-size: 1rem;
     transition: var(--transition);
     box-sizing: border-box;
+    background: rgba(30, 41, 59, 0.5);
+    color: var(--text-color);
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="url"]:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
 .form-group input[type="file"] {
@@ -735,30 +775,32 @@ header {
 .form-group label[for="siteIcon"] {
     cursor: pointer;
     padding: 12px;
-    background-color: #f8f9fa;
-    border: 2px dashed #ccc;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px dashed rgba(79, 70, 229, 0.3);
     border-radius: 8px;
     text-align: center;
     transition: var(--transition);
+    color: var(--text-light);
 }
 
 .form-group label[for="siteIcon"]:hover {
     border-color: var(--primary-color);
-    background-color: #e9ecef;
+    background: rgba(30, 41, 59, 0.8);
+    color: var(--text-color);
 }
 
 .image-preview {
     margin-top: 15px;
     text-align: center;
     padding: 15px;
-    border: 2px dashed #e0e0e0;
+    border: 1px dashed rgba(79, 70, 229, 0.3);
     border-radius: 8px;
     min-height: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #f8f9fa;
+    background: rgba(30, 41, 59, 0.3);
 }
 
 .image-preview img {
@@ -782,9 +824,9 @@ header {
 }
 
 .cancel-btn {
-    background-color: #f0f0f0;
+    background: rgba(30, 41, 59, 0.5);
     color: var(--text-color);
-    border: none;
+    border: 1px solid rgba(79, 70, 229, 0.3);
     padding: 12px 24px;
     border-radius: 8px;
     cursor: pointer;
@@ -794,11 +836,12 @@ header {
 }
 
 .cancel-btn:hover {
-    background-color: #e0e0e0;
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(79, 70, 229, 0.5);
 }
 
 .submit-btn {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border: none;
     padding: 12px 24px;
@@ -810,7 +853,7 @@ header {
 }
 
 .submit-btn:hover {
-    background-color: var(--primary-dark);
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-dark));
 }
 
 /* Responsive */
@@ -844,10 +887,6 @@ header {
         margin: 10% auto;
     }
 
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
     .weather-summary {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -860,20 +899,6 @@ header {
 
     header h1 {
         font-size: 1.5rem;
-    }
-
-    .apps-container {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 15px;
-    }
-
-    .app-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .app-name {
-        font-size: 0.8rem;
     }
 
     .weather-summary {
@@ -899,11 +924,11 @@ header {
 
 /* Scrollbar personnalisée */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1e1e1e;
+    background: #0a0a1a;
     border-radius: 10px;
 }
 
@@ -933,9 +958,10 @@ header {
 /* Message d'erreur */
 .error-message {
     color: var(--error-color);
-    background-color: rgba(244, 67, 54, 0.1);
+    background-color: rgba(239, 68, 68, 0.1);
     padding: 10px;
     border-radius: 8px;
     margin: 10px 0;
     text-align: center;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
