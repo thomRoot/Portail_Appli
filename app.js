@@ -14,11 +14,8 @@ const LON = 2.4856556085876904;
 // Note: L'API RATP officielle nécessite une clé, mais on peut utiliser une alternative publique
 // ou un proxy CORS pour accéder aux données.
 const RATP_API_URL = 'https://api.rATP.fr/v1/lines/RERB/status';
-// Alternative: Utilisation d'un proxy CORS pour contourner les restrictions
-const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/https://api.rATP.fr/v1/lines/RERB/status';
-// Solution de repli: Utilisation d'une API publique de transport (ex: Navitia)
-const NAVITIA_API_URL = 'https://api.navitia.io/v1/coverage/fr-idf/lines/line:RAT:RER:B';
-const NAVITIA_API_KEY = 'votre_cle_navitia_ici'; // À remplacer par votre clé Navitia
+// L'API RATP est gratuite et publique, mais nécessite un proxy CORS pour être appelée depuis un navigateur.
+const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
 
 // Variable pour la base de données et le graphique
 let db;
@@ -137,62 +134,61 @@ function showApiStatus(status, message) {
     }
 }
 
-// Chargement de l'état du RER B
+// Chargement de l'état du RER B (via API RATP + Proxy CORS)
 function loadRerBStatus() {
-    // Utilisation d'une API publique pour les perturbations RATP
-    // Comme l'API officielle nécessite une clé, on utilise une alternative
-    // ou une simulation pour la démo
+    // Afficher un état de chargement
+    updateRerBStatus('chargement', 'Chargement de l'état du RER B...');
     
-    // Option 1: Utilisation de l'API Navitia (nécessite une clé)
-    if (NAVITIA_API_KEY && NAVITIA_API_KEY !== 'votre_cle_navitia_ici') {
-        fetch(`${NAVITIA_API_URL}?apiKey=${NAVITIA_API_KEY}`)
-            .then(response => response.json())
-            .then(data => {
-                // Analyser les données pour déterminer l'état
-                const status = analyzeNavitiaData(data);
-                updateRerBStatus(status);
-            })
-            .catch(error => {
-                console.error('Erreur avec Navitia API:', error);
-                // Utiliser la simulation en cas d'erreur
-                simulateRerBStatus();
-            });
+    // Utiliser le proxy CORS pour contourner les restrictions
+    fetch(RATP_PROXY_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Analyser les données RATP
+            const result = analyzeRATPData(data);
+            updateRerBStatus(result.status, result.message);
+        })
+        .catch(error => {
+            console.error('Erreur avec l'API RATP:', error);
+            // En cas d'erreur, afficher un état "inconnu" avec un message clair
+            updateRerBStatus('inconnu', 'Impossible de récupérer l'état du RER B. Vérifiez votre connexion ou le proxy CORS.');
+        });
+}
+
+// Analyse des données RATP pour déterminer l'état
+function analyzeRATPData(data) {
+    // Structure typique de la réponse RATP
+    if (!data || !data.message) {
+        return { status: 'inconnu', message: 'Données incomplètes reçues de l'API RATP.' };
+    }
+    
+    // Vérifier si le message contient des mots-clés de perturbation
+    const message = data.message.toLowerCase();
+    if (message.includes('perturbation') || message.includes('interruption') || message.includes('ralenti') || message.includes('incident')) {
+        return {
+            status: 'perturbé',
+            message: data.message || 'Perturbations signalées sur la ligne RER B.'
+        };
+    } else if (message.includes('trafic normal') || message.includes('normal') || message.includes('circulation normale')) {
+        return {
+            status: 'normal',
+            message: data.message || 'Circulation normale sur la ligne RER B.'
+        };
+    } else if (message.includes('interrompu') || message.includes('suspendu')) {
+        return {
+            status: 'interrompu',
+            message: data.message || 'Trafic interrompu sur la ligne RER B.'
+        };
     } else {
-        // Option 2: Simulation pour la démo
-        simulateRerBStatus();
+        return {
+            status: 'inconnu',
+            message: data.message || 'État inconnu du RER B.'
+        };
     }
-}
-
-// Analyse des données Navitia pour déterminer l'état
-function analyzeNavitiaData(data) {
-    // Vérifier si des perturbations sont signalées
-    if (data && data.disruptions && data.disruptions.length > 0) {
-        const activeDisruptions = data.disruptions.filter(d => d.status === 'active');
-        if (activeDisruptions.length > 0) {
-            return 'perturbé';
-        }
-    }
-    
-    // Vérifier l'état général de la ligne
-    if (data && data.line && data.line.pt_display_informations) {
-        const info = data.line.pt_display_informations;
-        if (info.message && (info.message.includes('perturbation') || info.message.includes('interruption'))) {
-            return 'perturbé';
-        }
-    }
-    
-    // Par défaut, considérer comme normal
-    return 'normal';
-}
-
-// Simulation de l'état du RER B (pour la démo)
-function simulateRerBStatus() {
-    // Générer un état aléatoire pour la démo
-    const statuses = ['normal', 'normal', 'normal', 'perturbé', 'interrompu'];
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-    
-    // Mettre à jour l'affichage
-    updateRerBStatus(randomStatus);
 }
 
 // Mise à jour de l'affichage de l'état du RER B
@@ -208,7 +204,7 @@ function updateRerBStatus(status, message = null) {
     const textElement = document.getElementById('rerBText');
     
     // Retirer les classes précédentes
-    statusElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown');
+    statusElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown', 'chargement');
     
     // Mettre à jour en fonction du statut
     switch(status) {
@@ -217,6 +213,11 @@ function updateRerBStatus(status, message = null) {
             iconElement.className = 'fas fa-subway';
             textElement.textContent = 'RER B: Normal';
             rerBMessage = 'Circulation normale sur la ligne RER B.';
+        case 'chargement':
+            statusElement.classList.add('chargement');
+            iconElement.className = 'fas fa-spinner fa-spin';
+            textElement.textContent = 'RER B: Chargement...';
+            break;
             break;
         case 'perturbé':
             statusElement.classList.add('perturbed');
@@ -251,7 +252,7 @@ function updateRerBModal() {
     const nextUpdateElement = document.getElementById('rerBNextUpdate');
     
     // Retirer les classes précédentes
-    statusLargeElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown');
+    statusLargeElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown', 'chargement');
     
     // Mettre à jour en fonction du statut
     switch(rerBStatus) {
@@ -269,6 +270,11 @@ function updateRerBModal() {
             statusLargeElement.classList.add('interrupted');
             iconLargeElement.className = 'fas fa-times-circle';
             statusTextElement.textContent = 'Interrompu';
+            break;
+        case 'chargement':
+            statusLargeElement.classList.add('chargement');
+            iconLargeElement.className = 'fas fa-spinner fa-spin';
+            statusTextElement.textContent = 'Chargement...';
             break;
         default:
             statusLargeElement.classList.add('unknown');
