@@ -12,27 +12,44 @@ app.use(cors());
 // Servir les fichiers statiques (index.html, app.js, styles.css, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint pour proxyfier les requêtes vers l'API RATP
+// Endpoint pour récupérer le statut du RER B via l'API SNCF
 app.get('/api/ratp', async (req, res) => {
     try {
-        const ratpApiUrl = 'https://api-ratp.pierre-grimaud.fr/v4/lines/RERB/status';
+        // Utilisation de l'API SNCF avec votre clé API
+        const sncfApiUrl = 'https://api.sncf.com/v1/coverage/sncf/lines/line:RER:B/disruptions?token=5411095f-b156-4453-83e2-19c03d71a3bb';
         
-        // Essayer de contacter l'API avec un timeout court (5 secondes)
-        const response = await axios.get(ratpApiUrl, { 
-            timeout: 5000 
+        const response = await axios.get(sncfApiUrl, { 
+            timeout: 10000 
         });
         
-        // Si succès, retourner les données réelles
-        res.json(response.data);
-    } catch (error) {
-        console.error('Erreur avec l\'API RATP:', error.message);
+        // Analyser les données SNCF pour déterminer le statut
+        const disruptions = response.data.disruptions || [];
         
-        // Retourner un statut par défaut avec un message d'avertissement
-        res.json({
-            message: "Trafic normal sur la ligne RER B (API indisponible - Statut simulé)",
-            status: "normal",
-            fallback: true,
-            error: "Impossible de contacter l'API RATP. Utilisation d'un statut par défaut."
+        if (disruptions.length > 0) {
+            // Si des perturbations sont détectées
+            const firstDisruption = disruptions[0];
+            res.json({
+                message: firstDisruption.title || 'Perturbations sur la ligne RER B',
+                status: 'perturbé',
+                severity: firstDisruption.severity || 'unknown',
+                details: firstDisruption.description || 'Aucune description disponible'
+            });
+        } else {
+            // Si aucune perturbation
+            res.json({
+                message: 'Trafic normal sur la ligne RER B',
+                status: 'normal'
+            });
+        }
+    } catch (error) {
+        console.error('Erreur avec l\'API SNCF:', error.message);
+        
+        // Si l'API SNCF échoue, retourner une erreur claire
+        res.status(500).json({
+            error: 'Impossible de récupérer les données SNCF',
+            details: error.message,
+            message: 'Trafic normal sur la ligne RER B (API SNCF indisponible)',
+            status: 'normal'
         });
     }
 });
