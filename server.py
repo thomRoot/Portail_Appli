@@ -27,6 +27,9 @@ def serve_static(path):
 def get_garmin_activities():
     try:
         data = request.json
+        if not data:
+            return jsonify({"error": "Aucune donnée reçue"}), 400
+
         email = data.get('email')
         password = data.get('password')
         days = data.get('days', 365)  # Par défaut, récupérer 1 an
@@ -34,13 +37,19 @@ def get_garmin_activities():
         if not email or not password:
             return jsonify({"error": "Email et mot de passe requis"}), 400
 
-        # Initialiser le client Garmin
-        client = garminexport.Garmin(email, password)
-        client.login()
+        try:
+            # Initialiser le client Garmin
+            client = garminexport.Garmin(email, password)
+            client.login()
+        except Exception as auth_error:
+            return jsonify({"error": f"Erreur d'authentification Garmin: {str(auth_error)}"}), 401
 
-        # Récupérer les activités
-        start_date = (datetime.now() - timedelta(days=days)).date()
-        activities = client.get_activities(start_date)
+        try:
+            # Récupérer les activités
+            start_date = (datetime.now() - timedelta(days=days)).date()
+            activities = client.get_activities(start_date) or []
+        except Exception as activities_error:
+            return jsonify({"error": f"Erreur lors de la récupération des activités: {str(activities_error)}"}), 500
 
         # Filtrer pour la musculation (type_id = 2)
         strength_activities = [
@@ -54,7 +63,7 @@ def get_garmin_activities():
         })
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Erreur inattendue: {str(e)}"}), 500
 
 
 # Route pour servir les données météo (à adapter selon votre API)
