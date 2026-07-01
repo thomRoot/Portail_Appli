@@ -91,28 +91,28 @@ function checkApiKey() {
     
     fetch(testUrl)
         .then(response => {
-            console.log('📡 Réponse de l'API OpenWeatherMap:', response.status, response.statusText);
+            console.log('📡 Réponse de l\'API OpenWeatherMap:', response.status, response.statusText);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('✅ Réponse de l'API:', data);
+            console.log('✅ Réponse de l\'API:', data);
             if (data.cod === 200) {
                 console.log('✅ Clé API valide. Chargement de la météo...');
                 showApiStatus('success', 'API active');
                 loadWeather();
                 return true;
             } else {
-                console.error('❌ Erreur de l'API OpenWeatherMap:', data.message || 'Code d'erreur: ' + data.cod);
-                throw new Error(`API Error: ${data.message || 'Code d'erreur: ' + data.cod}`);
+                console.error('❌ Erreur de l\'API OpenWeatherMap:', data.message || 'Code d\'erreur: ' + data.cod);
+                throw new Error(`API Error: ${data.message || 'Code d\'erreur: ' + data.cod}`);
             }
         })
         .catch(error => {
             console.error('❌ Erreur de vérification API:', error);
             showApiStatus('error', 'Clé API invalide');
-            updateWeatherError(`❌ Erreur avec l'API OpenWeatherMap: ${error.message}. Vérifiez votre clé API ou votre connexion.`);
+            updateWeatherError(`❌ Erreur avec l\'API OpenWeatherMap: ${error.message}. Vérifiez votre clé API ou votre connexion.`);
             return false;
         });
 }
@@ -147,7 +147,7 @@ function showApiStatus(status, message) {
 // Chargement de l'état du RER B (via API alternative sans clé API)
 function loadRerBStatus() {
     // Afficher un état de chargement
-    updateRerBStatus('chargement', 'Chargement de l'état du RER B...');
+    updateRerBStatus('chargement', 'Chargement de l\'état du RER B...');
     
     // Utiliser l'API alternative directement (sans proxy CORS)
     fetch(RATP_API_URL)
@@ -163,7 +163,7 @@ function loadRerBStatus() {
             updateRerBStatus(result.status, result.message);
         })
         .catch(error => {
-            console.error('Erreur avec l'API RATP:', error);
+            console.error('Erreur avec l\'API RATP:', error);
             // En cas d'erreur, afficher un message d'erreur clair (plus de simulation)
             updateRerBStatus('error', 'API RER B indisponible. Veuillez vérifier votre connexion ou configurer une solution alternative.');
         });
@@ -173,7 +173,7 @@ function loadRerBStatus() {
 function analyzeRATPData(data) {
     // Structure typique de la réponse RATP
     if (!data || !data.message) {
-        return { status: 'inconnu', message: 'Données incomplètes reçues de l'API RATP.' };
+        return { status: 'inconnu', message: 'Données incomplètes reçues de l\'API RATP.' };
     }
     
     // Vérifier si le message contient des mots-clés de perturbation
