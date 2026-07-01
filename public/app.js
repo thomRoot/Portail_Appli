@@ -20,6 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
     setupRobotEventListeners();
+    setupGarminEventListeners();
     loadSites();
     
     // Vérifier la clé API au démarrage
