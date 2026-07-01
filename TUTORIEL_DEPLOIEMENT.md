@@ -1,6 +1,6 @@
-# 📌 **Tutoriel : Déploiement de Portail_Appli avec Proxy Local pour l'API RATP**
+# 📜 **Tutoriel : Déploiement de Portail_Appli**
 
-Ce tutoriel vous guide **étape par étape** pour déployer votre application **Portail_Appli** sur votre réseau local à la maison, en utilisant un **proxy local** pour contourner les restrictions CORS de l'API RATP.
+Ce tutoriel vous guide **étape par étape** pour déployer votre application **Portail_Appli** sur votre réseau local à la maison.
 
 ---
 
@@ -45,7 +45,6 @@ npm install
 ```
 Cela installera :
 - `express` : Pour créer le serveur web.
-- `axios` : Pour effectuer des requêtes HTTP vers l'API RATP.
 - `cors` : Pour gérer les en-têtes CORS.
 
 ---
@@ -109,12 +108,12 @@ Si vous souhaitez utiliser la fonctionnalité de contrôle des robots aspirateur
    ```bash
    npm start
    ```
-   Cela démarrera le serveur proxy sur le **port 3000**.
+   Cela démarrera le serveur proxy sur le **port 8000**.
 
 2. Vous devriez voir un message comme :
    ```
-   Serveur proxy démarré sur http://0.0.0.0:3000
-   Accédez à votre application sur http://localhost:3000 ou http://<VOTRE_IP_LOCALE>:3000
+   Serveur démarré sur http://0.0.0.0:8000
+   Accédez à votre application sur http://localhost:8000 ou http://<VOTRE_IP_LOCALE>:8000
    ```
 
 ---
@@ -123,7 +122,7 @@ Si vous souhaitez utiliser la fonctionnalité de contrôle des robots aspirateur
 1. **Sur votre ordinateur** :
    - Ouvrez votre navigateur et allez sur :
      ```
-     http://localhost:3000
+     http://localhost:8000
      ```
 
 2. **Depuis un autre appareil sur votre réseau local** :
@@ -132,9 +131,9 @@ Si vous souhaitez utiliser la fonctionnalité de contrôle des robots aspirateur
      - **Sur Windows** : Exécutez `ipconfig` et cherchez `Adresse IPv4`.
    - Sur un autre appareil (tablette, smartphone, etc.), ouvrez le navigateur et allez sur :
      ```
-     http://<VOTRE_IP_LOCALE>:3000
+     http://<VOTRE_IP_LOCALE>:8000
      ```
-     Exemple : `http://192.168.1.100:3000`.
+     Exemple : `http://192.168.1.100:8000`.
 
 ---
 
@@ -143,14 +142,10 @@ Si vous souhaitez utiliser la fonctionnalité de contrôle des robots aspirateur
    - En haut à droite, vérifiez que le voyant est **vert** (✅) avec le message "API active".
    - Si ce n'est pas le cas, vérifiez que votre clé API OpenWeatherMap est correcte.
 
-2. **Statut du RER B** :
-   - En haut à gauche, vérifiez que le statut du RER B s'affiche correctement (ex: "RER B: Normal" ou "RER B: Perturbé").
-   - Si vous voyez un message d'erreur, vérifiez que le serveur proxy est bien démarré (`npm start`).
-
-3. **Météo** :
+2. **Météo** :
    - Vérifiez que les données météo (température, graphiques, etc.) s'affichent correctement.
 
-4. **Robots aspirateurs** (optionnel) :
+3. **Robots aspirateurs** (optionnel) :
    - Si vous avez configuré les robots, testez les boutons "Lancer" pour vérifier qu'ils fonctionnent.
 
 ---
@@ -162,13 +157,13 @@ Pour que votre application soit accessible depuis **n'importe quel appareil** su
 2. **Assurez-vous que le serveur proxy est démarré** (`npm start`).
 3. **Sur un autre appareil**, ouvrez le navigateur et allez sur :
    ```
-   http://<VOTRE_IP_LOCALE>:3000
+   http://<VOTRE_IP_LOCALE>:8000
    ```
-   Exemple : `http://192.168.1.100:3000`.
+   Exemple : `http://192.168.1.100:8000`.
 
 ---
 
-## 🔄 **Démarrer automatiquement le serveur au démarrage**
+## ⚡ **Démarrer automatiquement le serveur au démarrage**
 Pour que le serveur proxy démarre automatiquement quand vous allumez votre ordinateur, vous pouvez utiliser **PM2** (un gestionnaire de processus pour Node.js) :
 
 1. Installez PM2 globalement :
@@ -204,7 +199,7 @@ Pour que le serveur proxy démarre automatiquement quand vous allumez votre ordi
 
 ---
 
-## 🛠 **Dépannage**
+## 🔍 **Dépannage**
 
 ### **Problème : Le serveur ne démarre pas**
 - **Vérifiez que Node.js est installé** :
@@ -216,29 +211,10 @@ Pour que le serveur proxy démarre automatiquement quand vous allumez votre ordi
   npm install
   ```
 - **Vérifiez les erreurs dans le terminal** :
-  Si vous voyez une erreur comme `Error: listen EADDRINUSE :::3000`, cela signifie que le port 3000 est déjà utilisé. Changez le port dans `server.js` :
+  Si vous voyez une erreur comme `Error: listen EADDRINUSE :::8000`, cela signifie que le port 8000 est déjà utilisé. Changez le port dans `server.js` :
   ```javascript
-  const PORT = 3001; // Changez pour un autre port
+  const PORT = 8001; // Changez pour un autre port
   ```
-
----
-
-### **Problème : Le statut du RER B ne s'affiche pas**
-- **Vérifiez que le serveur proxy est démarré** :
-  ```bash
-  npm start
-  ```
-- **Vérifiez l'URL dans `public/app.js`** :
-  Assurez-vous que l'URL est bien :
-  ```javascript
-  const RATP_API_URL = 'http://localhost:3000/api/ratp';
-  ```
-- **Testez l'endpoint du proxy** :
-  Ouvrez votre navigateur et allez sur :
-  ```
-  http://localhost:3000/api/ratp
-  ```
-  Vous devriez voir les données JSON de l'API RATP.
 
 ---
 
@@ -266,16 +242,16 @@ Pour que le serveur proxy démarre automatiquement quand vous allumez votre ordi
 
 ---
 
-## 📂 **Structure du projet après déploiement**
+## 📁 **Structure du projet après déploiement**
 ```
 Portail_Appli/
-├── public/                  # Fichiers statiques
+├──── public/                  # Fichiers statiques
 │   ├── index.html           # Page principale
 │   ├── app.js               # Logique JavaScript
 │   └── styles.css           # Styles CSS
-├── server.js                # Serveur proxy Node.js/Express
-├── package.json             # Dépendances Node.js
-└── README.md                # Documentation
+├──── server.js                # Serveur proxy Node.js/Express
+├──── package.json             # Dépendances Node.js
+└──── README.md                # Documentation
 ```
 
 ---
@@ -305,14 +281,13 @@ Si vous souhaitez sécuriser l'accès à votre application sur votre réseau loc
 
 ## 🎉 **Félicitations !**
 Votre application **Portail_Appli** est maintenant déployée sur votre réseau local avec :
-- ✅ Un **proxy local** pour contourner les restrictions CORS de l'API RATP.
+- ✅ Un **proxy local** pour servir les fichiers statiques.
 - ✅ Une **météo fonctionnelle** (si votre clé API OpenWeatherMap est valide).
-- ✅ Un **statut du RER B** en temps réel.
 - ✅ La possibilité de **contrôler vos robots aspirateurs** (si configurés).
 
 ---
 
-## 📌 **Résumé des commandes utiles**
+## 📋 **Résumé des commandes utiles**
 | Commande | Description |
 |----------|-------------|
 | `npm start` | Démarre le serveur proxy. |
@@ -324,7 +299,7 @@ Votre application **Portail_Appli** est maintenant déployée sur votre réseau 
 
 ---
 
-## 📞 **Support**
+## 🆘 **Support**
 Si vous rencontrez des problèmes :
 1. Vérifiez les **logs du serveur** (dans le terminal où vous avez exécuté `npm start`).
 2. Ouvrez la **console du navigateur** (F12) pour voir les erreurs.

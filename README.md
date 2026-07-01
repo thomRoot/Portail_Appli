@@ -1,5 +1,5 @@
 # Portail Appli - ThomRoot
-**Style V1.3e : MIDNIGHT BLUE**
+**Style V2.0 : MIDNIGHT BLUE**
 
 ## 🌙 Description du Style
 
@@ -21,7 +21,7 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 
 ---
 
-## 📊 Fonctionnalités
+## 🏗️ Fonctionnalités
 
 ### 1. Interface Utilisateur
 - **Grille d'applications** : Affichage responsive de vos sites sous forme de cartes avec icônes
@@ -40,7 +40,7 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 
 ### 3. Widget Météo Avancé
 
-#### 📈 **Graphique des températures et précipitations**
+#### 📊 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
 - **Courbe des précipitations** (pluie et neige) en mm
 - **Deux axes Y** : Température à gauche, précipitations à droite
@@ -58,24 +58,11 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 - Précipitations actuelles (mm)
 
 #### ✅ **Voyant d'état de l'API**
-- **🟢 Vert** : Clé API valide et fonctionnelle
-- **🔴 Rouge** : Clé API non configurée ou invalide
-- **🟡 Jaune** : Chargement en cours
+- 🟢 **Vert** : Clé API valide et fonctionnelle
+- 🔴 **Rouge** : Clé API non configurée ou invalide
+- 🟡 **Jaune** : Chargement en cours
 
-### 4. **Statut du RER B en temps réel**
-
-**Fonctionnalités** :
-- **Affichage dans le header** : Statut du RER B visible en haut de l'application
-- **Icônes indicatives** : 🚇 (normal), ⚠️ (perturbé), ❌ (annulé)
-- **Mise à jour automatique** : Toutes les 2 minutes
-- **Couleurs thématiques** : Vert (normal), Orange (perturbé), Rouge (annulé)
-- **Modal détaillée** : Cliquez sur l'icône pour plus d'informations
-
-**Technologie** :
-- Utilisation de l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (sans clé API)
-- Affichage d'un message d'erreur clair si l'API est indisponible (plus de simulation)
-
-### 5. **Contrôle des Robots Aspirateurs Xiaomi**
+### 4. **Contrôle des Robots Aspirateurs Xiaomi**
 
 **Fonctionnalités** :
 - **Deux robots configurables** : Aspirateur RdC et Aspirateur étage
@@ -93,20 +80,19 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 
 ---
 
-## 🛠 Technologies Utilisées
+## 🛠️ Technologies Utilisées
 
 - **Frontend** : HTML5, CSS3, JavaScript (ES6+)
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
-- **API Transport** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (pour le statut RER B)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
 
 ---
 
-## 📥 Installation
+## 🔧 Installation
 
 ### Prérequis
 - Un navigateur web moderne (Chrome, Firefox, Edge, Safari)
@@ -185,19 +171,13 @@ par :
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
 
-### 4. Configurer l'API RER B (optionnel)
-
-Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'application utilise l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr), qui ne nécessite pas de clé API.
-
-> **Note** : Si l'API est indisponible, un message d'erreur clair sera affiché. Aucune simulation n'est utilisée.
-
-### 5. Installation locale
+### 4. Installation locale
 
 1. **Cloner le dépôt** :
    ```bash
    git clone https://github.com/thomRoot/Portail_Appli.git
    cd Portail_Appli
-   git checkout V1.3e  # Pour utiliser ce style
+   git checkout V2.0_pas_de_rer_B  # Pour utiliser cette version
    ```
 
 2. **Configurer la clé API** (voir étape 3)
@@ -222,10 +202,10 @@ Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'applic
 
 ### Sur GitHub Pages
 
-1. Poussez votre code sur GitHub (branche `V1.3e`)
+1. Poussez votre code sur GitHub (branche `V2.0_pas_de_rer_B`)
 2. Allez dans les paramètres du dépôt
 3. Activez GitHub Pages dans la section "Pages"
-4. Sélectionnez la branche `V1.3e` et le dossier `/ (root)`
+4. Sélectionnez la branche `V2.0_pas_de_rer_B` et le dossier `/ (root)`
 5. Votre site sera disponible à l'URL : `https://thomroot.github.io/Portail_Appli/`
 
 ### Sur un serveur web
@@ -238,10 +218,10 @@ Copiez simplement les fichiers sur votre serveur web. Aucune configuration serve
 
 ```
 Portail_Appli/
-├── index.html          # Page principale
-├── styles.css          # Styles CSS (Style Midnight Blue)
-├── app.js              # Logique JavaScript
-└── README.md           # Documentation
+├──── index.html          # Page principale
+├──── styles.css          # Styles CSS (Style Midnight Blue)
+├──── app.js              # Logique JavaScript
+└──── README.md           # Documentation
 ```
 
 ---
@@ -314,16 +294,16 @@ Modifiez les variables CSS dans `styles.css` :
 
 ---
 
-## 📖 Historique des Mises à Jour
+## 📜 Historique des Mises à Jour
 
-### **V1.3e - Midnight Blue (Dernière version)**
+### **V2.0 - Midnight Blue (Dernière version)**
+- **Suppression des références au RER B** : Toutes les fonctionnalités et mentions liées au RER B ont été supprimées.
 - **Style complet** : Thème "Midnight Blue" avec dégradés, étoiles animées et effets de glow
-- **Uniformisation des tailles** : Les éléments `headerCurrentTemp` (température dans le header) et le plugin **RER B** ont été alignés sur une taille de **100px × 100px** pour une cohérence visuelle.
 - **Améliorations visuelles** :
   - Icônes agrandies (2.2rem) pour une meilleure lisibilité
   - Texte légèrement plus grand (0.85rem) pour les libellés
   - Effets de survol harmonisés (échelle, ombre et bordure lumineuse)
-- **Fonctionnalités complètes** : Météo, RER B, robots aspirateurs, gestion des sites
+- **Fonctionnalités complètes** : Météo, robots aspirateurs, gestion des sites
 
 ---
 
@@ -370,15 +350,6 @@ Modifiez les variables CSS dans `styles.css` :
 - **🟢 Vert** = Tout fonctionne
 - **🔴 Rouge** = Problème avec la clé API
 
-### Consulter l'état du RER B
-- **Affichage dans le header** : Le statut du RER B s'affiche en haut à gauche
-- **Icônes** :
-  - 🚇 = Circulation normale
-  - ⚠️ = Perturbations
-  - ❌ = Service annulé
-- **Couleurs** : Vert (normal), Orange (perturbé), Rouge (annulé)
-- **Mise à jour** : Toutes les 2 minutes
-
 ### Consulter la météo
 - **Onglet "Graphique"** : Voir la courbe des températures et précipitations
 - **Onglet "Détails"** : Voir les prévisions heure par heure
@@ -416,7 +387,7 @@ Modifiez les variables CSS dans `styles.css` :
 
 ---
 
-## 📊 Compatibilité
+## 🖥️ Compatibilité
 
 | Navigateur | Support | Testé | Animations CSS |
 |------------|---------|-------|-----------------|
@@ -451,12 +422,12 @@ Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier 
 
 **Créé avec ❤️ par ThomRoot**
 
-*Style : V1.3e - Midnight Blue*
+*Style : V2.0 - Midnight Blue*
 *Dernière mise à jour : 30 juin 2025*
 
 ---
 
-## 📧 Support
+## 🆘 Support
 
 Si vous avez des problèmes :
 1. Vérifiez d'abord la section **Dépannage** ci-dessus

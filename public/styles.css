@@ -101,7 +101,7 @@ header {
     align-items: center;
     gap: 20px;
     flex: 1;
-    min-width: 220px; /* Largeur minimale pour contenir les deux éléments de 100px + gap */
+    min-width: 100px;
 }
 
 .header-right {
@@ -111,8 +111,8 @@ header {
     flex-shrink: 0;
 }
 
-/* Statut du RER B et Weather Header Mini - Taille uniformisée et fixe */
-.rer-b-status, .weather-header-mini {
+/* Weather Header Mini */
+.weather-header-mini {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,200 +131,28 @@ header {
     border: var(--border-subtle);
     box-sizing: border-box;
     flex-shrink: 0;
-}
-
-.rer-b-status {
-    cursor: pointer;
-}
-
-.weather-header-mini {
     cursor: default;
 }
 
-.rer-b-status:hover, .weather-header-mini:hover {
+.weather-header-mini:hover {
     background: rgba(79, 70, 229, 0.2);
     transform: scale(1.05) translateY(-3px);
     box-shadow: var(--shadow-glow);
     border: var(--border-glow);
 }
 
-/* Styles communs pour les icônes et textes */
-.rer-b-status i, .weather-header-mini i {
+/* Styles pour les icônes et textes du header */
+.weather-header-mini i {
     font-size: 2.2rem;
     color: var(--text-color);
 }
 
-.rer-b-status span, .weather-header-mini span {
+.weather-header-mini span {
     font-size: 0.85rem;
     line-height: 1.2;
     color: var(--text-color);
     min-width: 60px;
     text-align: center;
-}
-
-/* États du RER B */
-.rer-b-status.normal {
-    background: rgba(16, 185, 129, 0.15);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: var(--success-color);
-}
-
-.rer-b-status.normal i,
-.rer-b-status.normal span {
-    color: var(--success-color);
-}
-
-.rer-b-status.perturbed {
-    background: rgba(245, 158, 11, 0.15);
-    border-color: rgba(245, 158, 11, 0.4);
-    color: var(--warning-color);
-}
-
-.rer-b-status.perturbed i,
-.rer-b-status.perturbed span {
-    color: var(--warning-color);
-}
-
-.rer-b-status.interrupted {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: var(--error-color);
-}
-
-.rer-b-status.interrupted i,
-.rer-b-status.interrupted span {
-    color: var(--error-color);
-}
-
-.rer-b-status.unknown {
-    background: rgba(79, 70, 229, 0.05);
-    border-color: rgba(79, 70, 229, 0.1);
-    color: var(--text-light);
-}
-
-.rer-b-status.unknown i,
-.rer-b-status.unknown span {
-    color: var(--text-light);
-}
-
-/* Modal RER B */
-.rer-b-modal {
-    z-index: 1001;
-}
-
-.rer-b-modal-content {
-    max-width: 500px;
-    background: var(--card-gradient);
-    border: var(--border-glow);
-    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
-}
-
-.rer-b-modal-content h2 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.rer-b-details {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.rer-b-status-large {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    padding: 20px;
-    border-radius: 10px;
-    background: rgba(79, 70, 229, 0.08);
-    text-align: center;
-    transition: var(--transition);
-    border: var(--border-subtle);
-}
-
-.rer-b-status-large.normal {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
-    color: var(--success-color);
-}
-
-.rer-b-status-large.perturbed {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: var(--warning-color);
-}
-
-.rer-b-status-large.interrupted {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
-    color: var(--error-color);
-}
-
-.rer-b-status-large.unknown {
-    background: rgba(79, 70, 229, 0.05);
-    border-color: rgba(79, 70, 229, 0.1);
-    color: var(--text-light);
-}
-
-.rer-b-status-large i {
-    font-size: 3rem;
-}
-
-.rer-b-status-large span {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.rer-b-info-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-}
-
-.rer-b-info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 15px;
-    background: rgba(79, 70, 229, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(79, 70, 229, 0.1);
-}
-
-.rer-b-info-item i {
-    font-size: 1.1rem;
-    color: var(--primary-color);
-    width: 20px;
-    text-align: center;
-}
-
-.rer-b-info-label {
-    font-weight: 500;
-    color: var(--text-light);
-    min-width: 150px;
-}
-
-.rer-b-info-value {
-    color: var(--text-color);
-    font-weight: 500;
-    flex: 1;
-    line-height: 1.5;
-}
-
-/* Fermeture de la modal RER B */
-.rer-b-close {
-    color: var(--text-light);
-    font-size: 28px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.rer-b-close:hover {
-    color: var(--error-color);
 }
 
 /* Statut de l'API */
@@ -590,7 +418,7 @@ header {
     background: rgba(30, 41, 59, 1);
 }
 
-/* Cartes témoins Google */
+/* Cartes témoignons Google */
 .google-card .app-icon {
     background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
 }
@@ -908,7 +736,7 @@ header {
         flex-direction: row;
         align-items: center;
         flex-wrap: wrap;
-        min-width: 220px;
+        min-width: 100px;
     }
 
     .weather-container {

@@ -10,27 +10,16 @@ const WEATHER_API_KEY = '99768c040f4b31447a2fc2cd0b6d13a9';
 const LAT = 48.93091298084958;
 const LON = 2.4856556085876904;
 
-// Configuration pour l'API RATP (utilisation d'une API alternative sans clé API)
-// API non officielle mais fonctionnelle sans clé : https://api-ratp.pierre-grimaud.fr
-const RATP_API_URL = 'http://localhost:8000/api/ratp';
-
-// Suppression de la dépendance à Navitia et au proxy CORS Heroku (qui ne fonctionne plus)
-// const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
-
 // Variable pour la base de données et le graphique
 let db;
 let weatherChart;
 let currentWeatherData = null;
-let rerBStatus = 'inconnu';
-let rerBLastUpdate = null;
-let rerBMessage = 'Aucun message disponible';
 
 // Initialisation de l'application
 window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
     setupRobotEventListeners();
-    setupRerBEventListeners();
     loadSites();
     
     // Vérifier la clé API au démarrage
@@ -38,10 +27,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Charger la météo toutes les 10 minutes
     setInterval(loadWeather, 10 * 60 * 1000);
-    
-    // Charger l'état du RER B toutes les 2 minutes
-    loadRerBStatus();
-    setInterval(loadRerBStatus, 2 * 60 * 1000);
 });
 
 // Initialisation de la base de données IndexedDB
@@ -142,200 +127,6 @@ function showApiStatus(status, message) {
         default:
             iconElement.className = 'fas fa-circle';
     }
-}
-
-// Chargement de l'état du RER B (via API alternative sans clé API)
-function loadRerBStatus() {
-    // Afficher un état de chargement
-    updateRerBStatus('chargement', 'Chargement de l\'état du RER B...');
-    
-    // Utiliser l'API alternative directement (sans proxy CORS)
-    fetch(RATP_API_URL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Analyser les données RATP
-            const result = analyzeRATPData(data);
-            updateRerBStatus(result.status, result.message);
-        })
-        .catch(error => {
-            console.error('Erreur avec l\'API RATP:', error);
-            // En cas d'erreur, afficher un message d'erreur clair (plus de simulation)
-            updateRerBStatus('error', 'API RER B indisponible. Veuillez vérifier votre connexion ou configurer une solution alternative.');
-        });
-}
-
-// Analyse des données RATP pour déterminer l'état
-function analyzeRATPData(data) {
-    // Structure typique de la réponse RATP
-    if (!data || !data.message) {
-        return { status: 'inconnu', message: 'Données incomplètes reçues de l\'API RATP.' };
-    }
-    
-    // Vérifier si le message contient des mots-clés de perturbation
-    const message = data.message.toLowerCase();
-    if (message.includes('perturbation') || message.includes('interruption') || message.includes('ralenti') || message.includes('incident')) {
-        return {
-            status: 'perturbé',
-            message: data.message || 'Perturbations signalées sur la ligne RER B.'
-        };
-    } else if (message.includes('trafic normal') || message.includes('normal') || message.includes('circulation normale')) {
-        return {
-            status: 'normal',
-            message: data.message || 'Circulation normale sur la ligne RER B.'
-        };
-    } else if (message.includes('interrompu') || message.includes('suspendu')) {
-        return {
-            status: 'interrompu',
-            message: data.message || 'Trafic interrompu sur la ligne RER B.'
-        };
-    } else {
-        return {
-            status: 'inconnu',
-            message: data.message || 'État inconnu du RER B.'
-        };
-    }
-}
-
-// Mise à jour de l'affichage de l'état du RER B
-function updateRerBStatus(status, message = null) {
-    rerBStatus = status;
-    rerBLastUpdate = new Date();
-    if (message) {
-        rerBMessage = message;
-    }
-    
-    const statusElement = document.getElementById('rerBStatus');
-    const iconElement = document.getElementById('rerBIcon');
-    const textElement = document.getElementById('rerBText');
-    
-    // Retirer les classes précédentes
-    statusElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown', 'chargement');
-    
-    // Mettre à jour en fonction du statut
-    switch(status) {
-        case 'normal':
-            statusElement.classList.add('normal');
-            iconElement.className = 'fas fa-subway';
-            textElement.textContent = 'RER B: Normal';
-            rerBMessage = 'Circulation normale sur la ligne RER B.';
-        case 'chargement':
-            statusElement.classList.add('chargement');
-            iconElement.className = 'fas fa-spinner fa-spin';
-            textElement.textContent = 'RER B: Chargement...';
-            break;
-            break;
-        case 'perturbé':
-            statusElement.classList.add('perturbed');
-            iconElement.className = 'fas fa-exclamation-triangle';
-            textElement.textContent = 'RER B: Perturbé';
-            rerBMessage = message || 'Perturbations signalées sur la ligne RER B. Vérifiez les annonces.';
-            break;
-        case 'interrompu':
-            statusElement.classList.add('interrupted');
-            iconElement.className = 'fas fa-times-circle';
-            textElement.textContent = 'RER B: Interrompu';
-            rerBMessage = message || 'Trafic interrompu sur la ligne RER B.';
-            break;
-        default:
-            statusElement.classList.add('unknown');
-            iconElement.className = 'fas fa-question-circle';
-            textElement.textContent = 'RER B: Inconnu';
-            rerBMessage = 'Impossible de récupérer le statut du RER B.';
-    }
-    
-    // Mettre à jour la modal si elle est ouverte
-    updateRerBModal();
-}
-
-// Mise à jour de la modal RER B
-function updateRerBModal() {
-    const statusLargeElement = document.getElementById('rerBStatusLarge');
-    const iconLargeElement = document.getElementById('rerBIconLarge');
-    const statusTextElement = document.getElementById('rerBStatusText');
-    const lastUpdateElement = document.getElementById('rerBLastUpdate');
-    const messageElement = document.getElementById('rerBMessage');
-    const nextUpdateElement = document.getElementById('rerBNextUpdate');
-    
-    // Retirer les classes précédentes
-    statusLargeElement.classList.remove('normal', 'perturbed', 'interrupted', 'unknown', 'chargement');
-    
-    // Mettre à jour en fonction du statut
-    switch(rerBStatus) {
-        case 'normal':
-            statusLargeElement.classList.add('normal');
-            iconLargeElement.className = 'fas fa-subway';
-            statusTextElement.textContent = 'Normal';
-            break;
-        case 'perturbé':
-            statusLargeElement.classList.add('perturbed');
-            iconLargeElement.className = 'fas fa-exclamation-triangle';
-            statusTextElement.textContent = 'Perturbé';
-            break;
-        case 'interrompu':
-            statusLargeElement.classList.add('interrupted');
-            iconLargeElement.className = 'fas fa-times-circle';
-            statusTextElement.textContent = 'Interrompu';
-            break;
-        case 'chargement':
-            statusLargeElement.classList.add('chargement');
-            iconLargeElement.className = 'fas fa-spinner fa-spin';
-            statusTextElement.textContent = 'Chargement...';
-            break;
-        default:
-            statusLargeElement.classList.add('unknown');
-            iconLargeElement.className = 'fas fa-question-circle';
-            statusTextElement.textContent = 'Inconnu';
-    }
-    
-    // Mettre à jour les informations
-    if (rerBLastUpdate) {
-        lastUpdateElement.textContent = rerBLastUpdate.toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-    }
-    
-    messageElement.textContent = rerBMessage;
-    
-    // Calculer la prochaine mise à jour
-    if (rerBLastUpdate) {
-        const nextUpdate = new Date(rerBLastUpdate.getTime() + 2 * 60 * 1000);
-        nextUpdateElement.textContent = nextUpdate.toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-}
-
-// Configuration des écouteurs pour le RER B
-function setupRerBEventListeners() {
-    const rerBStatusElement = document.getElementById('rerBStatus');
-    const rerBModal = document.getElementById('rerBModal');
-    const rerBCloseBtn = document.querySelector('.rer-b-close');
-    
-    // Ouvrir la modal au clic sur le statut RER B
-    rerBStatusElement.addEventListener('click', () => {
-        updateRerBModal();
-        rerBModal.style.display = 'block';
-    });
-    
-    // Fermer la modal au clic sur la croix
-    rerBCloseBtn.addEventListener('click', () => {
-        rerBModal.style.display = 'none';
-    });
-    
-    // Fermer la modal en cliquant en dehors
-    rerBModal.addEventListener('click', (e) => {
-        if (e.target === rerBModal) {
-            rerBModal.style.display = 'none';
-        }
-    });
 }
 
 // Chargement des sites depuis la base de données
@@ -889,7 +680,7 @@ function getWeatherIconClass(weatherId, mainWeather) {
     else if (weatherId >= 600 && weatherId < 700) {
         return 'fa-snowflake'; // Neige
     } 
-    // Atmosérique (brouillard, etc.)
+    // Atmosphérique (brouillard, etc.)
     else if (weatherId >= 700 && weatherId < 800) {
         return 'fa-smog'; // Brouillard
     } 

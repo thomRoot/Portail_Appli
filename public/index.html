@@ -11,12 +11,6 @@
 <body>
     <header>
         <div class="header-left">
-            <!-- RER B Status -->
-            <div class="rer-b-status" id="rerBStatus">
-                <i class="fas fa-subway" id="rerBIcon"></i>
-                <span id="rerBText">Chargement...</span>
-            </div>
-            
             <!-- Weather Details Card dans le header -->
             <div class="weather-header-mini" id="weatherHeaderMini">
                 <i class="fas fa-cloud-sun" id="headerWeatherIcon"></i>
@@ -32,37 +26,6 @@
             </div>
         </div>
     </header>
-
-    <!-- Modal pour les détails du RER B -->
-    <div id="rerBModal" class="modal rer-b-modal">
-        <div class="modal-content rer-b-modal-content">
-            <span class="close rer-b-close">&times;</span>
-            <h2><i class="fas fa-subway"></i> Détails RER B</h2>
-            <div class="rer-b-details">
-                <div class="rer-b-status-large" id="rerBStatusLarge">
-                    <i class="fas fa-spinner fa-spin" id="rerBIconLarge"></i>
-                    <span id="rerBStatusText">Chargement...</span>
-                </div>
-                <div class="rer-b-info-grid">
-                    <div class="rer-b-info-item">
-                        <i class="fas fa-clock"></i>
-                        <span class="rer-b-info-label">Dernière mise à jour:</span>
-                        <span class="rer-b-info-value" id="rerBLastUpdate">--</span>
-                    </div>
-                    <div class="rer-b-info-item">
-                        <i class="fas fa-info-circle"></i>
-                        <span class="rer-b-info-label">Message:</span>
-                        <span class="rer-b-info-value" id="rerBMessage">Aucun message disponible</span>
-                    </div>
-                    <div class="rer-b-info-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span class="rer-b-info-label">Prochaine mise à jour:</span>
-                        <span class="rer-b-info-value" id="rerBNextUpdate">--</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="weather-container" id="weatherContainer">
         <div class="weather-header">
@@ -123,7 +86,7 @@
             </div>
             <div class="app-name">Aspirateur RdC</div>
             <div class="app-actions">
-                <button class="card-action-btn" data-robot="rdc">
+                <button class="card-action-btn robot-start-btn" data-robot="rdc">
                     <i class="fas fa-play"></i> Lancer
                 </button>
             </div>
@@ -134,7 +97,7 @@
             </div>
             <div class="app-name">Aspirateur étage</div>
             <div class="app-actions">
-                <button class="card-action-btn" data-robot="etage">
+                <button class="card-action-btn robot-start-btn" data-robot="etage">
                     <i class="fas fa-play"></i> Lancer
                 </button>
             </div>
@@ -191,8 +154,6 @@
             </div>
         </div>
     </main>
-
-
 
     <!-- Popup pour ajouter un site -->
     <div id="addSiteModal" class="modal">
