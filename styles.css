@@ -101,7 +101,7 @@ header {
     align-items: center;
     gap: 20px;
     flex: 1;
-    min-width: fit-content;
+    min-width: 220px; /* Largeur minimale pour contenir les deux éléments de 100px + gap */
 }
 
 .header-right {
@@ -118,10 +118,10 @@ header {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 100px;
-    height: 100px;
-    min-width: 100px;
-    min-height: 100px;
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
     padding: 10px;
     border-radius: var(--border-radius);
     font-weight: 500;
@@ -908,6 +908,7 @@ header {
         flex-direction: row;
         align-items: center;
         flex-wrap: wrap;
+        min-width: 220px;
     }
 
     .weather-container {
