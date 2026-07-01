@@ -72,8 +72,10 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 - **Modal détaillée** : Cliquez sur l'icône pour plus d'informations
 
 **Technologie** :
-- Utilisation de l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (sans clé API)
-- Affichage d'un message d'erreur clair si l'API est indisponible (plus de simulation)
+- Utilisation de l'**API officielle Île-de-France Mobilités (IDFM) v2** : [https://api.iledefrance-mobilites.fr/v2](https://api.iledefrance-mobilites.fr/v2)
+- **Endpoint utilisé** : `/coverage/fr-idf/disruptions?filter=line.code=RERB`
+- En cas d'échec, bascule automatiquement sur une **API alternative** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (sans clé API).
+- Affichage d'un message d'erreur clair si les deux API sont indisponibles.
 
 ### 5. **Contrôle des Robots Aspirateurs Xiaomi**
 
@@ -99,7 +101,8 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
-- **API Transport** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (pour le statut RER B)
+- **API Transport** : [Île-de-France Mobilités v2](https://api.iledefrance-mobilites.fr/v2) (pour le statut RER B)
+- **API Transport (fallback)** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (pour le statut RER B)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
@@ -155,8 +158,8 @@ Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
                cleaning: {
                    repeat: 2,        // Nettoyer 2 fois
                    mode: 'turbo',    // Mode turbo
-                   waterLevel: 3,    // Niveau d'eau 3
-                   returnAfterArea: 8, // Retour après 8m²
+                   waterLevel: 3,    // Niveau de sortie d'eau (0-3)
+                   returnAfterArea: 8, // Retour au nettoyage après 8m²
                    returnToClean: true  // Retourne au nettoyage
                }
            },
@@ -165,7 +168,7 @@ Pour utiliser la fonctionnalité de contrôle du robot aspirateur :
                cleaning: {
                    repeat: 1,        // Nettoyer 1 fois
                    mode: 'turbo',    // Mode turbo
-                   waterLevel: 3,    // Niveau d'eau 3
+                   waterLevel: 3,    // Niveau de sortie d'eau (0-3)
                    returnAfterArea: null, // Pas de retour automatique
                    returnToClean: false  // Ne retourne pas
                }
@@ -187,9 +190,11 @@ const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 
 ### 4. Configurer l'API RER B (optionnel)
 
-Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'application utilise l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr), qui ne nécessite pas de clé API.
+Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'application utilise par défaut :
+- **API principale** : [Île-de-France Mobilités v2](https://api.iledefrance-mobilites.fr/v2) (endpoint : `/coverage/fr-idf/disruptions?filter=line.code=RERB`)
+- **API de secours** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (endpoint : `/v4/traffic/rer/b`)
 
-> **Note** : Si l'API est indisponible, un message d'erreur clair sera affiché. Aucune simulation n'est utilisée.
+> **Note** : Si les deux API sont indisponibles, un message d'erreur clair sera affiché.
 
 ### 5. Installation locale
 
@@ -238,10 +243,12 @@ Copiez simplement les fichiers sur votre serveur web. Aucune configuration serve
 
 ```
 Portail_Appli/
-├── index.html          # Page principale
-├── styles.css          # Styles CSS (Style Midnight Blue)
-├── app.js              # Logique JavaScript
-└── README.md           # Documentation
+├──── index.html          # Page principale
+├──── styles.css          # Styles CSS (Style Midnight Blue)
+├──── app.js              # Logique JavaScript
+├──── server.js           # Serveur proxy pour l'API IDFM
+├──── package.json        # Dépendances Node.js
+└──── README.md           # Documentation
 ```
 
 ---
@@ -314,7 +321,7 @@ Modifiez les variables CSS dans `styles.css` :
 
 ---
 
-## 📖 Historique des Mises à Jour
+## 📜 Historique des Mises à Jour
 
 ### **V1.3e - Midnight Blue (Dernière version)**
 - **Style complet** : Thème "Midnight Blue" avec dégradés, étoiles animées et effets de glow
@@ -324,6 +331,12 @@ Modifiez les variables CSS dans `styles.css` :
   - Texte légèrement plus grand (0.85rem) pour les libellés
   - Effets de survol harmonisés (échelle, ombre et bordure lumineuse)
 - **Fonctionnalités complètes** : Météo, RER B, robots aspirateurs, gestion des sites
+
+### **Mises à jour récentes**
+- **Fix API IDFM** : Mise à jour de l'URL de l'API Île-de-France Mobilités vers la **version v2** pour résoudre l'erreur 404 (`NotFoundURI`).
+  - **Ancien endpoint** : `https://data.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/disruptions?filter=line:RER:B`
+  - **Nouvel endpoint** : `https://api.iledefrance-mobilites.fr/v2/coverage/fr-idf/disruptions?filter=line.code=RERB`
+  - **Amélioration** : Meilleure gestion des erreurs (404 et 500) avec des messages clairs.
 
 ---
 
@@ -397,6 +410,17 @@ Modifiez les variables CSS dans `styles.css` :
 4. **Limite de l'API atteinte** → Attendez quelques minutes
 5. **Problème de connexion internet** → Vérifiez votre connexion
 
+### Le statut du RER B ne s'affiche pas
+
+**Causes possibles** :
+1. **API IDFM v2 indisponible** → L'application bascule automatiquement sur l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr).
+2. **Problème de connexion** → Vérifiez votre connexion internet.
+3. **Serveur proxy non démarré** → Si vous utilisez `server.js`, assurez-vous qu'il est lancé :
+   ```bash
+   node server.js
+   ```
+   L'API est alors accessible via `http://localhost:8000/api/ratp`.
+
 ### Les étoiles ne scintillent pas
 - **Vérifiez votre navigateur** : Les animations CSS sont supportées par tous les navigateurs modernes
 - **Vérifiez les paramètres** : Certains navigateurs réduisent les animations pour économiser la batterie
@@ -416,7 +440,7 @@ Modifiez les variables CSS dans `styles.css` :
 
 ---
 
-## 📊 Compatibilité
+## 🌐 Compatibilité
 
 | Navigateur | Support | Testé | Animations CSS |
 |------------|---------|-------|-----------------|
@@ -452,11 +476,11 @@ Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier 
 **Créé avec ❤️ par ThomRoot**
 
 *Style : V1.3e - Midnight Blue*
-*Dernière mise à jour : 30 juin 2025*
+*Dernière mise à jour : 1er juillet 2025*
 
 ---
 
-## 📧 Support
+## 🆘 Support
 
 Si vous avez des problèmes :
 1. Vérifiez d'abord la section **Dépannage** ci-dessus
