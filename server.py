@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from garminexport import GarminExport
+import garminexport
 import os
 import json
 from datetime import datetime, timedelta
@@ -34,14 +34,12 @@ def get_garmin_activities():
         if not email or not password:
             return jsonify({"error": "Email et mot de passe requis"}), 400
 
-        # Initialiser GarminExport
-        garmin = GarminExport(email=email, password=password)
-        garmin.login()
+        # Authentification avec garminexport (nouvelle API)
+        garminexport.authenticate(email, password)
 
         # Récupérer les activités
-        activities = garmin.get_activities(
-            start_date=(datetime.now() - timedelta(days=days)).date()
-        )
+        start_date = (datetime.now() - timedelta(days=days)).date()
+        activities = garminexport.get_activities(start_date)
 
         # Filtrer pour la musculation (type_id = 2)
         strength_activities = [
@@ -62,7 +60,6 @@ def get_garmin_activities():
 @app.route('/api/weather', methods=['GET'])
 def get_weather():
     # Exemple de route pour la météo (à adapter avec votre API OpenWeatherMap)
-    # Vous pouvez utiliser `requests` pour appeler l'API OpenWeatherMap ici
     return jsonify({
         "message": "Route pour la météo à implémenter avec votre API OpenWeatherMap."
     })
