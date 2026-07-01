@@ -15,20 +15,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Endpoint pour récupérer le statut du RER B via l'API Open Data Île-de-France Mobilités
 app.get('/api/ratp', async (req, res) => {
     try {
-        // API Open Data Île-de-France Mobilités (sans clé API)
-        const idfmApiUrl = 'https://data.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/lines/line:RER:B';
+        // API Open Data Île-de-France Mobilités : endpoint pour les perturbations
+        const idfmApiUrl = 'https://data.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/disruptions?filter=line:RER:B';
         
         const response = await axios.get(idfmApiUrl, { timeout: 10000 });
         
-        // Extraire le statut et le message
-        const lineData = response.data.lines?.[0] || {};
-        const status = lineData.status || 'inconnu';
-        const message = lineData.messages?.[0]?.text || 'Aucune information disponible';
+        // Analyser les perturbations pour le RER B
+        const disruptions = response.data.disruptions || [];
         
-        res.json({
-            message: message,
-            status: status
-        });
+        if (disruptions.length > 0) {
+            // Si des perturbations sont trouvées
+            const firstDisruption = disruptions[0];
+            res.json({
+                message: firstDisruption.title || 'Perturbations sur la ligne RER B',
+                status: 'perturbé',
+                severity: firstDisruption.severity || 'unknown'
+            });
+        } else {
+            // Si aucune perturbation
+            res.json({
+                message: 'Trafic normal sur la ligne RER B',
+                status: 'normal'
+            });
+        }
     } catch (error) {
         console.error('Erreur avec l\'API IDFM:', error.message);
         // En cas d'erreur, retourner une erreur claire SANS simulation
