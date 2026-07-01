@@ -1026,3 +1026,83 @@ window.loadWeather = loadWeather;
 window.checkApiKey = checkApiKey;
 window.startRobotCleaning = startRobotCleaning;
 window.checkRobotConfig = checkRobotConfig;
+
+// ============================================
+// Fonctions pour GarminExport
+// ============================================
+
+// Fonction pour récupérer les activités Garmin
+async function fetchGarminActivities() {
+    const email = document.getElementById('garminEmail').value;
+    const password = document.getElementById('garminPassword').value;
+    const days = document.getElementById('garminDays').value;
+
+    if (!email || !password) {
+        alert('Veuillez entrer votre email et mot de passe Garmin.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/garmin/activities', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, days }),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(`Erreur: ${data.error}`);
+            return;
+        }
+
+        displayGarminActivities(data.activities);
+    } catch (error) {
+        alert(`Erreur lors de la récupération des activités: ${error.message}`);
+    }
+}
+
+// Fonction pour afficher les activités Garmin
+function displayGarminActivities(activities) {
+    const container = document.getElementById('garminActivities');
+    container.innerHTML = '';
+
+    if (!activities || activities.length === 0) {
+        container.innerHTML = '<p>Aucune activité de musculation trouvée.</p>';
+        return;
+    }
+
+    activities.forEach(activity => {
+        const card = document.createElement('div');
+        card.className = 'garmin-activity-card';
+
+        const startTime = new Date(activity.start_time).toLocaleString('fr-FR');
+        const duration = (activity.duration / 60).toFixed(2); // Convertir en minutes
+        const calories = activity.calories || 'N/A';
+        const distance = activity.distance || 'N/A';
+
+        card.innerHTML = `
+            <h3>${activity.type || 'Musculation'}</h3>
+            <p><strong>Date:</strong> ${startTime}</p>
+            <p><strong>Durée:</strong> ${duration} min</p>
+            <p><strong>Calories:</strong> ${calories} kcal</p>
+            <p><strong>Distance:</strong> ${distance} m</p>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+// Configuration des écouteurs d'événements pour Garmin
+function setupGarminEventListeners() {
+    const fetchBtn = document.getElementById('fetchGarminBtn');
+    if (fetchBtn) {
+        fetchBtn.addEventListener('click', fetchGarminActivities);
+    }
+}
+
+// Export des fonctions pour le débogage
+window.fetchGarminActivities = fetchGarminActivities;
+window.displayGarminActivities = displayGarminActivities;

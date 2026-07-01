@@ -187,5 +187,35 @@
     </div>
 
     <script src="app.js"></script>
+
+    <!-- Section Garmin -->
+    <div class="garmin-container" id="garminContainer">
+        <div class="garmin-header">
+            <i class="fas fa-dumbbell"></i>
+            <span>Historique des activités de musculation (Garmin)</span>
+            <button id="fetchGarminBtn" class="fetch-btn">
+                <i class="fas fa-sync-alt"></i> Récupérer l'historique
+            </button>
+        </div>
+        <div class="garmin-content">
+            <form id="garminForm" class="garmin-form">
+                <div class="form-group">
+                    <label for="garminEmail">Email Garmin :</label>
+                    <input type="email" id="garminEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="garminPassword">Mot de passe Garmin :</label>
+                    <input type="password" id="garminPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="garminDays">Nombre de jours :</label>
+                    <input type="number" id="garminDays" name="days" value="365" min="1">
+                </div>
+            </form>
+            <div class="garmin-activities" id="garminActivities">
+                <!-- Les activités seront affichées ici -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

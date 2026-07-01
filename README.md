@@ -470,3 +470,45 @@ Si vous avez des problèmes :
 3. Ouvrez la console du navigateur (F12) pour voir les erreurs
 4. Vérifiez que vous avez bien remplacé `votre_cle_api_ici`
 5. Pour les étoiles scintillantes, assurez-vous que les animations CSS sont activées
+
+---
+
+## 🏋️ Fonctionnalité Garmin Export
+
+Cette application permet de récupérer et d'afficher l'historique de vos **activités de musculation** depuis **Garmin Connect**.
+
+### ⚙️ Prérequis
+1. Un compte **Garmin Connect** (email + mot de passe).
+2. Les dépendances Python installées :
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### 🚀 Utilisation
+1. **Lancez le serveur Flask** :
+   ```bash
+   python server.py
+   ```
+   *Le serveur démarrera sur `http://localhost:8000`.*
+
+2. **Accédez à l'application** :
+   - Ouvrez votre navigateur et allez sur `http://localhost:8000`.
+
+3. **Récupérez vos activités** :
+   - Dans la section **Garmin**, entrez vos identifiants Garmin.
+   - Cliquez sur **"Récupérer l'historique"**.
+   - Vos activités de musculation s'afficheront sous forme de cartes.
+
+### ⚠️ Sécurité
+- **Ne partagez pas vos identifiants Garmin** dans le code source.
+- Pour une utilisation en production, utilisez des **variables d'environnement** :
+  ```python
+  import os
+  email = os.getenv("GARMIN_EMAIL")
+  password = os.getenv("GARMIN_PASSWORD")
+  ```
+- Évitez de stocker les mots de passe en clair.
+
+### 📌 Notes
+- Cette fonctionnalité utilise la bibliothèque **`garminexport`** (non officielle).
+- Garmin peut bloquer les connexions automatiques. Si cela arrive, utilisez l'[API officielle de Garmin](https://developer.garmin.com/connect-api/) avec OAuth2.
