@@ -12,11 +12,11 @@ app.use(cors());
 // Servir les fichiers statiques (index.html, app.js, styles.css, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint pour récupérer le statut du RER B via l'API Open Data Île-de-France Mobilités
+// Endpoint pour récupérer le statut du RER B via l'API Open Data Île-de-France Mobilités (v2)
 app.get('/api/ratp', async (req, res) => {
     try {
-        // API Open Data Île-de-France Mobilités : endpoint pour les perturbations
-        const idfmApiUrl = 'https://data.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/disruptions?filter=line:RER:B';
+        // Nouvelle URL de l'API IDFM v2 pour les perturbations du RER B
+        const idfmApiUrl = 'https://api.iledefrance-mobilites.fr/v2/coverage/fr-idf/disruptions?filter=line.code=RERB';
         
         const response = await axios.get(idfmApiUrl, { timeout: 10000 });
         
@@ -40,11 +40,21 @@ app.get('/api/ratp', async (req, res) => {
         }
     } catch (error) {
         console.error('Erreur avec l\'API IDFM:', error.message);
-        // En cas d'erreur, retourner une erreur claire SANS simulation
-        res.status(500).json({
-            error: 'Impossible de récupérer les données du RER B',
-            details: error.message
-        });
+        
+        // Gestion spécifique des erreurs 404
+        if (error.response && error.response.status === 404) {
+            res.status(404).json({
+                error: 'Endpoint API IDFM introuvable.',
+                details: 'Vérifiez l\'URL ou les paramètres de l\'API IDFM.',
+                suggestion: 'Essayez avec : https://api.iledefrance-mobilites.fr/v2/coverage/fr-idf/disruptions?filter=line.code=RERB'
+            });
+        } else {
+            // En cas d'erreur, retourner une erreur claire SANS simulation
+            res.status(500).json({
+                error: 'Impossible de récupérer les données du RER B',
+                details: error.message
+            });
+        }
     }
 });
 
