@@ -76,34 +76,43 @@ function initDB() {
 
 // Vérification de la clé API
 function checkApiKey() {
-    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
+    // Vérifier si la clé API est vide ou non configurée
+    if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici' || WEATHER_API_KEY.trim() === '') {
+        console.error('❌ Clé API OpenWeatherMap non configurée ou vide. Veuillez la configurer dans app.js.');
         showApiStatus('error', 'Clé API OpenWeatherMap non configurée');
-        updateWeatherError('Veuillez configurer une clé API OpenWeatherMap valide dans app.js');
+        updateWeatherError('❌ Clé API OpenWeatherMap non configurée. Veuillez la configurer dans app.js.');
         return false;
     }
+    
+    console.log('🔍 Vérification de la clé API OpenWeatherMap...');
     
     // Tester la clé API avec un appel simple
     const testUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
     
     fetch(testUrl)
         .then(response => {
+            console.log('📡 Réponse de l'API OpenWeatherMap:', response.status, response.statusText);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
+            console.log('✅ Réponse de l'API:', data);
             if (data.cod === 200) {
+                console.log('✅ Clé API valide. Chargement de la météo...');
                 showApiStatus('success', 'API active');
                 loadWeather();
                 return true;
             } else {
-                throw new Error(`API Error: ${data.message}`);
+                console.error('❌ Erreur de l'API OpenWeatherMap:', data.message || 'Code d'erreur: ' + data.cod);
+                throw new Error(`API Error: ${data.message || 'Code d'erreur: ' + data.cod}`);
             }
         })
         .catch(error => {
-            console.error('Erreur de vérification API:', error);
+            console.error('❌ Erreur de vérification API:', error);
             showApiStatus('error', 'Clé API invalide');
+            updateWeatherError(`❌ Erreur avec l'API OpenWeatherMap: ${error.message}. Vérifiez votre clé API ou votre connexion.`);
             return false;
         });
 }
