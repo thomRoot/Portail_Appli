@@ -38,8 +38,8 @@ def get_garmin_activities():
             return jsonify({"error": "Email et mot de passe requis"}), 400
 
         try:
-            # Se connecter avec garminexport (nouvelle API)
-            garminexport.login(email, password)
+            # Se connecter avec garminexport (nouvelle API : connect())
+            garminexport.connect(email=email, password=password)
         except Exception as auth_error:
             return jsonify({"error": f"Erreur d'authentification Garmin: {str(auth_error)}"}), 401
 
