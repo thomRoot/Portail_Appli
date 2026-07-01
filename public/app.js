@@ -12,7 +12,7 @@ const LON = 2.4856556085876904;
 
 // Configuration pour l'API RATP (utilisation d'une API alternative sans clé API)
 // API non officielle mais fonctionnelle sans clé : https://api-ratp.pierre-grimaud.fr
-const RATP_API_URL = 'https://api-ratp.pierre-grimaud.fr/v4/lines/RERB/status';
+const RATP_API_URL = 'http://localhost:3000/api/ratp';
 
 // Suppression de la dépendance à Navitia et au proxy CORS Heroku (qui ne fonctionne plus)
 // const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
