@@ -868,7 +868,7 @@ function updateWeatherError(message = 'Météo indisponible - Vérifiez votre cl
     // Effacer le graphique
     const ctx = document.getElementById('weatherChart');
     if (ctx) {
-        ctx.innerHTML = f'<p style="color: white; text-align: center; padding: 20px;">{message}</p>';
+        ctx.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">${message}</p>`;
     }
     
     // Effacer les détails
