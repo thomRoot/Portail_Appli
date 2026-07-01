@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/ratp', async (req, res) => {
     try {
         // API Open Data Île-de-France Mobilités (sans clé API)
-        const idfmApiUrl = 'https://api.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/lines/line:RER:B';
+        const idfmApiUrl = 'https://data.iledefrance-mobilites.fr/api/v1/coverage/fr-idf/lines/line:RER:B';
         
         const response = await axios.get(idfmApiUrl, { timeout: 10000 });
         
