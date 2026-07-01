@@ -72,8 +72,8 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 - **Modal détaillée** : Cliquez sur l'icône pour plus d'informations
 
 **Technologie** :
-- Utilisation de l'API Navitia (alternative à l'API RATP officielle)
-- Simulation pour la démo si aucune clé API n'est configurée
+- Utilisation de l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (sans clé API)
+- Affichage d'un message d'erreur clair si l'API est indisponible (plus de simulation)
 
 ### 5. **Contrôle des Robots Aspirateurs Xiaomi**
 
@@ -99,7 +99,7 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 - **Graphiques** : [Chart.js](https://www.chartjs.org/)
 - **Base de données** : IndexedDB API
 - **API Météo** : [OpenWeatherMap](https://openweathermap.org/api)
-- **API Transport** : [Navitia](https://www.navitia.io/) (pour le statut RER B)
+- **API Transport** : [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr) (pour le statut RER B)
 - **Icônes** : [Font Awesome 6](https://fontawesome.com/)
 - **Design** : CSS Grid, Flexbox, Animations CSS
 - **Contrôle Robot** : [miio CLI](https://github.com/OpenMiHome/miio-cli) pour le contrôle des appareils Xiaomi
@@ -185,14 +185,11 @@ par :
 const WEATHER_API_KEY = 'votre_clé_api_personnelle';
 ```
 
-### 4. Configurer votre clé API Navitia (optionnel)
+### 4. Configurer l'API RER B (optionnel)
 
-Pour activer le suivi du RER B, configurez votre clé Navitia dans `app.js` :
-```javascript
-const NAVITIA_API_KEY = 'votre_clé_navitia_ici';
-```
+Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'application utilise l'API alternative [api-ratp.pierre-grimaud.fr](https://api-ratp.pierre-grimaud.fr), qui ne nécessite pas de clé API.
 
-> **Note** : Si vous ne configurez pas de clé Navitia, une simulation sera utilisée pour la démo.
+> **Note** : Si l'API est indisponible, un message d'erreur clair sera affiché. Aucune simulation n'est utilisée.
 
 ### 5. Installation locale
 

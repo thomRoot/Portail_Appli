@@ -10,12 +10,12 @@ const WEATHER_API_KEY = 'votre_cle_api_ici';
 const LAT = 48.93091298084958;
 const LON = 2.4856556085876904;
 
-// Configuration pour l'API RATP (utilisation de l'API publique)
-// Note: L'API RATP officielle nécessite une clé, mais on peut utiliser une alternative publique
-// ou un proxy CORS pour accéder aux données.
-const RATP_API_URL = 'https://api.rATP.fr/v1/lines/RERB/status';
-// L'API RATP est gratuite et publique, mais nécessite un proxy CORS pour être appelée depuis un navigateur.
-const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
+// Configuration pour l'API RATP (utilisation d'une API alternative sans clé API)
+// API non officielle mais fonctionnelle sans clé : https://api-ratp.pierre-grimaud.fr
+const RATP_API_URL = 'https://api-ratp.pierre-grimaud.fr/v4/lines/RERB/status';
+
+// Suppression de la dépendance à Navitia et au proxy CORS Heroku (qui ne fonctionne plus)
+// const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
 
 // Variable pour la base de données et le graphique
 let db;
@@ -77,7 +77,8 @@ function initDB() {
 // Vérification de la clé API
 function checkApiKey() {
     if (!WEATHER_API_KEY || WEATHER_API_KEY === 'votre_cle_api_ici') {
-        showApiStatus('error', 'Clé API non configurée');
+        showApiStatus('error', 'Clé API OpenWeatherMap non configurée');
+        updateWeatherError('Veuillez configurer une clé API OpenWeatherMap valide dans app.js');
         return false;
     }
     
@@ -134,13 +135,13 @@ function showApiStatus(status, message) {
     }
 }
 
-// Chargement de l'état du RER B (via API RATP + Proxy CORS)
+// Chargement de l'état du RER B (via API alternative sans clé API)
 function loadRerBStatus() {
     // Afficher un état de chargement
     updateRerBStatus('chargement', 'Chargement de l'état du RER B...');
     
-    // Utiliser le proxy CORS pour contourner les restrictions
-    fetch(RATP_PROXY_URL)
+    // Utiliser l'API alternative directement (sans proxy CORS)
+    fetch(RATP_API_URL)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -154,8 +155,8 @@ function loadRerBStatus() {
         })
         .catch(error => {
             console.error('Erreur avec l'API RATP:', error);
-            // En cas d'erreur, afficher un état "inconnu" avec un message clair
-            updateRerBStatus('inconnu', 'Impossible de récupérer l'état du RER B. Vérifiez votre connexion ou le proxy CORS.');
+            // En cas d'erreur, afficher un message d'erreur clair (plus de simulation)
+            updateRerBStatus('error', 'API RER B indisponible. Veuillez vérifier votre connexion ou configurer une solution alternative.');
         });
 }
 
@@ -842,7 +843,7 @@ function createWeatherChart(forecastData) {
 }
 
 // Affichage d'erreur pour la météo
-function updateWeatherError() {
+function updateWeatherError(message = 'Météo indisponible - Vérifiez votre clé API OpenWeatherMap') {
     document.getElementById('currentTemp').textContent = '--°C';
     document.getElementById('tempTrend').textContent = '--';
     document.getElementById('tempTrend').style.color = '';
@@ -858,7 +859,7 @@ function updateWeatherError() {
     // Effacer le graphique
     const ctx = document.getElementById('weatherChart');
     if (ctx) {
-        ctx.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Météo indisponible - Vérifiez votre clé API</p>';
+        ctx.innerHTML = f'<p style="color: white; text-align: center; padding: 20px;">{message}</p>';
     }
     
     // Effacer les détails
