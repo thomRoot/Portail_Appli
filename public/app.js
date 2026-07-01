@@ -4,7 +4,7 @@ const DB_VERSION = 3;
 
 // **IMPORTANT : Remplacez par votre propre clé API OpenWeatherMap**
 // Inscrivez-vous gratuitement sur https://openweathermap.org/api
-const WEATHER_API_KEY = 'votre_cle_api_ici';
+const WEATHER_API_KEY = '99768c040f4b31447a2fc2cd0b6d13a9';
 
 // Coordonnées pour Noneville
 const LAT = 48.93091298084958;
