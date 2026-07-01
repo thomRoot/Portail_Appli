@@ -10,12 +10,8 @@ const WEATHER_API_KEY = '99768c040f4b31447a2fc2cd0b6d13a9';
 const LAT = 48.93091298084958;
 const LON = 2.4856556085876904;
 
-// Configuration pour l'API RATP (utilisation d'une API alternative sans clé API)
-// API non officielle mais fonctionnelle sans clé : https://api-ratp.pierre-grimaud.fr
+// Configuration pour l'API RATP (utilisation de votre serveur local)
 const RATP_API_URL = 'http://localhost:8000/api/ratp';
-
-// Suppression de la dépendance à Navitia et au proxy CORS Heroku (qui ne fonctionne plus)
-// const RATP_PROXY_URL = 'https://cors-anywhere.herokuapp.com/' + RATP_API_URL;
 
 // Variable pour la base de données et le graphique
 let db;
@@ -91,7 +87,7 @@ function checkApiKey() {
     
     fetch(testUrl)
         .then(response => {
-            console.log('📡 Réponse de l\'API OpenWeatherMap:', response.status, response.statusText);
+            console.log('📧 Réponse de l\'API OpenWeatherMap:', response.status, response.statusText);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -144,39 +140,49 @@ function showApiStatus(status, message) {
     }
 }
 
-// Chargement de l'état du RER B (via API alternative sans clé API)
+// Chargement de l'état du RER B (via votre serveur local)
 function loadRerBStatus() {
-    // Afficher un état de chargement
     updateRerBStatus('chargement', 'Chargement de l\'état du RER B...');
-    
-    // Utiliser l'API alternative directement (sans proxy CORS)
     fetch(RATP_API_URL)
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            // Analyser les données RATP
-            const result = analyzeRATPData(data);
-            updateRerBStatus(result.status, result.message);
+            if (data.status === 'normal') {
+                updateRerBStatus('normal', data.message || 'Trafic normal sur la ligne RER B');
+            } else if (data.status === 'perturbé') {
+                updateRerBStatus('perturbé', data.message || 'Perturbations sur la ligne RER B');
+            } else if (data.error) {
+                updateRerBStatus('error', data.error || 'Erreur avec l\'API RER B');
+            } else {
+                updateRerBStatus('inconnu', data.message || 'Statut inconnu du RER B');
+            }
         })
         .catch(error => {
-            console.error('Erreur avec l\'API RATP:', error);
-            // En cas d'erreur, afficher un message d'erreur clair (plus de simulation)
-            updateRerBStatus('error', 'API RER B indisponible. Veuillez vérifier votre connexion ou configurer une solution alternative.');
+            console.error('Erreur avec l\'API RER B:', error);
+            updateRerBStatus('error', 'Impossible de récupérer le statut du RER B. Vérifiez que le serveur est lancé (node server.js).');
         });
 }
 
-// Analyse des données RATP pour déterminer l'état
+// Analyse des données RATP (conservée pour compatibilité)
 function analyzeRATPData(data) {
-    // Structure typique de la réponse RATP
     if (!data || !data.message) {
-        return { status: 'inconnu', message: 'Données incomplètes reçues de l\'API RATP.' };
+        return { status: 'inconnu', message: 'Données incomplètes reçues.' };
     }
-    
-    // Vérifier si le message contient des mots-clés de perturbation
+    const message = data.message.toLowerCase();
+    if (message.includes('perturbation') || message.includes('interruption') || message.includes('ralenti') || message.includes('incident')) {
+        return { status: 'perturbé', message: data.message || 'Perturbations signalées sur la ligne RER B.' };
+    } else if (message.includes('trafic normal') || message.includes('normal') || message.includes('circulation normale')) {
+        return { status: 'normal', message: data.message || 'Circulation normale sur la ligne RER B.' };
+    } else if (message.includes('interrompu') || message.includes('suspendu')) {
+        return { status: 'interrompu', message: data.message || 'Trafic interrompu sur la ligne RER B.' };
+    } else {
+        return { status: 'inconnu', message: data.message || 'État inconnu du RER B.' };
+    }
+}
+
+// Mise à jour de l'affichage de l'état du RER B
     const message = data.message.toLowerCase();
     if (message.includes('perturbation') || message.includes('interruption') || message.includes('ralenti') || message.includes('incident')) {
         return {
