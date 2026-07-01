@@ -109,8 +109,8 @@ header {
     gap: 15px;
 }
 
-/* Statut du RER B - Taille uniformisée avec headerCurrentTemp */
-.rer-b-status {
+/* Statut du RER B et Weather Header Mini - Taille uniformisée */
+.rer-b-status, .weather-header-mini {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,22 +122,50 @@ header {
     border-radius: var(--border-radius);
     font-weight: 500;
     transition: var(--transition);
-    cursor: pointer;
     text-align: center;
     background: rgba(79, 70, 229, 0.1);
     border: var(--border-subtle);
+    box-sizing: border-box;
 }
 
-.rer-b-status:hover {
+.rer-b-status {
+    cursor: pointer;
+}
+
+.weather-header-mini {
+    cursor: default;
+}
+
+.rer-b-status:hover, .weather-header-mini:hover {
     background: rgba(79, 70, 229, 0.2);
     transform: scale(1.05) translateY(-3px);
     box-shadow: var(--shadow-glow);
     border: var(--border-glow);
 }
 
+/* Styles communs pour les icônes et textes */
+.rer-b-status i, .weather-header-mini i {
+    font-size: 2.2rem;
+    color: var(--text-color);
+}
+
+.rer-b-status span, .weather-header-mini span {
+    font-size: 0.85rem;
+    line-height: 1.2;
+    color: var(--text-color);
+    min-width: 60px;
+    text-align: center;
+}
+
+/* États du RER B */
 .rer-b-status.normal {
     background: rgba(16, 185, 129, 0.15);
     border-color: rgba(16, 185, 129, 0.4);
+    color: var(--success-color);
+}
+
+.rer-b-status.normal i,
+.rer-b-status.normal span {
     color: var(--success-color);
 }
 
@@ -147,9 +175,19 @@ header {
     color: var(--warning-color);
 }
 
+.rer-b-status.perturbed i,
+.rer-b-status.perturbed span {
+    color: var(--warning-color);
+}
+
 .rer-b-status.interrupted {
     background: rgba(239, 68, 68, 0.15);
     border-color: rgba(239, 68, 68, 0.4);
+    color: var(--error-color);
+}
+
+.rer-b-status.interrupted i,
+.rer-b-status.interrupted span {
     color: var(--error-color);
 }
 
@@ -159,51 +197,9 @@ header {
     color: var(--text-light);
 }
 
-.rer-b-status i {
-    font-size: 2.2rem;
-}
-
-.rer-b-status span {
-    font-size: 0.85rem;
-    line-height: 1.2;
-}
-
-
-/* Weather Details Card dans le header - Taille uniformisée avec RER B */
-.weather-header-mini {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    width: 100px;
-    height: 100px;
-    padding: 10px;
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    transition: var(--transition);
-    cursor: default;
-    text-align: center;
-    background: rgba(79, 70, 229, 0.1);
-    border: var(--border-subtle);
-}
-
-.weather-header-mini:hover {
-    background: rgba(79, 70, 229, 0.2);
-    transform: scale(1.05) translateY(-3px);
-    box-shadow: var(--shadow-glow);
-    border: var(--border-glow);
-}
-
-.weather-header-mini i {
-    font-size: 2.2rem;
-    color: var(--accent-color);
-}
-
-.weather-header-mini span {
-    font-size: 0.85rem;
-    line-height: 1.2;
-    color: var(--text-color);
+.rer-b-status.unknown i,
+.rer-b-status.unknown span {
+    color: var(--text-light);
 }
 
 /* Modal RER B */
