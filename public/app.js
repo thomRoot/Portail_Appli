@@ -738,6 +738,20 @@ function updateWeatherDetails(forecastData) {
 function createWeatherChart(forecastData) {
     const ctx = document.getElementById('weatherChart');
     
+    // Vérifier que Chart.js est chargé
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js n\'est pas chargé. Vérifiez que le script Chart.js est bien intégré.');
+        updateWeatherError('Graphique indisponible - Chart.js non chargé');
+        return;
+    }
+    
+    // Vérifier que le canvas existe
+    if (!ctx) {
+        console.error('Canvas pour le graphique introuvable.');
+        updateWeatherError('Graphique indisponible - Canvas introuvable');
+        return;
+    }
+    
     // Si le graphique existe déjà, le détruire
     if (weatherChart) {
         weatherChart.destroy();

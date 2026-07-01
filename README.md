@@ -216,6 +216,33 @@ Pour activer le suivi du RER B, aucune configuration n'est nécessaire. L'applic
    - Le graphique météo doit s'afficher
    - Les étoiles en arrière-plan doivent scintiller
 
+
+---
+
+## 🔧 Corrections Récentes (V1.3e - Fix)
+
+### Problèmes résolus :
+1. **Erreur `Uncaught SyntaxError: return not in function`** :
+   - **Cause** : Problème de chargement de Chart.js depuis le CDN `jsdelivr.net`.
+   - **Solution** : Remplacement par une version stable de Chart.js depuis **cdnjs** (`4.4.0`).
+
+2. **Erreur 404 pour `chart.umd.min.js.map`** :
+   - **Cause** : Le CDN `jsdelivr.net` ne fournissait pas le fichier source map.
+   - **Solution** : Utilisation de `https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js` (version stable et complète).
+
+3. **Graphique météo non affiché** :
+   - **Cause** : Chart.js n'était pas chargé correctement.
+   - **Solution** : Ajout d'une vérification dans `app.js` pour s'assurer que `Chart` est défini avant de créer le graphique.
+
+### Modifications apportées :
+- **`index.html`** :
+  - Remplacement du CDN de Chart.js par `https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js`.
+- **`app.js`** :
+  - Ajout d'une vérification que `Chart` est défini avant de créer le graphique.
+  - Ajout d'une vérification que le canvas (`weatherChart`) existe.
+  - Affichage d'une erreur claire si Chart.js n'est pas chargé.
+
+---
 ---
 
 ## 🚀 Déploiement
