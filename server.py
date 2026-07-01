@@ -34,12 +34,13 @@ def get_garmin_activities():
         if not email or not password:
             return jsonify({"error": "Email et mot de passe requis"}), 400
 
-        # Authentification avec garminexport (nouvelle API)
-        garminexport.authenticate(email, password)
+        # Initialiser le client Garmin
+        client = garminexport.Garmin(email, password)
+        client.login()
 
         # Récupérer les activités
         start_date = (datetime.now() - timedelta(days=days)).date()
-        activities = garminexport.get_activities(start_date)
+        activities = client.get_activities(start_date)
 
         # Filtrer pour la musculation (type_id = 2)
         strength_activities = [
@@ -59,7 +60,6 @@ def get_garmin_activities():
 # Route pour servir les données météo (à adapter selon votre API)
 @app.route('/api/weather', methods=['GET'])
 def get_weather():
-    # Exemple de route pour la météo (à adapter avec votre API OpenWeatherMap)
     return jsonify({
         "message": "Route pour la météo à implémenter avec votre API OpenWeatherMap."
     })
