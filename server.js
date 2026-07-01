@@ -16,13 +16,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/ratp', async (req, res) => {
     try {
         const ratpApiUrl = 'https://api-ratp.pierre-grimaud.fr/v4/lines/RERB/status';
-        const response = await axios.get(ratpApiUrl);
+        
+        // Essayer de contacter l'API avec un timeout court (5 secondes)
+        const response = await axios.get(ratpApiUrl, { 
+            timeout: 5000 
+        });
+        
+        // Si succès, retourner les données réelles
         res.json(response.data);
     } catch (error) {
-        console.error('Erreur lors de la récupération des données RATP :', error.message);
-        res.status(500).json({
-            error: 'Impossible de récupérer les données RATP',
-            details: error.message
+        console.error('Erreur avec l\'API RATP:', error.message);
+        
+        // Retourner un statut par défaut avec un message d'avertissement
+        res.json({
+            message: "Trafic normal sur la ligne RER B (API indisponible - Statut simulé)",
+            status: "normal",
+            fallback: true,
+            error: "Impossible de contacter l'API RATP. Utilisation d'un statut par défaut."
         });
     }
 });
