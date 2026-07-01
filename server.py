@@ -38,15 +38,16 @@ def get_garmin_activities():
             return jsonify({"error": "Email et mot de passe requis"}), 400
 
         try:
-            # Se connecter avec garminexport (nouvelle API : connect())
-            garminexport.connect(email=email, password=password)
+            # Initialiser le client Garmin (API pour garminexport==0.6.0)
+            client = garminexport.Garmin(email, password)
+            client.login()
         except Exception as auth_error:
             return jsonify({"error": f"Erreur d'authentification Garmin: {str(auth_error)}"}), 401
 
         try:
             # Calculer la date de début au format AAAA-MM-JJ
             start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-            activities = garminexport.get_activities(start_date) or []
+            activities = client.get_activities(start_date) or []
         except Exception as activities_error:
             return jsonify({"error": f"Erreur lors de la récupération des activités: {str(activities_error)}"}), 500
 
