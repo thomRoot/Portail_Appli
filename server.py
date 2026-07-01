@@ -4,6 +4,10 @@ import garminexport
 import os
 import json
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # Autoriser les requêtes CORS
@@ -30,12 +34,13 @@ def get_garmin_activities():
         if not data:
             return jsonify({"error": "Aucune donnée reçue"}), 400
 
-        email = data.get('email')
-        password = data.get('password')
+        # Utiliser les identifiants du front-end OU les variables d'environnement
+        email = data.get('email') or os.getenv('GARMIN_EMAIL')
+        password = data.get('password') or os.getenv('GARMIN_PASSWORD')
         days = data.get('days', 365)  # Par défaut, récupérer 1 an
 
         if not email or not password:
-            return jsonify({"error": "Email et mot de passe requis"}), 400
+            return jsonify({"error": "Email et mot de passe requis (ou non configurés dans .env)"}), 400
 
         try:
             # Initialiser le client Garmin (API pour garminexport==0.6.0)
