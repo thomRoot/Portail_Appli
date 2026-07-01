@@ -101,15 +101,17 @@ header {
     align-items: center;
     gap: 20px;
     flex: 1;
+    min-width: fit-content;
 }
 
 .header-right {
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-shrink: 0;
 }
 
-/* Statut du RER B et Weather Header Mini - Taille uniformisée */
+/* Statut du RER B et Weather Header Mini - Taille uniformisée et fixe */
 .rer-b-status, .weather-header-mini {
     display: flex;
     flex-direction: column;
@@ -118,6 +120,8 @@ header {
     gap: 5px;
     width: 100px;
     height: 100px;
+    min-width: 100px;
+    min-height: 100px;
     padding: 10px;
     border-radius: var(--border-radius);
     font-weight: 500;
@@ -126,6 +130,7 @@ header {
     background: rgba(79, 70, 229, 0.1);
     border: var(--border-subtle);
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .rer-b-status {
@@ -335,6 +340,7 @@ header {
     background: var(--card-color);
     box-shadow: var(--shadow);
     border: var(--border-subtle);
+    flex-shrink: 0;
 }
 
 .api-status:hover {
@@ -379,6 +385,7 @@ header {
     transition: var(--transition);
     box-shadow: var(--shadow), var(--shadow-glow);
     text-align: center;
+    flex-shrink: 0;
 }
 
 .add-btn:hover {
@@ -898,8 +905,9 @@ header {
     }
 
     .header-left {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
     .weather-container {
