@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = 3000; // Port pour le serveur proxy
+const PORT = 8000; // Port pour le serveur proxy
 
 // Activer CORS pour permettre les requêtes depuis votre application
 app.use(cors());
