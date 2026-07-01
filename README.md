@@ -5,7 +5,7 @@
 
 Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels profonds, avec une palette de bleus riches et élégants. Parfait pour ceux qui aiment les **ambiances calmes et sophistiquées**, comme un ciel nocturne parsemé d'étoiles.
 
-### 🎯 Caractéristiques principales :
+### 🌟 Caractéristiques principales :
 - **Couleurs** : Bleu nuit (#0a0a1a) + Bleu électrique (#4f46e5) + Violet (#8b5cf6)
 - **Effets** : Dégradés bleutés, ombres violettes, lueurs bleues, étoiles animées
 - **Ambiance** : Calme, sophistiquée, immersive, élégante
@@ -21,7 +21,7 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 
 ---
 
-## 📋 Fonctionnalités
+## 📊 Fonctionnalités
 
 ### 1. Interface Utilisateur
 - **Grille d'applications** : Affichage responsive de vos sites sous forme de cartes avec icônes
@@ -40,13 +40,13 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 
 ### 3. Widget Météo Avancé
 
-#### 📊 **Graphique des températures et précipitations**
+#### 📈 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
 - **Courbe des précipitations** (pluie et neige) en mm
 - **Deux axes Y** : Température à gauche, précipitations à droite
 - **Design interactif** avec Chart.js
 
-#### 🕒 **Détails horaires**
+#### ⏰ **Détails horaires**
 - Affichage des prévisions **heure par heure** pour la journée
 - **Icônes météo** pour chaque période
 - **Températures** et **précipitations** pour chaque tranche de 3h
@@ -249,7 +249,7 @@ Portail_Appli/
 
 ---
 
-## ✨ Personnalisation
+## 🎨 Personnalisation
 
 ### Changer la ville pour la météo
 
@@ -317,7 +317,20 @@ Modifiez les variables CSS dans `styles.css` :
 
 ---
 
-## 🎯 Utilisation
+## 📖 Historique des Mises à Jour
+
+### **V1.3e - Midnight Blue (Dernière version)**
+- **Style complet** : Thème "Midnight Blue" avec dégradés, étoiles animées et effets de glow
+- **Uniformisation des tailles** : Les éléments `headerCurrentTemp` (température dans le header) et le plugin **RER B** ont été alignés sur une taille de **100px × 100px** pour une cohérence visuelle.
+- **Améliorations visuelles** :
+  - Icônes agrandies (2.2rem) pour une meilleure lisibilité
+  - Texte légèrement plus grand (0.85rem) pour les libellés
+  - Effets de survol harmonisés (échelle, ombre et bordure lumineuse)
+- **Fonctionnalités complètes** : Météo, RER B, robots aspirateurs, gestion des sites
+
+---
+
+## 💡 Utilisation
 
 ### Ajouter un site
 1. Cliquez sur le bouton **"➕ Ajouter un site"** en haut à droite
@@ -446,7 +459,7 @@ Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier 
 
 ---
 
-## 💬 Support
+## 📧 Support
 
 Si vous avez des problèmes :
 1. Vérifiez d'abord la section **Dépannage** ci-dessus

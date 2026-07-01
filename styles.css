@@ -109,15 +109,15 @@ header {
     gap: 15px;
 }
 
-/* Statut du RER B - Style Midnight Blue */
+/* Statut du RER B - Taille uniformisée avec headerCurrentTemp */
 .rer-b-status {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     padding: 10px;
     border-radius: var(--border-radius);
     font-weight: 500;
@@ -160,24 +160,24 @@ header {
 }
 
 .rer-b-status i {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
 }
 
 .rer-b-status span {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     line-height: 1.2;
 }
 
 
-/* Weather Details Card dans le header */
+/* Weather Details Card dans le header - Taille uniformisée avec RER B */
 .weather-header-mini {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     padding: 10px;
     border-radius: var(--border-radius);
     font-weight: 500;
@@ -196,12 +196,12 @@ header {
 }
 
 .weather-header-mini i {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     color: var(--accent-color);
 }
 
 .weather-header-mini span {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     line-height: 1.2;
     color: var(--text-color);
 }
