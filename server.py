@@ -1,16 +1,29 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect, session
 from flask_cors import CORS
-import garminexport
+from flask_session import Session
 import os
 import json
+import requests
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-# Charger les variables d'environnement depuis le fichier .env
+# Charger les variables d'environnement
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Autoriser les requêtes CORS
+CORS(app, supports_credentials=True)
+
+# Configuration de la session
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'votre_cle_secrete_ici')
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
+
+# Configuration OAuth2 Garmin
+GARMIN_CLIENT_ID = os.getenv('GARMIN_CLIENT_ID')
+GARMIN_CLIENT_SECRET = os.getenv('GARMIN_CLIENT_SECRET')
+GARMIN_AUTH_URL = "https://connectapi.garmin.com/oauth-service/oauth/authorize"
+GARMIN_TOKEN_URL = "https://connectapi.garmin.com/oauth-service/token"
+GARMIN_API_BASE = "https://connectapi.garmin.com"
 
 # Chemin vers le dossier des fichiers statiques
 STATIC_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public')
@@ -26,46 +39,88 @@ def serve_static(path):
         return send_from_directory(STATIC_FOLDER, 'index.html')
 
 
-# Route pour récupérer les activités Garmin
-@app.route('/api/garmin/activities', methods=['POST'])
+# Route pour initier l'authentification OAuth2
+@app.route('/api/garmin/auth')
+def garmin_auth():
+    # Générer un état aléatoire pour la sécurité
+    state = os.urandom(16).hex()
+    session['oauth_state'] = state
+
+    # URL de redirection vers Garmin
+    auth_url = (
+        f"{GARMIN_AUTH_URL}?client_id={GARMIN_CLIENT_ID}"
+        f"&redirect_uri=http://localhost:8000/api/garmin/callback"
+        f"&response_type=code"
+        f"&scope=activity:read"
+        f"&state={state}"
+    )
+    return redirect(auth_url)
+
+
+# Route de callback pour récupérer le token
+@app.route('/api/garmin/callback')
+def garmin_callback():
+    code = request.args.get('code')
+    state = request.args.get('state')
+    error = request.args.get('error')
+
+    if error:
+        return jsonify({"error": f"Erreur OAuth2: {error}"}), 400
+
+    if state != session.get('oauth_state'):
+        return jsonify({"error": "Invalid state"}), 403
+
+    if not code:
+        return jsonify({"error": "No authorization code received"}), 400
+
+    # Échanger le code contre un token
+    token_data = {
+        'client_id': GARMIN_CLIENT_ID,
+        'client_secret': GARMIN_CLIENT_SECRET,
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': 'http://localhost:8000/api/garmin/callback'
+    }
+
+    response = requests.post(GARMIN_TOKEN_URL, data=token_data)
+    if response.status_code != 200:
+        return jsonify({"error": f"Failed to fetch token: {response.text}"}), 500
+
+    token_info = response.json()
+    access_token = token_info.get('access_token')
+    refresh_token = token_info.get('refresh_token')
+
+    # Stocker le token en session
+    session['garmin_access_token'] = access_token
+    session['garmin_refresh_token'] = refresh_token
+
+    # Rediriger vers la page principale avec un paramètre de succès
+    return redirect('/?garmin_auth=success')
+
+
+# Route pour récupérer les activités (avec token)
+@app.route('/api/garmin/activities', methods=['GET'])
 def get_garmin_activities():
+    access_token = session.get('garmin_access_token')
+    if not access_token:
+        return jsonify({"error": "Non autorisé. Veuillez vous authentifier via /api/garmin/auth"}), 401
+
     try:
-        data = request.json
-        if not data:
-            return jsonify({"error": "Aucune donnée reçue"}), 400
+        # Récupérer les activités via l'API Garmin
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
 
-        # Utiliser les identifiants du front-end OU les variables d'environnement
-        email = data.get('email') or os.getenv('GARMIN_EMAIL')
-        password = data.get('password') or os.getenv('GARMIN_PASSWORD')
-        days = data.get('days', 365)  # Par défaut, récupérer 1 an
+        # Exemple : Récupérer les activités récentes
+        activities_url = f"{GARMIN_API_BASE}/wellness-service/wellness/dailySummaryChart/activity"
+        response = requests.get(activities_url, headers=headers)
 
-        if not email or not password:
-            return jsonify({"error": "Email et mot de passe requis (ou non configurés dans .env)"}), 400
+        if response.status_code != 200:
+            return jsonify({"error": f"Erreur API Garmin: {response.text}"}), response.status_code
 
-        try:
-            # Initialiser le client Garmin (API pour garminexport==0.6.0)
-            client = garminexport.Garmin(email, password)
-            client.login()
-        except Exception as auth_error:
-            return jsonify({"error": f"Erreur d'authentification Garmin: {str(auth_error)}"}), 401
-
-        try:
-            # Calculer la date de début au format AAAA-MM-JJ
-            start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-            activities = client.get_activities(start_date) or []
-        except Exception as activities_error:
-            return jsonify({"error": f"Erreur lors de la récupération des activités: {str(activities_error)}"}), 500
-
-        # Filtrer pour la musculation (type_id = 2)
-        strength_activities = [
-            activity for activity in activities
-            if activity.get("type_id") == 2
-        ]
-
-        return jsonify({
-            "success": True,
-            "activities": strength_activities
-        })
+        activities = response.json()
+        return jsonify({"success": True, "activities": activities})
 
     except Exception as e:
         return jsonify({"error": f"Erreur inattendue: {str(e)}"}), 500
@@ -83,7 +138,6 @@ def get_weather():
 @app.route('/api/sites', methods=['GET', 'POST', 'DELETE'])
 def manage_sites():
     if request.method == 'GET':
-        # Récupérer les sites (exemple : depuis un fichier JSON)
         try:
             with open(os.path.join(STATIC_FOLDER, 'sites.json'), 'r') as f:
                 sites = json.load(f)
@@ -92,7 +146,6 @@ def manage_sites():
             return jsonify([])
     
     elif request.method == 'POST':
-        # Ajouter un site
         data = request.json
         try:
             with open(os.path.join(STATIC_FOLDER, 'sites.json'), 'r+') as f:
@@ -107,7 +160,6 @@ def manage_sites():
             return jsonify({"success": True, "site": data})
     
     elif request.method == 'DELETE':
-        # Supprimer un site
         site_id = request.json.get('id')
         try:
             with open(os.path.join(STATIC_FOLDER, 'sites.json'), 'r+') as f:

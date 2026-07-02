@@ -1032,24 +1032,20 @@ window.checkRobotConfig = checkRobotConfig;
 // Fonctions pour GarminExport
 // ============================================
 
-// Fonction pour récupérer les activités Garmin
+// Fonction pour récupérer les activités Garmin (OAuth2)
 async function fetchGarminActivities() {
-    const email = document.getElementById('garminEmail').value;
-    const password = document.getElementById('garminPassword').value;
-    const days = document.getElementById('garminDays').value;
+    // Rediriger vers l'authentification OAuth2 Garmin
+    window.location.href = '/api/garmin/auth';
+}
 
-    if (!email || !password) {
-        alert('Veuillez entrer votre email et mot de passe Garmin.');
-        return;
-    }
-
+// Fonction pour récupérer les activités après authentification OAuth2
+async function fetchGarminActivitiesAfterAuth() {
     try {
         const response = await fetch('/api/garmin/activities', {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password, days }),
         });
 
         const data = await response.json();

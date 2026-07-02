@@ -217,5 +217,23 @@
             </div>
         </div>
     </div>
+
+<script>
+    // Vérifier si l'authentification Garmin a réussi
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('garmin_auth') === 'success') {
+        // Masquer le formulaire et afficher un message
+        const garminForm = document.getElementById('garminForm');
+        if (garminForm) {
+            garminForm.style.display = 'none';
+        }
+        const garminActivities = document.getElementById('garminActivities');
+        if (garminActivities) {
+            garminActivities.innerHTML = '<p>Authentification réussie ! Récupération des activités en cours...</p>';
+        }
+        // Récupérer les activités après authentification
+        fetchGarminActivitiesAfterAuth();
+    }
+</script>
 </body>
 </html>
