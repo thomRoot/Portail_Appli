@@ -556,6 +556,9 @@ function createWeatherChart(forecastData) {
         }
         return 0;
     });
+    // Calculer la valeur maximale pour l'axe des précipitations (minimum 0)
+    const maxRain = Math.max(...rains, 0);
+    const maxRainWithMargin = maxRain === 0 ? 10 : Math.ceil(maxRain * 1.2);
     
     // Créer le graphique
     weatherChart = new Chart(ctx, {
@@ -625,7 +628,7 @@ function createWeatherChart(forecastData) {
                     display: true,
                     position: 'right',
                     min: 0,
-                    max: 50,
+                    max: maxRainWithMargin,
                     title: {
                         display: true,
                         text: 'Précipitations (mm)',

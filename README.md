@@ -45,6 +45,7 @@ Ce style **"Midnight Blue"** s'inspire des **nuits étoilées** et des ciels pro
 #### 📈 **Graphique des températures et précipitations**
 - **Courbe des températures** sur la journée (toutes les 3 heures)
 - **Courbe des précipitations** (pluie et neige) en mm
+- **Ordonnée dynamique** : L'axe des précipitations s'adapte automatiquement en fonction des prévisions, avec un minimum fixé à 0 mm
 - **Deux axes Y** : Température à gauche, précipitations à droite
 - **Design interactif** avec Chart.js
 
