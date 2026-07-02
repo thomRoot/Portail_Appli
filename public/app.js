@@ -20,6 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initDB();
     setupEventListeners();
     setupRobotEventListeners();
+    
     loadSites();
     
     // Vérifier la clé API au démarrage
@@ -1026,3 +1027,4 @@ window.loadWeather = loadWeather;
 window.checkApiKey = checkApiKey;
 window.startRobotCleaning = startRobotCleaning;
 window.checkRobotConfig = checkRobotConfig;
+
