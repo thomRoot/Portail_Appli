@@ -314,6 +314,10 @@ Modifiez les variables CSS dans `public/styles.css` :
 
 ## 📜 Historique des Mises à Jour
 
+### **V3.0_Python**
+- **Suppression complète** : Toutes les références à Garmin ont été supprimées du code et de la documentation.
+- **Fonctionnalités conservées** : Météo, robots aspirateurs, gestion des sites.
+
 ### **V2.0_pas_de_rer_B**
 - **Suppression complète** : Toutes les références au RER B ont été supprimées du code et de la documentation.
 - **Fonctionnalités conservées** : Météo, robots aspirateurs, gestion des sites.
@@ -470,3 +474,6 @@ Si vous avez des problèmes :
 3. Ouvrez la console du navigateur (F12) pour voir les erreurs
 4. Vérifiez que vous avez bien remplacé `votre_cle_api_ici`
 5. Pour les étoiles scintillantes, assurez-vous que les animations CSS sont activées
+
+---
+
